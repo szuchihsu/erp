@@ -17,6 +17,21 @@ gem "stimulus-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 
+# Authentication and Authorization
+gem "devise" # Authentication
+gem "cancancan" # Authorization
+
+# UI and UX enhancements
+gem "kaminari" # Pagination
+gem "ransack" # Search and filtering
+
+# Image and file processing
+gem "image_processing" # Image handling
+
+# Analytics and reporting
+gem "chartkick" # Charts for analytics
+gem "groupdate" # Date grouping for analytics
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
 
@@ -61,3 +76,6 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+
+gem "tailwindcss-rails", "~> 4.3"
