@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Erp" %></title>
+    <title>Jewelry ERP</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -22,8 +22,31 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+  <body class="bg-gray-50">
+    <nav class="bg-white shadow">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between h-16">
+          <div class="flex items-center">
+            <%= link_to "Jewelry ERP", root_path, class: "text-xl font-bold" %>
+          </div>
+          
+          <div class="flex items-center space-x-4">
+            <% if user_signed_in? %>
+              <span class="text-gray-700">Welcome, <%= current_user.name || current_user.username %></span>
+              <%= link_to "Sign Out", destroy_user_session_path, 
+                          data: { "turbo-method": :delete }, 
+                          class: "bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" %>
+            <% else %>
+              <%= link_to "Sign In", new_user_session_path, class: "text-blue-600 hover:text-blue-800" %>
+              <%= link_to "Sign Up", new_user_registration_path, class: "bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </nav>
+    
+    <main class="container mx-auto mt-8 px-4">
+      <%= render 'shared/flash_messages' if notice || alert %>
       <%= yield %>
     </main>
   </body>
