@@ -1,9 +1,8 @@
-<%= form_with(model: employee, class: "contents") do |form| %>
+<%= form_with(model: employee, local: true, class: "contents") do |form| %>
   <% if employee.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(employee.errors.count, "error") %> prohibited this employee from being saved:</h2>
-
-      <ul class="list-disc ml-6">
+      <ul>
         <% employee.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -12,56 +11,62 @@
   <% end %>
 
   <div class="my-5">
-    <%= form.label :employee_id %>
-    <%= form.text_field :employee_id, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": employee.errors[:employee_id].none?, "border-red-400 focus:outline-red-600": employee.errors[:employee_id].any?}] %>
+    <%= form.label :employee_id, "Employee", class: "block text-sm font-medium text-gray-700" %>
+    <%= form.text_field :employee_id, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :name %>
-    <%= form.text_field :name, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": employee.errors[:name].none?, "border-red-400 focus:outline-red-600": employee.errors[:name].any?}] %>
+    <%= form.label :name, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.text_field :name, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :email %>
-    <%= form.text_field :email, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": employee.errors[:email].none?, "border-red-400 focus:outline-red-600": employee.errors[:email].any?}] %>
+    <%= form.label :email, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.email_field :email, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :phone %>
-    <%= form.text_field :phone, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": employee.errors[:phone].none?, "border-red-400 focus:outline-red-600": employee.errors[:phone].any?}] %>
+    <%= form.label :phone, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.text_field :phone, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :department %>
-    <%= form.text_field :department, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": employee.errors[:department].none?, "border-red-400 focus:outline-red-600": employee.errors[:department].any?}] %>
+    <%= form.label :department, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.select :department, ["production", "quality", "sales", "admin"], 
+        { prompt: "Select Department" }, 
+        { class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" } %>
   </div>
 
   <div class="my-5">
-    <%= form.label :position %>
-    <%= form.text_field :position, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": employee.errors[:position].none?, "border-red-400 focus:outline-red-600": employee.errors[:position].any?}] %>
+    <%= form.label :position, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.text_field :position, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :hire_date %>
-    <%= form.date_field :hire_date, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": employee.errors[:hire_date].none?, "border-red-400 focus:outline-red-600": employee.errors[:hire_date].any?}] %>
+    <%= form.label :hire_date, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.date_field :hire_date, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :salary %>
-    <%= form.text_field :salary, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": employee.errors[:salary].none?, "border-red-400 focus:outline-red-600": employee.errors[:salary].any?}] %>
+    <%= form.label :salary, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.number_field :salary, step: :any, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :status %>
-    <%= form.text_field :status, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": employee.errors[:status].none?, "border-red-400 focus:outline-red-600": employee.errors[:status].any?}] %>
+    <%= form.label :status, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.select :status, ["active", "inactive", "terminated"], 
+        { prompt: "Select Status" }, 
+        { class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" } %>
   </div>
 
   <div class="my-5">
-    <%= form.label :supervisor_id %>
-    <%= form.text_field :supervisor_id, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": employee.errors[:supervisor_id].none?, "border-red-400 focus:outline-red-600": employee.errors[:supervisor_id].any?}] %>
+    <%= form.label :supervisor_id, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.collection_select :supervisor_id, Employee.where.not(id: employee.id), :id, :name, 
+        { prompt: "Select Supervisor", include_blank: true }, 
+        { class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" } %>
   </div>
 
   <div class="inline">
-    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
   </div>
 <% end %>

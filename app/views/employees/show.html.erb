@@ -1,15 +1,73 @@
 <% content_for :title, "Showing employee" %>
 
-<div class="md:w-2/3 w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
-  <% end %>
+<div class="mx-auto md:w-2/3 w-full flex">
+  <div class="mx-auto">
+    <% if notice %>
+      <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
+    <% end %>
 
-  <h1 class="font-bold text-4xl">Showing employee</h1>
+    <h1 class="font-bold text-4xl mb-4"><%= @employee.name %></h1>
 
-  <%= render @employee %>
+    <div class="mb-5">
+      <p class="my-5">
+        <strong class="block font-medium mb-1">Employee ID:</strong>
+        <%= @employee.employee_id %>
+      </p>
 
-  <%= link_to "Edit this employee", edit_employee_path(@employee), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= link_to "Back to employees", employees_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= button_to "Destroy this employee", @employee, method: :delete, form_class: "sm:inline-block mt-2 sm:mt-0 sm:ml-2", class: "w-full rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
+      <p class="my-5">
+        <strong class="block font-medium mb-1">Email:</strong>
+        <%= @employee.email %>
+      </p>
+
+      <p class="my-5">
+        <strong class="block font-medium mb-1">Phone:</strong>
+        <%= @employee.phone %>
+      </p>
+
+      <p class="my-5">
+        <strong class="block font-medium mb-1">Department:</strong>
+        <%= @employee.department %>
+      </p>
+
+      <p class="my-5">
+        <strong class="block font-medium mb-1">Position:</strong>
+        <%= @employee.position %>
+      </p>
+
+      <p class="my-5">
+        <strong class="block font-medium mb-1">Hire date:</strong>
+        <%= @employee.hire_date %>
+      </p>
+
+      <p class="my-5">
+        <strong class="block font-medium mb-1">Salary:</strong>
+        <%= @employee.salary %>
+      </p>
+
+      <p class="my-5">
+        <strong class="block font-medium mb-1">Status:</strong>
+        <%= @employee.status %>
+      </p>
+
+      <% if @employee.supervisor %>
+        <p class="my-5">
+          <strong class="block font-medium mb-1">Supervisor:</strong>
+          <%= @employee.supervisor.name %>
+        </p>
+      <% end %>
+    </div>
+
+    <div class="flex items-center justify-between">
+      <%= link_to "Edit this employee", edit_employee_path(@employee), class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+      <div>
+        <%= link_to "Back to employees", employees_path, class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
+        <%= link_to "Destroy this employee", employee_path(@employee), 
+            data: { 
+              "turbo-method": :delete,
+              "turbo-confirm": "Are you sure?" 
+            },
+            class: "rounded-lg py-3 ml-2 px-5 bg-red-600 text-white inline-block font-medium" %>
+      </div>
+    </div>
+  </div>
 </div>
