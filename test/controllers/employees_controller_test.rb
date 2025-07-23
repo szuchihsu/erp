@@ -3,6 +3,8 @@ require "test_helper"
 class EmployeesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @employee = employees(:one)
+    @user = users(:one)
+    sign_in @user # Sign in before each test
   end
 
   test "should get index" do
@@ -17,7 +19,20 @@ class EmployeesControllerTest < ActionDispatch::IntegrationTest
 
   test "should create employee" do
     assert_difference("Employee.count") do
-      post employees_url, params: { employee: { department: @employee.department, email: @employee.email, employee_id: @employee.employee_id, hire_date: @employee.hire_date, name: @employee.name, phone: @employee.phone, position: @employee.position, salary: @employee.salary, status: @employee.status, supervisor_id: @employee.supervisor_id } }
+      post employees_url, params: {
+        employee: {
+          department: "production",
+          email: "new@example.com",
+          employee_id: "EMP999", # Use unique ID
+          hire_date: "2024-01-01",
+          name: "New Employee",
+          phone: "555-0123",
+          position: "tester",
+          salary: 40000.00,
+          status: "active",
+          supervisor_id: nil
+        }
+      }
     end
 
     assert_redirected_to employee_url(Employee.last)
@@ -34,7 +49,20 @@ class EmployeesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update employee" do
-    patch employee_url(@employee), params: { employee: { department: @employee.department, email: @employee.email, employee_id: @employee.employee_id, hire_date: @employee.hire_date, name: @employee.name, phone: @employee.phone, position: @employee.position, salary: @employee.salary, status: @employee.status, supervisor_id: @employee.supervisor_id } }
+    patch employee_url(@employee), params: {
+      employee: {
+        department: @employee.department,
+        email: "updated@example.com", # Change email to avoid conflicts
+        employee_id: @employee.employee_id,
+        hire_date: @employee.hire_date,
+        name: "Updated Name",
+        phone: @employee.phone,
+        position: @employee.position,
+        salary: @employee.salary,
+        status: @employee.status,
+        supervisor_id: @employee.supervisor_id
+      }
+    }
     assert_redirected_to employee_url(@employee)
   end
 
