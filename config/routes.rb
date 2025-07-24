@@ -3,7 +3,8 @@ Rails.application.routes.draw do
   devise_for :users
   resources :employees
 
-  root "employees#index"  # Or create a dashboard controller
+  root "dashboard#index"  # Change root to dashboard
+  get "dashboard", to: "dashboard#index"
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
