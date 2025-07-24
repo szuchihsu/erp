@@ -37,39 +37,36 @@ class CustomersTest < ApplicationSystemTestCase
     visit customers_url
     click_on "New customer"
 
-    fill_in "Address", with: @customer.address
-    fill_in "Customer", with: @customer.customer_id
-    fill_in "Customer type", with: @customer.customer_type
-    fill_in "Email", with: @customer.email
-    fill_in "Name", with: @customer.name
-    fill_in "Phone", with: @customer.phone
-    fill_in "Status", with: @customer.status
+    fill_in "Customer", with: "CUST999"
+    fill_in "Name", with: "Test Customer"
+    fill_in "Email", with: "test@example.com"
+    fill_in "Phone", with: "555-0123"
+    fill_in "Address", with: "123 Test Street"
+    select "Retail Customer", from: "Customer type"
+    select "active", from: "Status"
+
     click_on "Create Customer"
 
     assert_text "Customer was successfully created"
-    click_on "Back"
   end
 
   test "should update Customer" do
     visit customer_url(@customer)
     click_on "Edit this customer", match: :first
 
-    fill_in "Address", with: @customer.address
-    fill_in "Customer", with: @customer.customer_id
-    fill_in "Customer type", with: @customer.customer_type
-    fill_in "Email", with: @customer.email
-    fill_in "Name", with: @customer.name
-    fill_in "Phone", with: @customer.phone
-    fill_in "Status", with: @customer.status
+    fill_in "Email", with: "updated@example.com"
+    fill_in "Name", with: "Updated Name"
     click_on "Update Customer"
 
     assert_text "Customer was successfully updated"
-    click_on "Back"
   end
 
   test "should destroy Customer" do
     visit customer_url(@customer)
-    accept_confirm { click_on "Destroy this customer", match: :first }
+
+    page.accept_confirm do
+      click_on "Destroy this customer"
+    end
 
     assert_text "Customer was successfully destroyed"
   end
