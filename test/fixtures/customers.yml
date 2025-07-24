@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  customer_id: "CUST001"
+  name: "John Smith"
+  email: "john@example.com"
+  phone: "555-0001"
+  address: "123 Main St"
+  customer_type: "retail"
+  status: "active"
+
+two:
+  customer_id: "CUST002"
+  name: "Jane Doe"
+  email: "jane@example.com"
+  phone: "555-0002"
+  address: "456 Oak Ave"
+  customer_type: "wholesale"
+  status: "active"
