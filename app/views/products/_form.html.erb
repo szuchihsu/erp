@@ -27,8 +27,18 @@
   </div>
 
   <div class="my-5">
-    <%= form.label :category %>
-    <%= form.text_field :category, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": product.errors[:category].none?, "border-red-400 focus:outline-red-600": product.errors[:category].any?}] %>
+    <%= form.label :category, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.select :category, 
+        [
+          ["Rings", "rings"],
+          ["Necklaces", "necklaces"],
+          ["Bracelets", "bracelets"],
+          ["Earrings", "earrings"],
+          ["Watches", "watches"],
+          ["Pendants", "pendants"]
+        ], 
+        { prompt: "Select Category" }, 
+        { class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": product.errors[:category].none?, "border-red-400 focus:outline-red-600": product.errors[:category].any?}] } %>
   </div>
 
   <div class="my-5">
@@ -67,8 +77,15 @@
   </div>
 
   <div class="my-5">
-    <%= form.label :status %>
-    <%= form.text_field :status, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": product.errors[:status].none?, "border-red-400 focus:outline-red-600": product.errors[:status].any?}] %>
+    <%= form.label :status, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.select :status, 
+        [
+          ["Active", "active"],
+          ["Discontinued", "discontinued"],
+          ["Out of Stock", "out_of_stock"]
+        ], 
+        { prompt: "Select Status" }, 
+        { class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": product.errors[:status].none?, "border-red-400 focus:outline-red-600": product.errors[:status].any?}] } %>
   </div>
 
   <div class="inline">

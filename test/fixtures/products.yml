@@ -1,29 +1,43 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  product_id: MyString
-  name: MyString
-  description: MyText
-  category: MyString
-  material: MyString
-  weight: 9.99
-  cost_price: 9.99
-  selling_price: 9.99
-  stock_quantity: 1
-  minimum_stock: 1
-  supplier: MyString
-  status: MyString
+  product_id: "PROD001"
+  name: "Diamond Ring"
+  description: "Beautiful diamond engagement ring"
+  category: "rings"
+  material: "gold"
+  weight: 5.5
+  cost_price: 1000.00
+  selling_price: 1500.00
+  stock_quantity: 10
+  minimum_stock: 3
+  supplier: "Diamond Co."
+  status: "active"
 
 two:
-  product_id: MyString
-  name: MyString
-  description: MyText
-  category: MyString
-  material: MyString
-  weight: 9.99
-  cost_price: 9.99
-  selling_price: 9.99
+  product_id: "PROD002"
+  name: "Silver Necklace"
+  description: "Elegant silver chain necklace"
+  category: "necklaces"
+  material: "silver"
+  weight: 15.0
+  cost_price: 200.00
+  selling_price: 350.00
+  stock_quantity: 2
+  minimum_stock: 5
+  supplier: "Silver Works"
+  status: "active"
+
+low_stock:
+  product_id: "PROD003"
+  name: "Gold Bracelet"
+  description: "Classic gold bracelet"
+  category: "bracelets"
+  material: "gold"
+  weight: 8.0
+  cost_price: 500.00
+  selling_price: 750.00
   stock_quantity: 1
-  minimum_stock: 1
-  supplier: MyString
-  status: MyString
+  minimum_stock: 3
+  supplier: "Gold Masters"
+  status: "active"

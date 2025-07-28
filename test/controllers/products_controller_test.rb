@@ -1,13 +1,24 @@
 require "test_helper"
 
 class ProductsControllerTest < ActionDispatch::IntegrationTest
+  include Devise::Test::IntegrationHelpers
+
   setup do
     @product = products(:one)
+    @user = User.create!(
+      username: "testuser",
+      name: "Test User",
+      role: "admin",
+      password: "password123",
+      password_confirmation: "password123"
+    )
+    sign_in @user
   end
 
   test "should get index" do
     get products_url
     assert_response :success
+    assert_select "h1", "Products"
   end
 
   test "should get new" do
@@ -17,7 +28,22 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
 
   test "should create product" do
     assert_difference("Product.count") do
-      post products_url, params: { product: { category: @product.category, cost_price: @product.cost_price, description: @product.description, material: @product.material, minimum_stock: @product.minimum_stock, name: @product.name, product_id: @product.product_id, selling_price: @product.selling_price, status: @product.status, stock_quantity: @product.stock_quantity, supplier: @product.supplier, weight: @product.weight } }
+      post products_url, params: {
+        product: {
+          product_id: "PROD999",
+          name: "Test Product",
+          description: "Test description",
+          category: "rings",
+          material: "gold",
+          weight: 10.0,
+          cost_price: 100.0,
+          selling_price: 150.0,
+          stock_quantity: 5,
+          minimum_stock: 2,
+          supplier: "Test Supplier",
+          status: "active"
+        }
+      }
     end
 
     assert_redirected_to product_url(Product.last)
@@ -34,7 +60,12 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update product" do
-    patch product_url(@product), params: { product: { category: @product.category, cost_price: @product.cost_price, description: @product.description, material: @product.material, minimum_stock: @product.minimum_stock, name: @product.name, product_id: @product.product_id, selling_price: @product.selling_price, status: @product.status, stock_quantity: @product.stock_quantity, supplier: @product.supplier, weight: @product.weight } }
+    patch product_url(@product), params: {
+      product: {
+        name: "Updated Product Name",
+        selling_price: 200.0
+      }
+    }
     assert_redirected_to product_url(@product)
   end
 
@@ -44,5 +75,18 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to products_url
+  end
+
+  test "should not create product with invalid data" do
+    assert_no_difference("Product.count") do
+      post products_url, params: {
+        product: {
+          product_id: "", # Invalid - blank
+          name: "",       # Invalid - blank
+          cost_price: -100 # Invalid - negative
+        }
+      }
+    end
+    assert_response :unprocessable_entity
   end
 end
