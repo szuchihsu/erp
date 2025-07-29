@@ -1,4 +1,6 @@
 class Customer < ApplicationRecord
+  has_many :sales_orders, dependent: :destroy
+
   validates :customer_id, presence: true, uniqueness: true
   validates :name, presence: true
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }

@@ -1,0 +1,72 @@
+<%= form_with(model: sales_order, class: "contents") do |form| %>
+  <% if sales_order.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
+      <h2><%= pluralize(sales_order.errors.count, "error") %> prohibited this sales_order from being saved:</h2>
+
+      <ul class="list-disc ml-6">
+        <% sales_order.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="my-5">
+    <%= form.label :order_id %>
+    <%= form.text_field :order_id, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:order_id].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:order_id].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :customer_id %>
+    <%= form.text_field :customer_id, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:customer_id].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:customer_id].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :employee_id %>
+    <%= form.text_field :employee_id, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:employee_id].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:employee_id].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :order_date %>
+    <%= form.datetime_field :order_date, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:order_date].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:order_date].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :delivery_date %>
+    <%= form.datetime_field :delivery_date, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:delivery_date].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:delivery_date].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :quotation_amount %>
+    <%= form.text_field :quotation_amount, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:quotation_amount].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:quotation_amount].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :total_amount %>
+    <%= form.text_field :total_amount, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:total_amount].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:total_amount].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :deposit_amount %>
+    <%= form.text_field :deposit_amount, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:deposit_amount].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:deposit_amount].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :remaining_amount %>
+    <%= form.text_field :remaining_amount, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:remaining_amount].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:remaining_amount].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :order_status %>
+    <%= form.text_field :order_status, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:order_status].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:order_status].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :notes %>
+    <%= form.textarea :notes, rows: 4, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:notes].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:notes].any?}] %>
+  </div>
+
+  <div class="inline">
+    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+  </div>
+<% end %>

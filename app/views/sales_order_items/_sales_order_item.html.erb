@@ -1,0 +1,26 @@
+<div id="<%= dom_id sales_order_item %>" class="w-full sm:w-auto my-5 space-y-5">
+  <div>
+    <strong class="block font-medium mb-1">Sales order:</strong>
+    <%= sales_order_item.sales_order_id %>
+  </div>
+  <div>
+    <strong class="block font-medium mb-1">Product:</strong>
+    <%= sales_order_item.product_id %>
+  </div>
+  <div>
+    <strong class="block font-medium mb-1">Quantity:</strong>
+    <%= sales_order_item.quantity %>
+  </div>
+  <div>
+    <strong class="block font-medium mb-1">Unit price:</strong>
+    <%= sales_order_item.unit_price %>
+  </div>
+  <div>
+    <strong class="block font-medium mb-1">Total price:</strong>
+    <%= sales_order_item.total_price %>
+  </div>
+  <div>
+    <strong class="block font-medium mb-1">Specifications:</strong>
+    <%= sales_order_item.specifications %>
+  </div>
+</div>

@@ -1,4 +1,7 @@
 class Product < ApplicationRecord
+  has_many :sales_order_items, dependent: :destroy
+  has_many :sales_orders, through: :sales_order_items
+
   validates :product_id, presence: true, uniqueness: true
   validates :name, presence: true
   validates :category, inclusion: { in: [ "rings", "necklaces", "bracelets", "earrings", "watches", "pendants" ] }, allow_blank: true

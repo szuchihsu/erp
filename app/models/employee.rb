@@ -4,6 +4,7 @@ class Employee < ApplicationRecord
   has_many :subordinates, class_name: "Employee", foreign_key: "supervisor_id"
 
   has_one :user
+  has_many :sales_orders, dependent: :destroy
 
   validates :employee_id, presence: true, uniqueness: true
   validates :name, presence: true
