@@ -8,9 +8,14 @@ class Employee < ApplicationRecord
 
   validates :employee_id, presence: true, uniqueness: true
   validates :name, presence: true
-  validates :department, inclusion: { in: [ "production", "quality", "sales", "admin" ] }, allow_blank: true
+  # validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :department, inclusion: { in: [ "production", "sales", "admin", "quality_control", "management" ] }, allow_blank: true
   validates :status, inclusion: { in: [ "active", "inactive", "terminated" ] }, allow_blank: true
 
   scope :active, -> { where(status: "active") }
   scope :by_department, ->(dept) { where(department: dept) }
+
+  def display_name
+    "#{employee_id} - #{name}"
+  end
 end
