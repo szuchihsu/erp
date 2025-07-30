@@ -17,53 +17,70 @@
   </div>
 
   <div class="my-5">
-    <%= form.label :customer_id %>
-    <%= form.text_field :customer_id, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:customer_id].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:customer_id].any?}] %>
+    <%= form.label :customer_id, "Customer", class: "block text-sm font-medium text-gray-700" %>
+    <%= form.select :customer_id, 
+        options_from_collection_for_select(Customer.all, :id, :display_name, sales_order.customer_id), 
+        { prompt: "Select Customer" }, 
+        { class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:customer_id].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:customer_id].any?}] } %>
   </div>
 
   <div class="my-5">
-    <%= form.label :employee_id %>
-    <%= form.text_field :employee_id, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:employee_id].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:employee_id].any?}] %>
+    <%= form.label :employee_id, "Employee", class: "block text-sm font-medium text-gray-700" %>
+    <%= form.select :employee_id, 
+        options_from_collection_for_select(Employee.all, :id, :display_name, sales_order.employee_id), 
+        { prompt: "Select Employee" }, 
+        { class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:employee_id].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:employee_id].any?}] } %>
   </div>
 
   <div class="my-5">
     <%= form.label :order_date %>
-    <%= form.datetime_field :order_date, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:order_date].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:order_date].any?}] %>
+    <%= form.datetime_local_field :order_date, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:order_date].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:order_date].any?}] %>
   </div>
 
   <div class="my-5">
     <%= form.label :delivery_date %>
-    <%= form.datetime_field :delivery_date, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:delivery_date].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:delivery_date].any?}] %>
+    <%= form.datetime_local_field :delivery_date, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:delivery_date].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:delivery_date].any?}] %>
   </div>
 
   <div class="my-5">
     <%= form.label :quotation_amount %>
-    <%= form.text_field :quotation_amount, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:quotation_amount].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:quotation_amount].any?}] %>
+    <%= form.number_field :quotation_amount, step: 0.01, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:quotation_amount].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:quotation_amount].any?}] %>
   </div>
 
   <div class="my-5">
     <%= form.label :total_amount %>
-    <%= form.text_field :total_amount, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:total_amount].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:total_amount].any?}] %>
+    <%= form.number_field :total_amount, step: 0.01, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:total_amount].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:total_amount].any?}] %>
   </div>
 
   <div class="my-5">
     <%= form.label :deposit_amount %>
-    <%= form.text_field :deposit_amount, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:deposit_amount].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:deposit_amount].any?}] %>
+    <%= form.number_field :deposit_amount, step: 0.01, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:deposit_amount].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:deposit_amount].any?}] %>
   </div>
 
   <div class="my-5">
     <%= form.label :remaining_amount %>
-    <%= form.text_field :remaining_amount, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:remaining_amount].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:remaining_amount].any?}] %>
+    <%= form.number_field :remaining_amount, step: 0.01, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:remaining_amount].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:remaining_amount].any?}] %>
   </div>
 
   <div class="my-5">
-    <%= form.label :order_status %>
-    <%= form.text_field :order_status, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:order_status].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:order_status].any?}] %>
+    <%= form.label :order_status, "Order Status", class: "block text-sm font-medium text-gray-700" %>
+    <%= form.select :order_status, 
+        [
+          ["Pending", "pending"],
+          ["Confirmed", "confirmed"],
+          ["In Production", "in_production"],
+          ["Ready for Delivery", "ready_for_delivery"],
+          ["Delivered", "delivered"],
+          ["Completed", "completed"],
+          ["Cancelled", "cancelled"]
+        ], 
+        { prompt: "Select Status" }, 
+        { class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:order_status].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:order_status].any?}] } %>
   </div>
 
   <div class="my-5">
     <%= form.label :notes %>
-    <%= form.textarea :notes, rows: 4, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:notes].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:notes].any?}] %>
+    <%= form.text_area :notes, rows: 4, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:notes].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:notes].any?}] %>
   </div>
 
   <div class="inline">
