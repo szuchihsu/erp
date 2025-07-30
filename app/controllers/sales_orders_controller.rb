@@ -3,7 +3,27 @@ class SalesOrdersController < ApplicationController
 
   # GET /sales_orders or /sales_orders.json
   def index
-    @sales_orders = SalesOrder.all
+    @sales_orders = SalesOrder.includes(:customer, :employee).all
+
+    # Search functionality
+    if params[:search].present?
+      @sales_orders = @sales_orders.joins(:customer).where(
+        "sales_orders.order_id ILIKE ? OR customers.name ILIKE ?",
+        "%#{params[:search]}%", "%#{params[:search]}%"
+      )
+    end
+
+    # Filter by status
+    if params[:status].present?
+      @sales_orders = @sales_orders.where(order_status: params[:status])
+    end
+
+    # Filter by customer
+    if params[:customer_id].present?
+      @sales_orders = @sales_orders.where(customer_id: params[:customer_id])
+    end
+
+    @sales_orders = @sales_orders.order(order_date: :desc)
   end
 
   # GET /sales_orders/1 or /sales_orders/1.json

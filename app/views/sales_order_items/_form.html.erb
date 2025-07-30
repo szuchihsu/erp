@@ -1,9 +1,11 @@
-<%= form_with(model: sales_order_item, class: "contents") do |form| %>
+<%= form_with(model: [@sales_order, sales_order_item], 
+              url: sales_order_item.persisted? ? sales_order_sales_order_item_path(@sales_order, sales_order_item) : sales_order_sales_order_items_path(@sales_order),
+              method: sales_order_item.persisted? ? :patch : :post,
+              class: "contents") do |form| %>
   <% if sales_order_item.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
-      <h2><%= pluralize(sales_order_item.errors.count, "error") %> prohibited this sales_order_item from being saved:</h2>
-
-      <ul class="list-disc ml-6">
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mb-4">
+      <h2><%= pluralize(sales_order_item.errors.count, "error") %> prohibited this item from being saved:</h2>
+      <ul class="list-disc ml-6 mt-2">
         <% sales_order_item.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -11,37 +13,156 @@
     </div>
   <% end %>
 
-  <div class="my-5">
-    <%= form.label :sales_order_id %>
-    <%= form.text_field :sales_order_id, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order_item.errors[:sales_order_id].none?, "border-red-400 focus:outline-red-600": sales_order_item.errors[:sales_order_id].any?}] %>
+  <!-- Product Selection -->
+  <div class="mb-6">
+    <%= form.label :product_id, "Product", class: "block text-sm font-medium text-gray-700 mb-2" %>
+    <%= form.select :product_id, 
+        options_from_collection_for_select(Product.where(status: 'active'), :id, :name, sales_order_item.product_id), 
+        { prompt: "Select Product" }, 
+        { class: ["block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": sales_order_item.errors[:product_id].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": sales_order_item.errors[:product_id].any?}],
+          id: "product_select" } %>
   </div>
 
-  <div class="my-5">
-    <%= form.label :product_id %>
-    <%= form.text_field :product_id, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order_item.errors[:product_id].none?, "border-red-400 focus:outline-red-600": sales_order_item.errors[:product_id].any?}] %>
+  <!-- Product Information Display -->
+  <div id="product_info" class="mb-6 p-4 bg-blue-50 rounded-md hidden">
+    <h4 class="font-medium text-blue-900 mb-3">Product Information</h4>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+      <div>
+        <span class="font-medium text-blue-700">Category:</span>
+        <span id="product_category" class="text-blue-600 block"></span>
+      </div>
+      <div>
+        <span class="font-medium text-blue-700">Material:</span>
+        <span id="product_material" class="text-blue-600 block"></span>
+      </div>
+      <div>
+        <span class="font-medium text-blue-700">Stock:</span>
+        <span id="product_stock" class="text-blue-600 block"></span>
+      </div>
+      <div>
+        <span class="font-medium text-blue-700">Suggested Price:</span>
+        <span id="product_price" class="text-blue-600 block font-medium"></span>
+      </div>
+    </div>
   </div>
 
-  <div class="my-5">
-    <%= form.label :quantity %>
-    <%= form.number_field :quantity, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order_item.errors[:quantity].none?, "border-red-400 focus:outline-red-600": sales_order_item.errors[:quantity].any?}] %>
+  <!-- Quantity, Price, and Total -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+    <div>
+      <%= form.label :quantity, class: "block text-sm font-medium text-gray-700 mb-2" %>
+      <%= form.number_field :quantity, min: 1, class: ["block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": sales_order_item.errors[:quantity].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": sales_order_item.errors[:quantity].any?}],
+          id: "quantity_field" %>
+    </div>
+
+    <div>
+      <%= form.label :unit_price, "Unit Price ($)", class: "block text-sm font-medium text-gray-700 mb-2" %>
+      <%= form.number_field :unit_price, step: 0.01, class: ["block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": sales_order_item.errors[:unit_price].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": sales_order_item.errors[:unit_price].any?}],
+          id: "unit_price_field" %>
+    </div>
+
+    <div>
+      <%= form.label :total_price, "Total Price ($)", class: "block text-sm font-medium text-gray-700 mb-2" %>
+      <%= form.number_field :total_price, step: 0.01, readonly: true, class: ["block w-full rounded-md border px-3 py-2 bg-gray-50", {"border-gray-300": sales_order_item.errors[:total_price].none?, "border-red-300": sales_order_item.errors[:total_price].any?}],
+          id: "total_price_field" %>
+    </div>
   </div>
 
-  <div class="my-5">
-    <%= form.label :unit_price %>
-    <%= form.text_field :unit_price, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order_item.errors[:unit_price].none?, "border-red-400 focus:outline-red-600": sales_order_item.errors[:unit_price].any?}] %>
+  <!-- Specifications -->
+  <div class="mb-6">
+    <%= form.label :specifications, "Special Requirements", class: "block text-sm font-medium text-gray-700 mb-2" %>
+    <%= form.text_area :specifications, rows: 4, 
+        placeholder: "Enter any special requirements, customizations, or notes for this item...",
+        class: ["block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": sales_order_item.errors[:specifications].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": sales_order_item.errors[:specifications].any?}] %>
   </div>
 
-  <div class="my-5">
-    <%= form.label :total_price %>
-    <%= form.text_field :total_price, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order_item.errors[:total_price].none?, "border-red-400 focus:outline-red-600": sales_order_item.errors[:total_price].any?}] %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :specifications %>
-    <%= form.textarea :specifications, rows: 4, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order_item.errors[:specifications].none?, "border-red-400 focus:outline-red-600": sales_order_item.errors[:specifications].any?}] %>
-  </div>
-
-  <div class="inline">
-    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+  <!-- Action Buttons -->
+  <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+    <%= link_to "Cancel", @sales_order, class: "px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+    <% if sales_order_item.persisted? %>
+      <%= form.submit "Update Item", class: "px-4 py-2 bg-blue-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+    <% else %>
+      <%= form.submit "Add Item", class: "px-4 py-2 bg-blue-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+    <% end %>
   </div>
 <% end %>
+
+<!-- JavaScript for automatic calculations and product info -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const productSelect = document.getElementById('product_select');
+  const quantityField = document.getElementById('quantity_field');
+  const unitPriceField = document.getElementById('unit_price_field');
+  const totalPriceField = document.getElementById('total_price_field');
+  const productInfo = document.getElementById('product_info');
+
+  // Product data
+  const productData = {
+    <% Product.where(status: 'active').each do |product| %>
+      <%= product.id %>: {
+        selling_price: <%= product.selling_price || 0 %>,
+        category: '<%= j(product.category.to_s) %>',
+        material: '<%= j(product.material.to_s) %>',
+        stock: <%= product.stock_quantity || 0 %>
+      },
+    <% end %>
+  };
+
+  function calculateTotal() {
+    const quantity = parseFloat(quantityField.value) || 0;
+    const unitPrice = parseFloat(unitPriceField.value) || 0;
+    const total = quantity * unitPrice;
+    totalPriceField.value = total.toFixed(2);
+  }
+
+  function updateProductInfo() {
+    const productId = productSelect.value;
+    if (productId && productData[productId]) {
+      const product = productData[productId];
+      
+      // Update unit price with product's selling price if it's a new item or field is empty
+      <% unless sales_order_item.persisted? %>
+        if (!unitPriceField.value || unitPriceField.value == '0') {
+          unitPriceField.value = product.selling_price;
+        }
+      <% end %>
+      
+      // Show product information
+      document.getElementById('product_category').textContent = product.category || 'N/A';
+      document.getElementById('product_material').textContent = product.material || 'N/A';
+      document.getElementById('product_stock').textContent = product.stock + ' in stock';
+      document.getElementById('product_price').textContent = '$' + product.selling_price;
+      
+      // Show stock warning if low
+      const stockElement = document.getElementById('product_stock');
+      if (product.stock < 5) {
+        stockElement.className = 'text-red-600 block font-medium';
+        stockElement.textContent += ' (Low Stock!)';
+      } else {
+        stockElement.className = 'text-blue-600 block';
+      }
+      
+      productInfo.classList.remove('hidden');
+      calculateTotal();
+    } else {
+      productInfo.classList.add('hidden');
+    }
+  }
+
+  // Event listeners
+  if (productSelect) {
+    productSelect.addEventListener('change', updateProductInfo);
+  }
+  
+  if (quantityField) {
+    quantityField.addEventListener('input', calculateTotal);
+  }
+  
+  if (unitPriceField) {
+    unitPriceField.addEventListener('input', calculateTotal);
+  }
+
+  // Initialize on page load
+  updateProductInfo();
+  calculateTotal();
+});
+</script>

@@ -1,13 +1,16 @@
 Rails.application.routes.draw do
-  resources :sales_order_items
-  resources :sales_orders
-  resources :products
-  resources :customers
   devise_for :users
-  resources :employees
+  root "dashboard#index"
 
-  root "dashboard#index"  # Change root to dashboard
   get "dashboard", to: "dashboard#index"
+
+  resources :employees
+  resources :customers
+  resources :products
+
+  resources :sales_orders do
+    resources :sales_order_items
+  end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
