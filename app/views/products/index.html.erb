@@ -5,25 +5,132 @@
     <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
   <% end %>
 
-  <div class="flex justify-between items-center">
+  <div class="flex justify-between items-center mb-6">
     <h1 class="font-bold text-4xl">Products</h1>
-    <%= link_to "New product", new_product_path, class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white block font-medium" %>
+    <%= link_to "New product", new_product_path, class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium" %>
   </div>
 
-  <div id="products" class="min-w-full divide-y divide-gray-200 space-y-5">
+  <!-- Search and Filters -->
+  <div class="bg-white p-4 rounded-lg shadow mb-6">
+    <%= form_with url: products_path, method: :get, local: true, class: "flex flex-wrap gap-4 items-end" do |form| %>
+      <div class="flex-1 min-w-64">
+        <%= form.text_field :search, placeholder: "Search products...", value: params[:search], 
+            class: "block w-full rounded-md border border-gray-300 px-3 py-2" %>
+      </div>
+      <div>
+        <%= form.select :category, options_for_select([
+              ["All Categories", ""],
+              ["Rings", "rings"],
+              ["Necklaces", "necklaces"],
+              ["Bracelets", "bracelets"],
+              ["Earrings", "earrings"],
+              ["Watches", "watches"],
+              ["Pendants", "pendants"]
+            ], params[:category]), {}, { class: "rounded-md border border-gray-300 px-3 py-2" } %>
+      </div>
+      <div>
+        <%= form.select :status, options_for_select([
+              ["All Status", ""],
+              ["Active", "active"],
+              ["Discontinued", "discontinued"],
+              ["Out of Stock", "out_of_stock"]
+            ], params[:status]), {}, { class: "rounded-md border border-gray-300 px-3 py-2" } %>
+      </div>
+      <div>
+        <%= form.submit "Search", class: "bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700" %>
+        <%= link_to "Clear", products_path, class: "bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 ml-2" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Products Table -->
+  <div class="bg-white shadow rounded-lg overflow-hidden">
     <% if @products.any? %>
-      <% @products.each do |product| %>
-        <div class="flex flex-col sm:flex-row justify-between items-center pb-5 sm:pb-0">
-          <%= render product %>
-          <div class="w-full sm:w-auto flex flex-col sm:flex-row space-x-2 space-y-2">
-            <%= link_to "Show", product, class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-            <%= link_to "Edit", edit_product_path(product), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-            <%= button_to "Destroy", product, method: :delete, class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @products.each do |product| %>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div>
+                    <div class="text-sm font-medium text-gray-900"><%= product.name %></div>
+                    <div class="text-sm text-gray-500"><%= product.product_id %></div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full capitalize">
+                    <%= product.category %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-900">
+                    <strong>$<%= product.selling_price || 0 %></strong>
+                  </div>
+                  <div class="text-xs text-gray-500">
+                    Cost: $<%= product.cost_price || 0 %>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <span class="text-sm text-gray-900"><%= product.stock_quantity || 0 %></span>
+                    <% if product.low_stock? %>
+                      <span class="ml-2 px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">Low Stock</span>
+                    <% end %>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                    <%= case product.status
+                        when 'active' then 'bg-green-100 text-green-800'
+                        when 'discontinued' then 'bg-red-100 text-red-800'
+                        when 'out_of_stock' then 'bg-yellow-100 text-yellow-800'
+                        else 'bg-gray-100 text-gray-800'
+                        end %>">
+                    <%= product.status&.humanize %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                  <%= link_to "View", product, class: "text-blue-600 hover:text-blue-900" %>
+                  <%= link_to "Edit", edit_product_path(product), class: "text-indigo-600 hover:text-indigo-900" %>
+                  <%= link_to "Delete", product_path(product), method: :delete, 
+                      data: { confirm: "Are you sure?" },
+                      class: "text-red-600 hover:text-red-900" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Pagination placeholder -->
+      <div class="bg-white px-4 py-3 border-t border-gray-200">
+        <div class="flex justify-between items-center">
+          <div class="text-sm text-gray-700">
+            Showing <%= @products.count %> products
           </div>
         </div>
-      <% end %>
+      </div>
     <% else %>
-      <p class="text-center my-10">No products found.</p>
+      <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No products found</h3>
+        <p class="mt-1 text-sm text-gray-500">Get started by creating a new product.</p>
+        <div class="mt-6">
+          <%= link_to "New Product", new_product_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700" %>
+        </div>
+      </div>
     <% end %>
   </div>
 </div>

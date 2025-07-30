@@ -1,15 +1,97 @@
 <% content_for :title, "Showing product" %>
 
-<div class="md:w-2/3 w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
-  <% end %>
+<div class="mx-auto md:w-2/3 w-full flex">
+  <div class="mx-auto">
+    <% if notice %>
+      <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
+    <% end %>
 
-  <h1 class="font-bold text-4xl">Showing product</h1>
+    <h1 class="font-bold text-4xl"><%= @product.name %></h1>
 
-  <%= render @product %>
+    <!-- Product Details -->
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <p class="my-3">
+            <strong class="block font-medium mb-1">Product ID:</strong>
+            <%= @product.product_id %>
+          </p>
+          
+          <p class="my-3">
+            <strong class="block font-medium mb-1">Category:</strong>
+            <span class="capitalize"><%= @product.category %></span>
+          </p>
 
-  <%= link_to "Edit this product", edit_product_path(@product), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= link_to "Back to products", products_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= button_to "Destroy this product", @product, method: :delete, form_class: "sm:inline-block mt-2 sm:mt-0 sm:ml-2", class: "w-full rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
+          <p class="my-3">
+            <strong class="block font-medium mb-1">Material:</strong>
+            <span class="capitalize"><%= @product.material %></span>
+          </p>
+
+          <p class="my-3">
+            <strong class="block font-medium mb-1">Weight:</strong>
+            <%= @product.weight %> grams
+          </p>
+        </div>
+
+        <div>
+          <p class="my-3">
+            <strong class="block font-medium mb-1">Cost Price:</strong>
+            $<%= @product.cost_price %>
+          </p>
+
+          <p class="my-3">
+            <strong class="block font-medium mb-1">Selling Price:</strong>
+            $<%= @product.selling_price %>
+          </p>
+
+          <p class="my-3">
+            <strong class="block font-medium mb-1">Stock Status:</strong>
+            <span class="px-2 py-1 rounded-full text-xs font-medium
+              <%= @product.low_stock? ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' %>">
+              <%= @product.stock_quantity %> in stock
+              <%= "(Low Stock)" if @product.low_stock? %>
+            </span>
+          </p>
+
+          <p class="my-3">
+            <strong class="block font-medium mb-1">Status:</strong>
+            <span class="px-2 py-1 rounded-full text-xs font-medium
+              <%= @product.status == 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+              <%= @product.status&.capitalize %>
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <% if @product.description.present? %>
+        <div class="mt-6">
+          <strong class="block font-medium mb-2">Description:</strong>
+          <p class="text-gray-700"><%= @product.description %></p>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Profit Margin -->
+    <% if @product.cost_price && @product.selling_price %>
+      <div class="bg-blue-50 rounded-lg p-4 mb-6">
+        <h3 class="font-medium text-blue-900 mb-2">Profit Analysis</h3>
+        <p class="text-blue-700">
+          Profit Margin: <strong><%= @product.profit_margin %>%</strong>
+          (<%= @product.selling_price - @product.cost_price %> profit per unit)
+        </p>
+      </div>
+    <% end %>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center justify-between">
+      <%= link_to "Edit this product", edit_product_path(@product), class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+      <div>
+        <%= link_to "Back to products", products_path, class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
+        <%= link_to "Destroy this product", product_path(@product), 
+            method: :delete,
+            data: { confirm: "Are you sure?" },
+            class: "rounded-lg py-3 ml-2 px-5 bg-red-600 text-white inline-block font-medium" %>
+      </div>
+    </div>
+  </div>
 </div>

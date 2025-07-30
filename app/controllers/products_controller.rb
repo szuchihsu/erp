@@ -1,9 +1,28 @@
 class ProductsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_product, only: %i[ show edit update destroy ]
 
   # GET /products or /products.json
   def index
     @products = Product.all
+
+    # Search functionality
+    if params[:search].present?
+      @products = @products.where("name ILIKE ? OR product_id ILIKE ? OR description ILIKE ?",
+                                 "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%")
+    end
+
+    # Filter by category
+    if params[:category].present?
+      @products = @products.where(category: params[:category])
+    end
+
+    # Filter by status
+    if params[:status].present?
+      @products = @products.where(status: params[:status])
+    end
+
+    @products = @products.order(:name)
   end
 
   # GET /products/1 or /products/1.json
