@@ -8,12 +8,13 @@
 
     <h1 class="font-bold text-4xl mb-4"><%= @customer.name %></h1>
 
-    <div class="mb-5">
+    <!-- Customer Details -->
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
       <p class="my-5">
         <strong class="block font-medium mb-1">Customer ID:</strong>
         <%= @customer.customer_id %>
       </p>
-
+      
       <p class="my-5">
         <strong class="block font-medium mb-1">Email:</strong>
         <%= @customer.email %>
@@ -25,22 +26,82 @@
       </p>
 
       <p class="my-5">
-        <strong class="block font-medium mb-1">Address:</strong>
-        <%= @customer.address %>
-      </p>
-
-      <p class="my-5">
         <strong class="block font-medium mb-1">Customer Type:</strong>
-        <%= @customer.customer_type %>
+        <span class="capitalize"><%= @customer.customer_type %></span>
       </p>
 
       <p class="my-5">
         <strong class="block font-medium mb-1">Status:</strong>
-        <%= @customer.status %>
+        <span class="px-2 py-1 rounded-full text-xs font-medium
+          <%= @customer.status == 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+          <%= @customer.status&.capitalize %>
+        </span>
       </p>
     </div>
 
-    <div class="flex items-center justify-between">
+    <!-- Order History Section -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Order History</h2>
+      <% if @customer.sales_orders.any? %>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <% @customer.sales_orders.recent.limit(10).each do |order| %>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <%= order.order_id %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= order.order_date&.strftime("%B %d, %Y") %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                      <%= case order.order_status
+                          when 'pending' then 'bg-yellow-100 text-yellow-800'
+                          when 'confirmed' then 'bg-blue-100 text-blue-800'
+                          when 'completed' then 'bg-green-100 text-green-800'
+                          when 'cancelled' then 'bg-red-100 text-red-800'
+                          else 'bg-gray-100 text-gray-800'
+                          end %>">
+                      <%= order.order_status&.capitalize %>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    $<%= order.total_amount || 0 %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <%= link_to "View", sales_order_path(order), class: "text-blue-600 hover:text-blue-900" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+        
+        <% if @customer.sales_orders.count > 10 %>
+          <div class="mt-4 text-center">
+            <%= link_to "View All Orders", sales_orders_path(customer_id: @customer.id), 
+                class: "text-blue-600 hover:text-blue-800 font-medium" %>
+          </div>
+        <% end %>
+      <% else %>
+        <p class="text-gray-500">No orders yet</p>
+        <%= link_to "Create First Order", new_sales_order_path(customer_id: @customer.id), 
+            class: "mt-2 inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700" %>
+      <% end %>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center justify-between mt-6">
       <%= link_to "Edit this customer", edit_customer_path(@customer), class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
       <div>
         <%= link_to "Back to customers", customers_path, class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
