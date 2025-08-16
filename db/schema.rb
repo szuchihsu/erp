@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_29_154035) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_16_113050) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,6 +42,32 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_29_154035) do
     t.index ["employee_id"], name: "index_employees_on_employee_id", unique: true
   end
 
+  create_table "inventory_adjustments", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.string "adjustment_type"
+    t.integer "quantity"
+    t.string "reason"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_inventory_adjustments_on_product_id"
+    t.index ["user_id"], name: "index_inventory_adjustments_on_user_id"
+  end
+
+  create_table "inventory_transactions", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.string "transaction_type"
+    t.integer "quantity"
+    t.string "reference_type"
+    t.integer "reference_id"
+    t.text "notes"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_inventory_transactions_on_product_id"
+    t.index ["user_id"], name: "index_inventory_transactions_on_user_id"
+  end
+
   create_table "products", force: :cascade do |t|
     t.string "product_id"
     t.string "name"
@@ -52,11 +78,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_29_154035) do
     t.decimal "cost_price"
     t.decimal "selling_price"
     t.integer "stock_quantity"
-    t.integer "minimum_stock"
+    t.integer "minimum_stock_level"
     t.string "supplier"
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "reserved_stock", default: "0.0"
+    t.datetime "last_restocked_at"
+    t.decimal "reorder_point"
+    t.decimal "optimal_stock_level"
+    t.index ["minimum_stock_level"], name: "index_products_on_minimum_stock_level"
+    t.index ["stock_quantity", "minimum_stock_level"], name: "index_products_on_stock_levels"
+    t.index ["stock_quantity"], name: "index_products_on_stock_quantity"
   end
 
   create_table "sales_order_items", force: :cascade do |t|
@@ -107,6 +140,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_29_154035) do
   end
 
   add_foreign_key "employees", "employees", column: "supervisor_id"
+  add_foreign_key "inventory_adjustments", "products"
+  add_foreign_key "inventory_adjustments", "users"
+  add_foreign_key "inventory_transactions", "products"
+  add_foreign_key "inventory_transactions", "users"
   add_foreign_key "sales_order_items", "products"
   add_foreign_key "sales_order_items", "sales_orders"
   add_foreign_key "sales_orders", "customers"

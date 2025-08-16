@@ -12,6 +12,14 @@ Rails.application.routes.draw do
     resources :sales_order_items
   end
 
+  # Inventory routes
+  get "inventory", to: "inventory#index"
+  get "inventory/transactions", to: "inventory#transactions"
+  get "inventory/adjust/:product_id", to: "inventory#adjust_stock", as: "adjust_inventory"
+  post "inventory/adjust/:product_id", to: "inventory#create_adjustment"
+  get "inventory/restock/:product_id", to: "inventory#restock", as: "restock_inventory"
+  post "inventory/restock/:product_id", to: "inventory#create_restock"
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

@@ -82,6 +82,85 @@
       </div>
     <% end %>
 
+    <!-- Inventory Information -->
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold text-gray-900">Inventory Information</h2>
+        <div class="flex space-x-2">
+          <%= link_to "Adjust Stock", adjust_inventory_path(@product), class: "bg-yellow-600 text-white px-3 py-1 rounded-md text-sm hover:bg-yellow-700" %>
+          <%= link_to "Restock", restock_inventory_path(@product), class: "bg-green-600 text-white px-3 py-1 rounded-md text-sm hover:bg-green-700" %>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div>
+          <p class="text-sm font-medium text-gray-500">Current Stock</p>
+          <p class="mt-1 text-2xl font-bold text-gray-900"><%= @product.stock_quantity || 0 %></p>
+          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= @product.stock_status_badge_class %>">
+            <%= @product.stock_status.humanize %>
+          </span>
+        </div>
+
+        <div>
+          <p class="text-sm font-medium text-gray-500">Available Stock</p>
+          <p class="mt-1 text-2xl font-bold text-gray-900"><%= @product.available_stock %></p>
+          <% if @product.reserved_stock && @product.reserved_stock > 0 %>
+            <p class="text-xs text-gray-500">(<%= @product.reserved_stock %> reserved)</p>
+          <% end %>
+        </div>
+
+        <div>
+          <p class="text-sm font-medium text-gray-500">Minimum Level</p>
+          <p class="mt-1 text-lg font-medium text-gray-900"><%= @product.minimum_stock_level || 'Not set' %></p>
+          <% if @product.reorder_needed? %>
+            <p class="text-xs text-red-600 font-medium">Reorder needed!</p>
+          <% end %>
+        </div>
+
+        <div>
+          <p class="text-sm font-medium text-gray-500">Stock Value</p>
+          <p class="mt-1 text-lg font-medium text-gray-900">$<%= number_with_precision(@product.stock_value, precision: 2) %></p>
+          <p class="text-xs text-gray-500">Cost basis</p>
+        </div>
+      </div>
+
+      <% if @product.last_restocked_at %>
+        <div class="mt-4 text-sm text-gray-500">
+          Last restocked: <%= @product.last_restocked_at.strftime("%B %d, %Y at %I:%M %p") %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Recent Stock Movements -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Recent Stock Movements</h2>
+      <% recent_movements = @product.stock_movement_history(5) %>
+      <% if recent_movements.any? %>
+        <div class="space-y-3">
+          <% recent_movements.each do |transaction| %>
+            <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
+              <div>
+                <p class="text-sm font-medium text-gray-900">
+                  <%= transaction.transaction_description %>
+                </p>
+                <p class="text-xs text-gray-500">
+                  <%= transaction.created_at.strftime("%m/%d/%Y %I:%M %p") %> by <%= transaction.user&.name %>
+                </p>
+              </div>
+              <span class="text-sm font-medium <%= transaction.quantity > 0 ? 'text-green-600' : 'text-red-600' %>">
+                <%= transaction.quantity > 0 ? '+' : '' %><%= transaction.quantity %>
+              </span>
+            </div>
+          <% end %>
+        </div>
+        <div class="mt-4">
+          <%= link_to "View All Transactions", inventory_transactions_path(product_id: @product.id), class: "text-blue-600 hover:text-blue-800 text-sm font-medium" %>
+        </div>
+      <% else %>
+        <p class="text-gray-500 text-center py-4">No stock movements recorded yet.</p>
+      <% end %>
+    </div>
+
     <!-- Action Buttons -->
     <div class="flex items-center justify-between">
       <%= link_to "Edit this product", edit_product_path(@product), class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>

@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  product: one
+  adjustment_type: MyString
+  quantity: 1
+  reason: MyString
+  user: one
+  created_at: 2025-08-06 05:44:44
+
+two:
+  product: two
+  adjustment_type: MyString
+  quantity: 1
+  reason: MyString
+  user: two
+  created_at: 2025-08-06 05:44:44

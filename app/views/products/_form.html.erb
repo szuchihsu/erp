@@ -1,8 +1,8 @@
 <%= form_with(model: product, class: "contents") do |form| %>
   <% if product.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mb-6">
       <h2><%= pluralize(product.errors.count, "error") %> prohibited this product from being saved:</h2>
-      <ul class="list-disc ml-6">
+      <ul class="list-disc ml-6 mt-2">
         <% product.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -10,152 +10,304 @@
     </div>
   <% end %>
 
-  <div class="bg-white shadow rounded-lg p-6">
-    <!-- Basic Information -->
-    <div class="mb-6">
-      <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <%= form.label :product_id, class: "block text-sm font-medium text-gray-700" %>
-          <%= form.text_field :product_id, class: ["mt-1 block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:product_id].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:product_id].any?}] %>
-        </div>
-
-        <div>
-          <%= form.label :name, class: "block text-sm font-medium text-gray-700" %>
-          <%= form.text_field :name, class: ["mt-1 block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:name].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:name].any?}] %>
-        </div>
+  <!-- Basic Product Information -->
+  <div class="bg-white shadow rounded-lg p-6 mb-6">
+    <h3 class="text-lg font-medium text-gray-900 mb-6 border-b border-gray-200 pb-3">
+      <span class="flex items-center">
+        <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.99 1.99 0 013 12V7a4 4 0 014-4z"></path>
+        </svg>
+        Basic Information
+      </span>
+    </h3>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Product ID and Name -->
+      <div>
+        <%= form.label :product_id, "Product ID", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.text_field :product_id, 
+            placeholder: "e.g., GR-001, NL-25K",
+            class: ["block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:product_id].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:product_id].any?}] %>
+        <p class="mt-1 text-xs text-gray-500">Unique identifier for this product</p>
       </div>
 
-      <div class="mt-4">
-        <%= form.label :description, class: "block text-sm font-medium text-gray-700" %>
-        <%= form.text_area :description, rows: 3, class: ["mt-1 block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:description].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:description].any?}] %>
-      </div>
-    </div>
-
-    <!-- Product Details -->
-    <div class="mb-6">
-      <h3 class="text-lg font-medium text-gray-900 mb-4">Product Details</h3>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div>
-          <%= form.label :category, class: "block text-sm font-medium text-gray-700" %>
-          <%= form.select :category, 
-              [
-                ["Rings", "rings"],
-                ["Necklaces", "necklaces"],
-                ["Bracelets", "bracelets"],
-                ["Earrings", "earrings"],
-                ["Watches", "watches"],
-                ["Pendants", "pendants"]
-              ], 
-              { prompt: "Select Category" }, 
-              { class: ["mt-1 block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:category].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:category].any?}] } %>
-        </div>
-
-        <div>
-          <%= form.label :material, class: "block text-sm font-medium text-gray-700" %>
-          <%= form.text_field :material, class: ["mt-1 block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:material].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:material].any?}] %>
-        </div>
-
-        <div>
-          <%= form.label :weight, "Weight (grams)", class: "block text-sm font-medium text-gray-700" %>
-          <%= form.number_field :weight, step: 0.1, class: ["mt-1 block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:weight].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:weight].any?}] %>
-        </div>
+      <div>
+        <%= form.label :name, "Product Name", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.text_field :name, 
+            placeholder: "e.g., Diamond Engagement Ring",
+            class: ["block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:name].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:name].any?}] %>
       </div>
     </div>
 
-    <!-- Pricing -->
-    <div class="mb-6">
-      <h3 class="text-lg font-medium text-gray-900 mb-4">Pricing</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <%= form.label :cost_price, "Cost Price ($)", class: "block text-sm font-medium text-gray-700" %>
-          <%= form.number_field :cost_price, step: 0.01, class: ["mt-1 block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:cost_price].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:cost_price].any?}] %>
-        </div>
+    <!-- Description -->
+    <div class="mt-6">
+      <%= form.label :description, "Description", class: "block text-sm font-medium text-gray-700 mb-2" %>
+      <%= form.text_area :description, 
+          rows: 3,
+          placeholder: "Detailed description of the product, materials, craftsmanship details...",
+          class: ["block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:description].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:description].any?}] %>
+    </div>
 
-        <div>
-          <%= form.label :selling_price, "Selling Price ($)", class: "block text-sm font-medium text-gray-700" %>
-          <%= form.number_field :selling_price, step: 0.01, class: ["mt-1 block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:selling_price].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:selling_price].any?}] %>
-        </div>
+    <!-- Category and Status -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+      <div>
+        <%= form.label :category, "Category", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.select :category, 
+            options_for_select([
+              ['Select Category', ''],
+              ['Rings', 'rings'],
+              ['Necklaces', 'necklaces'],
+              ['Bracelets', 'bracelets'],
+              ['Earrings', 'earrings'],
+              ['Watches', 'watches'],
+              ['Pendants', 'pendants']
+            ], product.category),
+            {},
+            { class: ["block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:category].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:category].any?}] } %>
       </div>
 
-      <!-- Profit Margin Display -->
-      <div class="mt-4 p-3 bg-blue-50 rounded-md">
+      <div>
+        <%= form.label :status, "Status", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.select :status, 
+            options_for_select([
+              ['Active', 'active'],
+              ['Discontinued', 'discontinued'],
+              ['Out of Stock', 'out_of_stock']
+            ], product.status || 'active'),
+            {},
+            { class: ["block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:status].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:status].any?}] } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Specifications -->
+  <div class="bg-white shadow rounded-lg p-6 mb-6">
+    <h3 class="text-lg font-medium text-gray-900 mb-6 border-b border-gray-200 pb-3">
+      <span class="flex items-center">
+        <svg class="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        Specifications
+      </span>
+    </h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <%= form.label :material, "Material", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.text_field :material, 
+            placeholder: "e.g., 18K Gold, Sterling Silver",
+            class: ["block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:material].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:material].any?}] %>
+      </div>
+
+      <div>
+        <%= form.label :weight, "Weight", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <div class="relative">
+          <%= form.number_field :weight, 
+              step: 0.01,
+              placeholder: "0.00",
+              class: ["block w-full rounded-md border px-3 py-2 pr-12", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:weight].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:weight].any?}] %>
+          <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+            <span class="text-gray-500 text-sm">grams</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing Information -->
+  <div class="bg-white shadow rounded-lg p-6 mb-6">
+    <h3 class="text-lg font-medium text-gray-900 mb-6 border-b border-gray-200 pb-3">
+      <span class="flex items-center">
+        <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+        </svg>
+        Pricing
+      </span>
+    </h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div>
+        <%= form.label :cost_price, "Cost Price", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <span class="text-gray-500">$</span>
+          </div>
+          <%= form.number_field :cost_price, 
+              step: 0.01,
+              placeholder: "0.00",
+              class: ["block w-full rounded-md border pl-7 px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:cost_price].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:cost_price].any?}] %>
+        </div>
+        <p class="mt-1 text-xs text-gray-500">Your cost to acquire/make</p>
+      </div>
+
+      <div>
+        <%= form.label :selling_price, "Selling Price", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <span class="text-gray-500">$</span>
+          </div>
+          <%= form.number_field :selling_price, 
+              step: 0.01,
+              placeholder: "0.00",
+              class: ["block w-full rounded-md border pl-7 px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:selling_price].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:selling_price].any?}] %>
+        </div>
+        <p class="mt-1 text-xs text-gray-500">Price you charge customers</p>
+      </div>
+
+      <div>
+        <div class="block text-sm font-medium text-gray-700 mb-2">Profit Margin</div>
+        <div class="bg-gray-50 rounded-md px-3 py-2 text-sm text-gray-600 border">
+          <span id="profit-margin">
+            <% if product.cost_price.present? && product.selling_price.present? %>
+              <%= product.profit_margin %>%
+            <% else %>
+              Enter prices to calculate
+            <% end %>
+          </span>
+        </div>
+        <p class="mt-1 text-xs text-gray-500">Calculated automatically</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inventory Management -->
+  <div class="bg-white shadow rounded-lg p-6 mb-6">
+    <h3 class="text-lg font-medium text-gray-900 mb-6 border-b border-gray-200 pb-3">
+      <span class="flex items-center">
+        <svg class="w-5 h-5 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+        </svg>
+        Inventory Management
+      </span>
+    </h3>
+
+    <!-- Current Stock and Alerts -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div>
+        <%= form.label :stock_quantity, "Current Stock", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.number_field :stock_quantity, 
+            min: 0,
+            step: 1,
+            placeholder: "0",
+            class: ["block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:stock_quantity].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:stock_quantity].any?}] %>
+        <p class="mt-1 text-xs text-gray-500">Available units in inventory</p>
+      </div>
+
+      <div>
+        <%= form.label :minimum_stock_level, "Alert Level", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.number_field :minimum_stock_level, 
+            min: 0,
+            step: 1,
+            placeholder: "5",
+            class: ["block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:minimum_stock_level].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:minimum_stock_level].any?}] %>
+        <p class="mt-1 text-xs text-gray-500">Alert when stock falls below this</p>
+      </div>
+
+      <div>
+        <%= form.label :reorder_point, "Reorder Point", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.number_field :reorder_point, 
+            min: 0,
+            step: 1,
+            placeholder: "10",
+            class: ["block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:reorder_point].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:reorder_point].any?}] %>
+        <p class="mt-1 text-xs text-gray-500">Automatic reorder trigger</p>
+      </div>
+    </div>
+
+    <!-- Optimal Stock and Last Restock -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <%= form.label :optimal_stock_level, "Optimal Stock Level", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.number_field :optimal_stock_level, 
+            min: 0,
+            step: 1,
+            placeholder: "25",
+            class: ["block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:optimal_stock_level].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:optimal_stock_level].any?}] %>
+        <p class="mt-1 text-xs text-gray-500">Target inventory level to maintain</p>
+      </div>
+
+      <div>
+        <%= form.label :last_restocked_at, "Last Restocked", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.datetime_local_field :last_restocked_at, 
+            class: ["block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:last_restocked_at].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:last_restocked_at].any?}] %>
+        <p class="mt-1 text-xs text-gray-500">When was this product last restocked</p>
+      </div>
+    </div>
+
+    <!-- Stock Status Indicator -->
+    <% if product.persisted? && product.stock_quantity.present? %>
+      <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+        <div class="flex items-center justify-between">
+          <div>
+            <h4 class="text-sm font-medium text-gray-900">Current Stock Status</h4>
+            <p class="text-sm text-gray-600 mt-1">
+              <%= product.stock_quantity || 0 %> units available
+              <% if product.reserved_stock.present? && product.reserved_stock > 0 %>
+                (<%= product.reserved_stock %> reserved)
+              <% end %>
+            </p>
+          </div>
+          <span class="px-3 py-1 rounded-full text-xs font-medium <%= product.stock_status_badge_class %>">
+            <%= product.stock_status.humanize %>
+          </span>
+        </div>
+      </div>
+    <% elsif !product.persisted? %>
+      <div class="mt-6 p-4 bg-blue-50 rounded-lg">
         <p class="text-sm text-blue-700">
-          <strong>Profit Margin Calculator:</strong> 
-          <span id="profit-margin">Enter cost and selling price to calculate</span>
+          <svg class="inline w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+          </svg>
+          Stock status will be calculated after the product is created.
         </p>
       </div>
-    </div>
+    <% end %>
+  </div>
 
-    <!-- Inventory -->
-    <div class="mb-6">
-      <h3 class="text-lg font-medium text-gray-900 mb-4">Inventory</h3>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div>
-          <%= form.label :stock_quantity, "Current Stock", class: "block text-sm font-medium text-gray-700" %>
-          <%= form.number_field :stock_quantity, class: ["mt-1 block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:stock_quantity].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:stock_quantity].any?}] %>
-        </div>
-
-        <div>
-          <%= form.label :minimum_stock, "Minimum Stock Level", class: "block text-sm font-medium text-gray-700" %>
-          <%= form.number_field :minimum_stock, class: ["mt-1 block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:minimum_stock].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:minimum_stock].any?}] %>
-        </div>
-
-        <div>
-          <%= form.label :status, class: "block text-sm font-medium text-gray-700" %>
-          <%= form.select :status, 
-              [
-                ["Active", "active"],
-                ["Discontinued", "discontinued"],
-                ["Out of Stock", "out_of_stock"]
-              ], 
-              { prompt: "Select Status" }, 
-              { class: ["mt-1 block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:status].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:status].any?}] } %>
-        </div>
-      </div>
-    </div>
-
-    <!-- Supplier -->
-    <div class="mb-6">
-      <h3 class="text-lg font-medium text-gray-900 mb-4">Supplier Information</h3>
-      <div>
-        <%= form.label :supplier, class: "block text-sm font-medium text-gray-700" %>
-        <%= form.text_field :supplier, class: ["mt-1 block w-full rounded-md border px-3 py-2", {"border-gray-300 focus:border-blue-500 focus:ring-blue-500": product.errors[:supplier].none?, "border-red-300 focus:border-red-500 focus:ring-red-500": product.errors[:supplier].any?}] %>
-      </div>
-    </div>
-
-    <!-- Submit Button -->
-    <div class="flex justify-end space-x-3">
-      <%= link_to "Cancel", products_path, class: "px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50" %>
-      <%= form.submit class: "px-4 py-2 bg-blue-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
-    </div>
+  <!-- Form Actions -->
+  <div class="flex justify-end space-x-3 bg-gray-50 px-6 py-4 rounded-lg">
+    <% if product.persisted? %>
+      <%= link_to "Cancel", product_path(product), class: "px-6 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+    <% else %>
+      <%= link_to "Cancel", products_path, class: "px-6 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+    <% end %>
+    <%= form.submit class: "px-6 py-2 bg-blue-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
   </div>
 <% end %>
 
-<!-- JavaScript for Profit Margin Calculator -->
+<!-- JavaScript for Dynamic Calculations -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const costField = document.getElementById('product_cost_price');
-  const sellingField = document.getElementById('product_selling_price');
-  const marginDisplay = document.getElementById('profit-margin');
+  const costPriceField = document.getElementById('product_cost_price');
+  const sellingPriceField = document.getElementById('product_selling_price');
+  const profitMarginDisplay = document.getElementById('profit-margin');
 
-  function calculateMargin() {
-    const cost = parseFloat(costField.value) || 0;
-    const selling = parseFloat(sellingField.value) || 0;
+  function calculateProfitMargin() {
+    const costPrice = parseFloat(costPriceField.value) || 0;
+    const sellingPrice = parseFloat(sellingPriceField.value) || 0;
     
-    if (cost > 0 && selling > 0) {
-      const profit = selling - cost;
-      const margin = ((profit / cost) * 100).toFixed(2);
-      marginDisplay.innerHTML = `Profit: $${profit.toFixed(2)} | Margin: ${margin}%`;
+    if (costPrice > 0 && sellingPrice > 0) {
+      const margin = ((sellingPrice - costPrice) / costPrice * 100).toFixed(2);
+      profitMarginDisplay.textContent = margin + '%';
+      
+      // Color coding for margin
+      if (margin < 20) {
+        profitMarginDisplay.className = 'text-red-600 font-medium';
+      } else if (margin < 50) {
+        profitMarginDisplay.className = 'text-yellow-600 font-medium';
+      } else {
+        profitMarginDisplay.className = 'text-green-600 font-medium';
+      }
     } else {
-      marginDisplay.innerHTML = 'Enter cost and selling price to calculate';
+      profitMarginDisplay.textContent = 'Enter prices to calculate';
+      profitMarginDisplay.className = 'text-gray-600';
     }
   }
 
-  if (costField && sellingField) {
-    costField.addEventListener('input', calculateMargin);
-    sellingField.addEventListener('input', calculateMargin);
-    calculateMargin(); // Calculate on page load
-  }
+  if (costPriceField) costPriceField.addEventListener('input', calculateProfitMargin);
+  if (sellingPriceField) sellingPriceField.addEventListener('input', calculateProfitMargin);
+  
+  // Calculate on page load
+  calculateProfitMargin();
 });
 </script>
