@@ -10,8 +10,6 @@ class InventoryTransaction < ApplicationRecord
   scope :for_product, ->(product) { where(product: product) }
   scope :by_type, ->(type) { where(transaction_type: type) }
 
-  after_create :update_product_stock
-
   def reference_object
     return nil unless reference_type.present? && reference_id.present?
     reference_type.classify.constantize.find_by(id: reference_id)
@@ -30,14 +28,14 @@ class InventoryTransaction < ApplicationRecord
     end
   end
 
-  private
-
-  def update_product_stock
+  def signed_quantity
     case transaction_type
-    when "in", "adjustment"
-      product.increment!(:stock_quantity, quantity.abs)
     when "out"
-      product.decrement!(:stock_quantity, quantity.abs)
+      -quantity.abs
+    when "in", "adjustment"
+      quantity
+    else
+      quantity
     end
   end
 end

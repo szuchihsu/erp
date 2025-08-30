@@ -40,29 +40,46 @@ class InventoryController < ApplicationController
 
   def create_adjustment
     @product = Product.find(params[:product_id])
-    @adjustment = @product.inventory_adjustments.build(adjustment_params)
-    @adjustment.user = current_user
 
-    if @adjustment.save
-      # Create corresponding inventory transaction
-      InventoryTransaction.create!(
-        product: @product,
-        transaction_type: "adjustment",
-        quantity: @adjustment.quantity.abs,
-        reference_type: "InventoryAdjustment",
-        reference_id: @adjustment.id,
-        notes: "#{@adjustment.adjustment_type.humanize}: #{@adjustment.reason}",
+    # Get form parameters
+    adjustment_type = params[:adjustment_type]
+    quantity = params[:quantity].to_i
+    reason = params[:reason]
+
+    # Validate input
+    if quantity == 0 || reason.blank? || adjustment_type.blank?
+      redirect_to adjust_inventory_path(@product), alert: "Please provide valid adjustment type, quantity, and reason."
+      return
+    end
+
+    ActiveRecord::Base.transaction do
+      # Create adjustment record (no automatic transaction creation)
+      @adjustment = @product.inventory_adjustments.create!(
+        adjustment_type: adjustment_type,
+        quantity: quantity,
+        reason: reason,
         user: current_user
       )
 
-      # Update product stock
-      new_stock = @product.stock_quantity + @adjustment.quantity
-      @product.update!(stock_quantity: [ new_stock, 0 ].max) # Can't go below 0
+      # Create inventory transaction (no automatic stock update)
+      InventoryTransaction.create!(
+        product: @product,
+        transaction_type: "adjustment",
+        quantity: quantity.abs, # Store absolute value in transaction
+        reference_type: "InventoryAdjustment",
+        reference_id: @adjustment.id,
+        notes: "#{adjustment_type.humanize}: #{reason}",
+        user: current_user
+      )
 
-      redirect_to inventory_path, notice: "Stock adjustment completed successfully."
-    else
-      render :adjust_stock, status: :unprocessable_entity
+      # Update product stock ONCE - manually controlled
+      new_stock = @product.stock_quantity + quantity
+      @product.update!(stock_quantity: [ new_stock, 0 ].max)
     end
+
+    redirect_to inventory_path, notice: "Stock adjustment completed successfully."
+  rescue => e
+    redirect_to adjust_inventory_path(@product), alert: "Error: #{e.message}"
   end
 
   def restock
@@ -77,24 +94,26 @@ class InventoryController < ApplicationController
     cost = params[:cost].to_f
 
     if quantity > 0
-      # Create inventory transaction for restock
-      InventoryTransaction.create!(
-        product: @product,
-        transaction_type: "in",
-        quantity: quantity,
-        reference_type: "Restock",
-        reference_id: @product.id,
-        notes: build_restock_notes(supplier, cost, quantity),
-        user: current_user
-      )
+      ActiveRecord::Base.transaction do
+        # Create transaction (no automatic stock update)
+        InventoryTransaction.create!(
+          product: @product,
+          transaction_type: "in",
+          quantity: quantity,
+          reference_type: "Restock",
+          reference_id: @product.id,
+          notes: build_restock_notes(supplier, cost, quantity),
+          user: current_user
+        )
 
-      # Update product stock and last restocked date
-      @product.update!(
-        stock_quantity: @product.stock_quantity + quantity,
-        last_restocked_at: Time.current
-      )
+        # Update stock ONCE - manually controlled
+        @product.update!(
+          stock_quantity: @product.stock_quantity + quantity,
+          last_restocked_at: Time.current
+        )
+      end
 
-      redirect_to inventory_path, notice: "Successfully restocked #{quantity} units from #{supplier}."
+      redirect_to inventory_path, notice: "Successfully restocked #{quantity} units#{supplier.present? ? " from #{supplier}" : ''}."
     else
       redirect_to restock_inventory_path(@product), alert: "Invalid quantity. Please enter a positive number."
     end

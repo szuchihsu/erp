@@ -2,27 +2,21 @@ class InventoryAdjustment < ApplicationRecord
   belongs_to :product
   belongs_to :user
 
-  validates :adjustment_type, presence: true, inclusion: { in: %w[increase decrease recount damage] }
-  validates :quantity, presence: true, numericality: { other_than: 0 }
+  validates :quantity, presence: true, numericality: true
+  validates :adjustment_type, presence: true
   validates :reason, presence: true
 
-  after_create :create_inventory_transaction
+  # Remove the automatic transaction creation
+  # after_create :create_inventory_transaction
+
+  # Add helper methods instead
+  def display_quantity
+    quantity > 0 ? "+#{quantity}" : quantity.to_s
+  end
 
   def adjustment_description
-    "#{adjustment_type.humanize}: #{quantity > 0 ? '+' : ''}#{quantity} units - #{reason}"
+    "#{adjustment_type.humanize}: #{reason}"
   end
 
-  private
-
-  def create_inventory_transaction
-    InventoryTransaction.create!(
-      product: product,
-      transaction_type: "adjustment",
-      quantity: quantity,
-      reference_type: "InventoryAdjustment",
-      reference_id: id,
-      notes: "Manual adjustment: #{reason}",
-      user: user
-    )
-  end
+  # Remove the private create_inventory_transaction method
 end
