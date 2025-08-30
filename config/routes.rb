@@ -15,10 +15,14 @@ Rails.application.routes.draw do
   # Inventory routes
   get "inventory", to: "inventory#index"
   get "inventory/transactions", to: "inventory#transactions"
+
+  # Adjustment routes
   get "inventory/adjust/:product_id", to: "inventory#adjust_stock", as: "adjust_inventory"
-  post "inventory/adjust/:product_id", to: "inventory#create_adjustment"
+  post "inventory/adjust/:product_id", to: "inventory#create_adjustment", as: "create_adjustment_inventory"
+
+  # Restock routes
   get "inventory/restock/:product_id", to: "inventory#restock", as: "restock_inventory"
-  post "inventory/restock/:product_id", to: "inventory#create_restock"
+  post "inventory/restock/:product_id", to: "inventory#create_restock", as: "create_restock_inventory"
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
