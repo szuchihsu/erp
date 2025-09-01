@@ -179,15 +179,15 @@
         <div class="mt-6 bg-gray-50 rounded-xl p-6">
           <h3 class="text-lg font-medium text-gray-900 mb-4">Order Actions</h3>
           <div class="flex space-x-4">
-            <%= link_to "Mark as Completed", sales_order_path(@sales_order, sales_order: { order_status: 'completed' }), 
+            <%= button_to "Mark as Completed", fulfill_sales_order_path(@sales_order), 
                 method: :patch,
-                class: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium",
-                data: { confirm: "Are you sure you want to complete this order?" } %>
+                class: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium cursor-pointer",
+                data: { "turbo-confirm": "Are you sure you want to complete this order?" } %>
 
-            <%= link_to "Cancel Order", sales_order_path(@sales_order, sales_order: { order_status: 'cancelled' }), 
+            <%= button_to "Cancel Order", cancel_sales_order_path(@sales_order), 
                 method: :patch,
-                class: "bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md font-medium",
-                data: { confirm: "Are you sure you want to cancel this order?" } %>
+                class: "bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md font-medium cursor-pointer",
+                data: { "turbo-confirm": "Are you sure you want to cancel this order?" } %>
           </div>
         </div>
       <% end %>
@@ -273,10 +273,10 @@
           <%= link_to "Send Email", "#", class: "w-full bg-green-600 text-white text-center px-4 py-2 rounded-md hover:bg-green-700 block" %>
           
           <% if @sales_order.order_status != 'cancelled' && @sales_order.order_status != 'completed' %>
-            <%= link_to "Cancel Order", sales_order_path(@sales_order, sales_order: { order_status: 'cancelled' }), 
+            <%= button_to "Cancel Order", cancel_sales_order_path(@sales_order), 
                 method: :patch,
-                data: { confirm: "Are you sure you want to cancel this order?" },
-                class: "w-full bg-red-600 text-white text-center px-4 py-2 rounded-md hover:bg-red-700 block" %>
+                data: { "turbo-confirm": "Are you sure you want to cancel this order?" },
+                class: "w-full bg-red-600 text-white text-center px-4 py-2 rounded-md hover:bg-red-700 block cursor-pointer" %>
           <% end %>
           <%= button_to "Delete Order", sales_order_path(@sales_order), 
             method: :delete, 
