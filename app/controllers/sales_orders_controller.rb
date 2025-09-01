@@ -1,90 +1,109 @@
 class SalesOrdersController < ApplicationController
-  before_action :set_sales_order, only: %i[ show edit update destroy ]
+  before_action :authenticate_user!
+  before_action :set_sales_order, only: %i[ show edit update destroy fulfill cancel ]
 
   # GET /sales_orders or /sales_orders.json
   def index
-    @sales_orders = SalesOrder.includes(:customer, :employee).all
+    @sales_orders = SalesOrder.includes(:customer, :sales_order_items, :products)
+    @sales_orders = @sales_orders.where(status: params[:status]) if params[:status].present?
+    @sales_orders = @sales_orders.order(created_at: :desc).limit(50)
 
-    # Search functionality
-    if params[:search].present?
-      @sales_orders = @sales_orders.joins(:customer).where(
-        "sales_orders.order_id ILIKE ? OR customers.name ILIKE ?",
-        "%#{params[:search]}%", "%#{params[:search]}%"
-      )
-    end
-
-    # Filter by status
-    if params[:status].present?
-      @sales_orders = @sales_orders.where(order_status: params[:status])
-    end
-
-    # Filter by customer
-    if params[:customer_id].present?
-      @sales_orders = @sales_orders.where(customer_id: params[:customer_id])
-    end
-
-    @sales_orders = @sales_orders.order(order_date: :desc)
+    @status_counts = {
+      total: SalesOrder.count,
+      draft: SalesOrder.where(status: "draft").count,
+      pending: SalesOrder.where(status: "pending").count,
+      completed: SalesOrder.where(status: "completed").count,
+      cancelled: SalesOrder.where(status: "cancelled").count
+    }
   end
 
   # GET /sales_orders/1 or /sales_orders/1.json
   def show
+    @sales_order_items = @sales_order.sales_order_items.includes(:product)
+    @stock_warnings = @sales_order.stock_warnings
   end
 
   # GET /sales_orders/new
   def new
     @sales_order = SalesOrder.new
+    @customers = Customer.order(:name)
+    @products = Product.where("stock_quantity > 0").order(:name)
   end
 
   # GET /sales_orders/1/edit
   def edit
+    @customers = Customer.order(:name)
+    @products = Product.order(:name)
   end
 
   # POST /sales_orders or /sales_orders.json
   def create
     @sales_order = SalesOrder.new(sales_order_params)
+    @sales_order.user = current_user
+    @sales_order.status = "draft"
+    @sales_order.total_amount = 0
 
-    respond_to do |format|
-      if @sales_order.save
-        format.html { redirect_to @sales_order, notice: "Sales order was successfully created." }
-        format.json { render :show, status: :created, location: @sales_order }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @sales_order.errors, status: :unprocessable_entity }
-      end
+    if @sales_order.save
+      redirect_to @sales_order, notice: "Sales order was successfully created."
+    else
+      @customers = Customer.order(:name)
+      @products = Product.where("stock_quantity > 0").order(:name)
+      render :new, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /sales_orders/1 or /sales_orders/1.json
   def update
-    respond_to do |format|
-      if @sales_order.update(sales_order_params)
-        format.html { redirect_to @sales_order, notice: "Sales order was successfully updated." }
-        format.json { render :show, status: :ok, location: @sales_order }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @sales_order.errors, status: :unprocessable_entity }
-      end
+    if @sales_order.update(sales_order_params)
+      redirect_to @sales_order, notice: "Sales order was successfully updated."
+    else
+      @customers = Customer.order(:name)
+      @products = Product.order(:name)
+      render :edit, status: :unprocessable_entity
     end
+  end
+
+  def fulfill
+    if @sales_order.fulfill_order!
+      redirect_to @sales_order, notice: "Order fulfilled successfully! Inventory has been updated."
+    else
+      redirect_to @sales_order, alert: "Cannot fulfill order - insufficient stock for some items."
+    end
+  end
+
+  def cancel
+    @sales_order.update!(status: "cancelled", cancelled_at: Time.current)
+    redirect_to @sales_order, notice: "Order cancelled."
   end
 
   # DELETE /sales_orders/1 or /sales_orders/1.json
   def destroy
-    @sales_order.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to sales_orders_path, status: :see_other, notice: "Sales order was successfully destroyed." }
-      format.json { head :no_content }
-    end
+    @sales_order.destroy
+    redirect_to sales_orders_path, notice: "Sales order was successfully deleted."
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_sales_order
-      @sales_order = SalesOrder.find(params.expect(:id))
+      @sales_order = SalesOrder.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def sales_order_params
-      params.expect(sales_order: [ :order_id, :customer_id, :employee_id, :order_date, :delivery_date, :quotation_amount, :total_amount, :deposit_amount, :remaining_amount, :order_status, :notes ])
+      params.require(:sales_order).permit(
+        :order_id,
+        :customer_id,
+        :employee_id,
+        :order_date,
+        :delivery_date,
+        :quotation_amount,
+        :total_amount,
+        :deposit_amount,
+        :remaining_amount,
+        :order_status,
+        :notes,
+        :tax_amount,
+        :shipping_amount
+      )
     end
 end

@@ -5,5 +5,19 @@
 
   <%= render "form", sales_order: @sales_order %>
 
+  <div class="mt-2 text-sm text-gray-500">
+    Available products with stock:
+    <div class="mt-1 max-h-32 overflow-y-auto">
+      <% @products.each do |product| %>
+        <div class="flex justify-between py-1">
+          <span><%= product.name %></span>
+          <span class="<%= product.stock_quantity > 10 ? 'text-green-600' : 'text-yellow-600' %>">
+            <%= product.stock_quantity %> in stock
+          </span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
   <%= link_to "Back to sales orders", sales_orders_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
 </div>

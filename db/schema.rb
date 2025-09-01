@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_16_113050) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_01_045333) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -108,7 +108,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_16_113050) do
   create_table "sales_orders", force: :cascade do |t|
     t.string "order_id"
     t.bigint "customer_id", null: false
-    t.bigint "employee_id", null: false
+    t.bigint "employee_id"
     t.datetime "order_date"
     t.datetime "delivery_date"
     t.decimal "quotation_amount"
@@ -119,8 +119,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_16_113050) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status", default: "draft", null: false
+    t.datetime "completed_at"
+    t.datetime "cancelled_at"
+    t.decimal "tax_amount", precision: 10, scale: 2, default: "0.0"
+    t.decimal "shipping_amount", precision: 10, scale: 2, default: "0.0"
+    t.bigint "user_id", null: false
+    t.index ["completed_at"], name: "index_sales_orders_on_completed_at"
     t.index ["customer_id"], name: "index_sales_orders_on_customer_id"
     t.index ["employee_id"], name: "index_sales_orders_on_employee_id"
+    t.index ["status"], name: "index_sales_orders_on_status"
+    t.index ["user_id"], name: "index_sales_orders_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -148,5 +157,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_16_113050) do
   add_foreign_key "sales_order_items", "sales_orders"
   add_foreign_key "sales_orders", "customers"
   add_foreign_key "sales_orders", "employees"
+  add_foreign_key "sales_orders", "users"
   add_foreign_key "users", "employees"
 end

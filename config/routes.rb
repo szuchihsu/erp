@@ -9,7 +9,11 @@ Rails.application.routes.draw do
   resources :products
 
   resources :sales_orders do
-    resources :sales_order_items
+    member do
+      patch :fulfill
+      patch :cancel
+    end
+    resources :sales_order_items, except: [ :index, :show ]
   end
 
   # Inventory routes
