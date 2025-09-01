@@ -5,15 +5,15 @@ class SalesOrdersController < ApplicationController
   # GET /sales_orders or /sales_orders.json
   def index
     @sales_orders = SalesOrder.includes(:customer, :sales_order_items, :products)
-    @sales_orders = @sales_orders.where(status: params[:status]) if params[:status].present?
+    @sales_orders = @sales_orders.where(order_status: params[:order_status]) if params[:order_status].present?
     @sales_orders = @sales_orders.order(created_at: :desc).limit(50)
 
     @status_counts = {
       total: SalesOrder.count,
-      draft: SalesOrder.where(status: "draft").count,
-      pending: SalesOrder.where(status: "pending").count,
-      completed: SalesOrder.where(status: "completed").count,
-      cancelled: SalesOrder.where(status: "cancelled").count
+      draft: SalesOrder.where(order_status: "draft").count,
+      pending: SalesOrder.where(order_status: "pending").count,
+      completed: SalesOrder.where(order_status: "completed").count,
+      cancelled: SalesOrder.where(order_status: "cancelled").count
     }
   end
 
@@ -40,7 +40,7 @@ class SalesOrdersController < ApplicationController
   def create
     @sales_order = SalesOrder.new(sales_order_params)
     @sales_order.user = current_user
-    @sales_order.status = "draft"
+    @sales_order.order_status = "draft"
     @sales_order.total_amount = 0
 
     if @sales_order.save
@@ -48,7 +48,7 @@ class SalesOrdersController < ApplicationController
     else
       @customers = Customer.order(:name)
       @products = Product.where("stock_quantity > 0").order(:name)
-      render :new, status: :unprocessable_entity
+      render :new, order_status: :unprocessable_entity
     end
   end
 
@@ -59,7 +59,7 @@ class SalesOrdersController < ApplicationController
     else
       @customers = Customer.order(:name)
       @products = Product.order(:name)
-      render :edit, status: :unprocessable_entity
+      render :edit, order_status: :unprocessable_entity
     end
   end
 
@@ -72,7 +72,7 @@ class SalesOrdersController < ApplicationController
   end
 
   def cancel
-    @sales_order.update!(status: "cancelled", cancelled_at: Time.current)
+    @sales_order.update!(order_status: "cancelled", cancelled_at: Time.current)
     redirect_to @sales_order, notice: "Order cancelled."
   end
 

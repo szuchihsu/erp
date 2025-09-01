@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_01_045333) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_01_141406) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -119,7 +119,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_01_045333) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "status", default: "draft", null: false
     t.datetime "completed_at"
     t.datetime "cancelled_at"
     t.decimal "tax_amount", precision: 10, scale: 2, default: "0.0"
@@ -128,7 +127,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_01_045333) do
     t.index ["completed_at"], name: "index_sales_orders_on_completed_at"
     t.index ["customer_id"], name: "index_sales_orders_on_customer_id"
     t.index ["employee_id"], name: "index_sales_orders_on_employee_id"
-    t.index ["status"], name: "index_sales_orders_on_status"
     t.index ["user_id"], name: "index_sales_orders_on_user_id"
   end
 

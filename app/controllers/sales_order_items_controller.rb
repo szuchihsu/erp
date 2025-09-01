@@ -35,10 +35,10 @@ class SalesOrderItemsController < ApplicationController
         # DON'T create inventory transaction here - only when order is fulfilled
         update_sales_order_total
         format.html { redirect_to @sales_order, notice: "Item was successfully added to the order." }
-        format.json { render :show, status: :created, location: @sales_order_item }
+        format.json { render :show, order_status: :created, location: @sales_order_item }
       else
         format.html { redirect_to @sales_order, alert: "Error adding item: #{@sales_order_item.errors.full_messages.join(', ')}" }
-        format.json { render json: @sales_order_item.errors, status: :unprocessable_entity }
+        format.json { render json: @sales_order_item.errors, order_status: :unprocessable_entity }
       end
     end
   end
@@ -50,10 +50,10 @@ class SalesOrderItemsController < ApplicationController
         # DON'T create inventory transaction here - only when order is fulfilled
         update_sales_order_total
         format.html { redirect_to @sales_order, notice: "Item was successfully updated." }
-        format.json { render :show, status: :ok, location: @sales_order_item }
+        format.json { render :show, order_status: :ok, location: @sales_order_item }
       else
         format.html { redirect_to @sales_order, alert: "Error updating item: #{@sales_order_item.errors.full_messages.join(', ')}" }
-        format.json { render json: @sales_order_item.errors, status: :unprocessable_entity }
+        format.json { render json: @sales_order_item.errors, order_status: :unprocessable_entity }
       end
     end
   end

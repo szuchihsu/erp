@@ -5,7 +5,7 @@ class SalesOrder < ApplicationRecord
   has_many :sales_order_items, dependent: :destroy
   has_many :products, through: :sales_order_items
 
-  validates :status, presence: true, inclusion: { in: %w[draft pending confirmed shipped completed cancelled] }
+  validates :order_status, presence: true, inclusion: { in: %w[draft pending confirmed shipped completed cancelled] }
 
   # Add these methods for inventory integration
   def subtotal
@@ -42,7 +42,7 @@ class SalesOrder < ApplicationRecord
         )
       end
 
-      update!(status: "completed", completed_at: Time.current)
+      update!(order_status: "completed", completed_at: Time.current)
     end
     true
   end
