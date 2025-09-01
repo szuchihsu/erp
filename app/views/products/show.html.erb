@@ -167,8 +167,10 @@
       <div>
         <%= link_to "Back to products", products_path, class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
         <%= link_to "Destroy this product", product_path(@product), 
-            method: :delete,
-            data: { confirm: "Are you sure?" },
+            data: { 
+              "turbo-method": :delete,
+              "turbo-confirm": "Are you sure?" 
+            },
             class: "rounded-lg py-3 ml-2 px-5 bg-red-600 text-white inline-block font-medium" %>
       </div>
     </div>
