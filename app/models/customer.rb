@@ -1,5 +1,6 @@
 class Customer < ApplicationRecord
-  has_many :sales_orders, dependent: :destroy
+  has_many :sales_orders, dependent: :restrict_with_exception
+  has_many :design_requests, dependent: :restrict_with_exception
 
   validates :customer_id, presence: true, uniqueness: true
   validates :name, presence: true
@@ -12,5 +13,16 @@ class Customer < ApplicationRecord
 
   def display_name
     "#{customer_id} - #{name}"
+  end
+
+  def can_be_deleted?
+    sales_orders.empty? && design_requests.empty?
+  end
+
+  def associated_records_count
+    {
+      sales_orders: sales_orders.count,
+      design_requests: design_requests.count
+    }
   end
 end

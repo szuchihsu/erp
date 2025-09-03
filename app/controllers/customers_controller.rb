@@ -49,11 +49,22 @@ class CustomersController < ApplicationController
 
   # DELETE /customers/1 or /customers/1.json
   def destroy
-    @customer.destroy!
+    begin
+      if @customer.can_be_deleted?
+        @customer.destroy!
+        redirect_to customers_path, notice: "Customer was successfully deleted."
+      else
+        counts = @customer.associated_records_count
+        messages = []
+        messages << "#{counts[:sales_orders]} sales orders" if counts[:sales_orders] > 0
+        messages << "#{counts[:design_requests]} design requests" if counts[:design_requests] > 0
 
-    respond_to do |format|
-      format.html { redirect_to customers_path, status: :see_other, notice: "Customer was successfully destroyed." }
-      format.json { head :no_content }
+        redirect_to customer_path(@customer),
+                    alert: "Cannot delete customer. Customer has #{messages.join(' and ')}. Please remove these records first."
+      end
+    rescue ActiveRecord::InvalidForeignKey
+      redirect_to customer_path(@customer),
+                  alert: "Cannot delete customer. Customer has associated records that must be removed first."
     end
   end
 
