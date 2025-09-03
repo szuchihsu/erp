@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  design_request: one
+  image_path: MyString
+  image_type: MyString
+  description: MyText
+  is_final: false
+
+two:
+  design_request: two
+  image_path: MyString
+  image_type: MyString
+  description: MyText
+  is_final: false

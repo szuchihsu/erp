@@ -10,9 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_01_141406) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_03_123740) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
 
   create_table "customers", force: :cascade do |t|
     t.string "customer_id"
@@ -24,6 +52,33 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_01_141406) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "design_images", force: :cascade do |t|
+    t.bigint "design_request_id", null: false
+    t.string "image_path"
+    t.string "image_type"
+    t.text "description"
+    t.boolean "is_final"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["design_request_id"], name: "index_design_images_on_design_request_id"
+  end
+
+  create_table "design_requests", force: :cascade do |t|
+    t.bigint "customer_id", null: false
+    t.bigint "sales_order_id"
+    t.text "design_details"
+    t.string "status"
+    t.string "priority"
+    t.datetime "requested_date"
+    t.datetime "completed_date"
+    t.bigint "assigned_designer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assigned_designer_id"], name: "index_design_requests_on_assigned_designer_id"
+    t.index ["customer_id"], name: "index_design_requests_on_customer_id"
+    t.index ["sales_order_id"], name: "index_design_requests_on_sales_order_id"
   end
 
   create_table "employees", force: :cascade do |t|
@@ -115,7 +170,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_01_141406) do
     t.decimal "total_amount"
     t.decimal "deposit_amount"
     t.decimal "remaining_amount"
-    t.string "order_status"
+    t.integer "order_status", default: 0
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -146,6 +201,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_01_141406) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "design_images", "design_requests"
+  add_foreign_key "design_requests", "customers"
+  add_foreign_key "design_requests", "employees", column: "assigned_designer_id"
+  add_foreign_key "design_requests", "sales_orders"
   add_foreign_key "employees", "employees", column: "supervisor_id"
   add_foreign_key "inventory_adjustments", "products"
   add_foreign_key "inventory_adjustments", "users"

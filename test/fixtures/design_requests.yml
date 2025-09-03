@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  customer: one
+  sales_order: one
+  design_details: MyText
+  status: MyString
+  priority: MyString
+  requested_date: 2025-09-03 15:27:50
+  completed_date: 2025-09-03 15:27:50
+  assigned_designer: one
+
+two:
+  customer: two
+  sales_order: two
+  design_details: MyText
+  status: MyString
+  priority: MyString
+  requested_date: 2025-09-03 15:27:50
+  completed_date: 2025-09-03 15:27:50
+  assigned_designer: two

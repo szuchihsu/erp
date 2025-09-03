@@ -1,0 +1,90 @@
+<!-- filepath: /home/charlie/MUIC/erp/app/views/design_requests/new.html.erb -->
+<% content_for :title, "New Design Request" %>
+
+<div class="w-full max-w-4xl mx-auto">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">New Design Request</h1>
+    <p class="mt-2 text-gray-600">Create a custom jewelry design request</p>
+  </div>
+
+  <%= form_with model: @design_request, local: true, class: "space-y-6" do |form| %>
+    <% if @design_request.errors.any? %>
+      <div class="bg-red-50 border border-red-200 rounded-md p-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-red-800">There were errors with your submission</h3>
+            <div class="mt-2 text-sm text-red-700">
+              <ul class="list-disc pl-5 space-y-1">
+                <% @design_request.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="bg-white shadow-sm rounded-lg border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <%= form.label :customer_id, class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.select :customer_id, 
+              options_from_collection_for_select(@customers, :id, :name, @design_request.customer_id), 
+              { prompt: "Select Customer" }, 
+              { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+        </div>
+        
+        <div>
+          <%= form.label :sales_order_id, "Related Sales Order (Optional)", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.select :sales_order_id, 
+              options_from_collection_for_select(@sales_orders, :id, :display_name, @design_request.sales_order_id), 
+              { prompt: "Select Sales Order" }, 
+              { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+        </div>
+      </div>
+      
+      <div class="mt-6">
+        <%= form.label :priority, class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.select :priority, options_for_select([
+              ['Low', 'low'], 
+              ['Medium', 'medium'], 
+              ['High', 'high'], 
+              ['Urgent', 'urgent']
+            ], @design_request.priority || 'medium'), 
+            {}, 
+            { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+      </div>
+    </div>
+
+    <div class="bg-white shadow-sm rounded-lg border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">Design Requirements</h3>
+      
+      <%= form.label :design_details, class: "block text-sm font-medium text-gray-700 mb-2" %>
+      <%= form.text_area :design_details, rows: 8,
+          placeholder: "Describe the custom design requirements in detail...\n\nInclude:\n• Type of jewelry (ring, necklace, etc.)\n• Materials (gold, silver, gemstones)\n• Style preferences\n• Size requirements\n• Special features or engravings\n• Budget range\n• Timeline expectations",
+          class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+    </div>
+
+    <div class="flex justify-end space-x-4">
+      <%= link_to "Cancel", design_requests_path, 
+          class: "px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50" %>
+      <%= form.submit "Create Design Request", 
+          class: "px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700" %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+// Add helper method for SalesOrder display name if needed
+<% unless defined?(SalesOrder) && SalesOrder.method_defined?(:display_name) %>
+  // You may need to add this method to your SalesOrder model
+<% end %>
+</script>

@@ -1,4 +1,13 @@
 Rails.application.routes.draw do
+  get "design_requests/index"
+  get "design_requests/show"
+  get "design_requests/new"
+  get "design_requests/create"
+  get "design_requests/edit"
+  get "design_requests/update"
+  get "design_requests/approve"
+  get "design_requests/reject"
+  get "design_requests/assign"
   devise_for :users
   root "dashboard#index"
 
@@ -27,6 +36,21 @@ Rails.application.routes.draw do
   # Restock routes
   get "inventory/restock/:product_id", to: "inventory#restock", as: "restock_inventory"
   post "inventory/restock/:product_id", to: "inventory#create_restock", as: "create_restock_inventory"
+
+  resources :design_requests do
+    member do
+      patch :approve
+      patch :reject
+      patch :assign
+    end
+
+    resources :design_images, only: [ :create, :destroy ]
+  end
+
+  # Add design requests to sales orders
+  resources :sales_orders do
+    resources :design_requests, only: [ :new, :create ]
+  end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
