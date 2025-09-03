@@ -41,36 +41,31 @@ class DesignRequestsController < ApplicationController
 
   def new
     @design_request = DesignRequest.new
-    @customers = Customer.all.order(:name)
+    @customers = Customer.active.order(:name)
     @sales_orders = SalesOrder.where(order_status: [ "inquiry", "quotation_sent" ]).includes(:customer)
-
-    # If coming from a sales order
-    if params[:sales_order_id]
-      @sales_order = SalesOrder.find(params[:sales_order_id])
-      @design_request.sales_order = @sales_order
-      @design_request.customer = @sales_order.customer
-    end
+    @designers = Employee.designers.active.order(:name)
   end
 
   def create
     @design_request = DesignRequest.new(design_request_params)
     @design_request.requested_date = Time.current
-    @design_request.status = :pending  # Explicitly set status
-    @design_request.priority ||= :medium  # Set default priority if not provided
+    @design_request.status = params[:draft] ? :pending : :pending
+    @design_request.priority ||= :medium
 
     if @design_request.save
+      # Handle multiple image uploads
+      handle_image_uploads
+
       # Update sales order status if applicable
       if @design_request.sales_order
         @design_request.sales_order.update!(order_status: "pending_design")
       end
 
-      # Send notification to design team (implement later)
-      # DesignNotificationJob.perform_later(@design_request)
-
       redirect_to @design_request, notice: "Design request created successfully."
     else
-      @customers = Customer.all.order(:name)
+      @customers = Customer.active.order(:name)
       @sales_orders = SalesOrder.where(order_status: [ "inquiry", "quotation_sent" ]).includes(:customer)
+      @designers = Employee.designers.active.order(:name)
       render :new
     end
   end
@@ -135,6 +130,25 @@ class DesignRequestsController < ApplicationController
 
   def set_design_request
     @design_request = DesignRequest.find(params[:id])
+  end
+
+  def handle_image_uploads
+    return unless params[:design_images]
+
+    params[:design_images].each do |image_params|
+      next unless image_params[:image_file].present?
+
+      design_image = @design_request.design_images.build(
+        image_file: image_params[:image_file],
+        image_type: image_params[:image_type],
+        description: image_params[:description],
+        is_final: false
+      )
+
+      unless design_image.save
+        Rails.logger.warn "Failed to save design image: #{design_image.errors.full_messages}"
+      end
+    end
   end
 
   def design_request_params

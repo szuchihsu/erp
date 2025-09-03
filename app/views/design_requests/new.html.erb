@@ -2,89 +2,262 @@
 <% content_for :title, "New Design Request" %>
 
 <div class="w-full max-w-4xl mx-auto">
+  <!-- Header -->
   <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">New Design Request</h1>
-    <p class="mt-2 text-gray-600">Create a custom jewelry design request</p>
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">New Design Request</h1>
+        <p class="mt-2 text-gray-600">Create a new custom jewelry design request</p>
+      </div>
+      <%= link_to "Back to Design Requests", design_requests_path, 
+          class: "text-gray-600 hover:text-gray-800" %>
+    </div>
   </div>
 
-  <%= form_with model: @design_request, local: true, class: "space-y-6" do |form| %>
+  <!-- Form -->
+  <%= form_with model: @design_request, local: true, multipart: true, 
+      class: "space-y-8" do |form| %>
+    
+    <!-- Error Messages -->
     <% if @design_request.errors.any? %>
       <div class="bg-red-50 border border-red-200 rounded-md p-4">
         <div class="flex">
-          <div class="flex-shrink-0">
-            <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-            </svg>
-          </div>
+          <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+          </svg>
           <div class="ml-3">
-            <h3 class="text-sm font-medium text-red-800">There were errors with your submission</h3>
-            <div class="mt-2 text-sm text-red-700">
-              <ul class="list-disc pl-5 space-y-1">
-                <% @design_request.errors.full_messages.each do |message| %>
-                  <li><%= message %></li>
-                <% end %>
-              </ul>
-            </div>
+            <h3 class="text-sm font-medium text-red-800">Please fix the following errors:</h3>
+            <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+              <% @design_request.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
           </div>
         </div>
       </div>
     <% end %>
 
-    <div class="bg-white shadow-sm rounded-lg border border-gray-200 p-6">
-      <h3 class="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
+    <!-- Basic Information -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-6">Basic Information</h2>
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Customer -->
         <div>
-          <%= form.label :customer_id, class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.label :customer_id, "Customer", class: "block text-sm font-medium text-gray-700 mb-2" %>
           <%= form.select :customer_id, 
-              options_from_collection_for_select(@customers, :id, :name, @design_request.customer_id), 
-              { prompt: "Select Customer" }, 
-              { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+              options_from_collection_for_select(@customers, :id, :display_name, @design_request.customer_id),
+              { prompt: 'Select a customer' },
+              { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500", required: true } %>
         </div>
-        
+
+        <!-- Sales Order (Optional) -->
         <div>
-          <%= form.label :sales_order_id, "Related Sales Order (Optional)", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.label :sales_order_id, "Sales Order (Optional)", class: "block text-sm font-medium text-gray-700 mb-2" %>
           <%= form.select :sales_order_id, 
-              options_from_collection_for_select(@sales_orders, :id, :display_name, @design_request.sales_order_id), 
-              { prompt: "Select Sales Order" }, 
+              options_from_collection_for_select(@sales_orders, :id, :display_name, @design_request.sales_order_id),
+              { prompt: 'Select a sales order (optional)' },
+              { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+          <p class="text-xs text-gray-500 mt-1">Link this design request to an existing sales order</p>
+        </div>
+
+        <!-- Priority -->
+        <div>
+          <%= form.label :priority, "Priority", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.select :priority, 
+              options_for_select([
+                ['Low', 'low'],
+                ['Medium', 'medium'],
+                ['High', 'high'],
+                ['Urgent', 'urgent']
+              ], @design_request.priority),
+              { prompt: 'Select priority' },
+              { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500", required: true } %>
+        </div>
+
+        <!-- Assigned Designer (Optional) -->
+        <div>
+          <%= form.label :assigned_designer_id, "Assigned Designer (Optional)", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.select :assigned_designer_id, 
+              options_from_collection_for_select(@designers, :id, :name, @design_request.assigned_designer_id),
+              { prompt: 'Assign later' },
               { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
         </div>
       </div>
+    </div>
+
+    <!-- Design Details -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-6">Design Details</h2>
       
-      <div class="mt-6">
-        <%= form.label :priority, class: "block text-sm font-medium text-gray-700 mb-2" %>
-        <%= form.select :priority, options_for_select([
-              ['Low', 'low'], 
-              ['Medium', 'medium'], 
-              ['High', 'high'], 
-              ['Urgent', 'urgent']
-            ], @design_request.priority || 'medium'), 
-            {}, 
-            { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+      <div>
+        <%= form.label :design_details, "Design Requirements", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.text_area :design_details, 
+            rows: 6,
+            placeholder: "Describe the design requirements, specifications, materials, size, style preferences, etc.",
+            class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500",
+            required: true %>
+        <p class="text-xs text-gray-500 mt-1">Be as detailed as possible to help the designer understand your vision</p>
       </div>
     </div>
 
-    <div class="bg-white shadow-sm rounded-lg border border-gray-200 p-6">
-      <h3 class="text-lg font-semibold text-gray-900 mb-4">Design Requirements</h3>
+    <!-- Initial Images (Optional) -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-6">Reference Images (Optional)</h2>
+      <p class="text-sm text-gray-600 mb-4">Upload any reference images, sketches, or inspiration photos</p>
       
-      <%= form.label :design_details, class: "block text-sm font-medium text-gray-700 mb-2" %>
-      <%= form.text_area :design_details, rows: 8,
-          placeholder: "Describe the custom design requirements in detail...\n\nInclude:\n• Type of jewelry (ring, necklace, etc.)\n• Materials (gold, silver, gemstones)\n• Style preferences\n• Size requirements\n• Special features or engravings\n• Budget range\n• Timeline expectations",
-          class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+      <!-- Multiple Image Upload -->
+      <div class="space-y-4" id="image-uploads">
+        <!-- Initial Upload Field -->
+        <div class="image-upload-item border border-dashed border-gray-300 rounded-lg p-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Image File -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Image File</label>
+              <input type="file" 
+                     name="design_images[][image_file]" 
+                     accept="image/*"
+                     class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            </div>
+            
+            <!-- Image Type -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Type</label>
+              <select name="design_images[][image_type]" 
+                      class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <option value="">Select type</option>
+                <option value="sketch">Sketch</option>
+                <option value="render">3D Render</option>
+                <option value="technical">Technical Drawing</option>
+                <option value="reference">Reference Image</option>
+                <option value="final">Final Design</option>
+                <option value="revision">Revision</option>
+              </select>
+            </div>
+            
+            <!-- Description -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <input type="text" 
+                     name="design_images[][description]" 
+                     placeholder="Describe this image..."
+                     class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            </div>
+          </div>
+          
+          <!-- Preview Area -->
+          <div class="image-preview mt-4 hidden">
+            <img class="h-32 w-32 object-cover rounded-md border border-gray-300" alt="Preview">
+          </div>
+        </div>
+      </div>
+      
+      <!-- Add More Images Button -->
+      <button type="button" 
+              id="add-image-btn"
+              class="mt-4 inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+        Add Another Image
+      </button>
     </div>
 
-    <div class="flex justify-end space-x-4">
+    <!-- Form Actions -->
+    <div class="flex items-center justify-between pt-6 border-t border-gray-200">
       <%= link_to "Cancel", design_requests_path, 
-          class: "px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50" %>
-      <%= form.submit "Create Design Request", 
-          class: "px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700" %>
+          class: "text-gray-600 hover:text-gray-800" %>
+      
+      <div class="flex space-x-3">
+        <%= form.submit "Save as Draft", 
+            name: "draft",
+            class: "bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md font-medium" %>
+        <%= form.submit "Create Design Request", 
+            class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium" %>
+      </div>
     </div>
   <% end %>
 </div>
 
+<!-- JavaScript for Dynamic Image Upload -->
 <script>
-// Add helper method for SalesOrder display name if needed
-<% unless defined?(SalesOrder) && SalesOrder.method_defined?(:display_name) %>
-  // You may need to add this method to your SalesOrder model
-<% end %>
+document.addEventListener('DOMContentLoaded', function() {
+  const addImageBtn = document.getElementById('add-image-btn');
+  const imageUploadsContainer = document.getElementById('image-uploads');
+  let imageCount = 1;
+
+  // Add new image upload field
+  addImageBtn.addEventListener('click', function() {
+    imageCount++;
+    const newImageUpload = document.createElement('div');
+    newImageUpload.className = 'image-upload-item border border-dashed border-gray-300 rounded-lg p-6';
+    newImageUpload.innerHTML = `
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-sm font-medium text-gray-700">Image ${imageCount}</h4>
+        <button type="button" class="remove-image text-red-600 hover:text-red-800 text-sm">Remove</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Image File</label>
+          <input type="file" 
+                 name="design_images[][image_file]" 
+                 accept="image/*"
+                 class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Type</label>
+          <select name="design_images[][image_type]" 
+                  class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            <option value="">Select type</option>
+            <option value="sketch">Sketch</option>
+            <option value="render">3D Render</option>
+            <option value="technical">Technical Drawing</option>
+            <option value="reference">Reference Image</option>
+            <option value="final">Final Design</option>
+            <option value="revision">Revision</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+          <input type="text" 
+                 name="design_images[][description]" 
+                 placeholder="Describe this image..."
+                 class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+        </div>
+      </div>
+      <div class="image-preview mt-4 hidden">
+        <img class="h-32 w-32 object-cover rounded-md border border-gray-300" alt="Preview">
+      </div>
+    `;
+    
+    imageUploadsContainer.appendChild(newImageUpload);
+  });
+
+  // Remove image upload field
+  imageUploadsContainer.addEventListener('click', function(e) {
+    if (e.target.classList.contains('remove-image')) {
+      e.target.closest('.image-upload-item').remove();
+    }
+  });
+
+  // Image preview functionality
+  imageUploadsContainer.addEventListener('change', function(e) {
+    if (e.target.type === 'file') {
+      const file = e.target.files[0];
+      const previewContainer = e.target.closest('.image-upload-item').querySelector('.image-preview');
+      const previewImg = previewContainer.querySelector('img');
+      
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          previewImg.src = e.target.result;
+          previewContainer.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+      } else {
+        previewContainer.classList.add('hidden');
+      }
+    }
+  });
+});
 </script>

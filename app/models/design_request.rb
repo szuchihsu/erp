@@ -4,7 +4,6 @@ class DesignRequest < ApplicationRecord
   belongs_to :assigned_designer, class_name: "Employee", optional: true
   has_many :design_images, dependent: :destroy
 
-  # Fix enum syntax for Rails 8
   enum :status, {
     pending: 0,
     assigned: 1,
@@ -24,7 +23,6 @@ class DesignRequest < ApplicationRecord
 
   validates :design_details, presence: true
   validates :status, presence: true
-  validates :priority, presence: true
 
   # Set default values
   after_initialize :set_defaults, if: :new_record?
