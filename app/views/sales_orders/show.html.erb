@@ -10,13 +10,15 @@
     <div class="text-right">
       <span class="px-3 py-1 text-sm font-medium rounded-full
         <%= case @sales_order.order_status
-            when 'pending' then 'bg-yellow-100 text-yellow-800'
+            when 'inquiry' then 'bg-gray-100 text-gray-800'
+            when 'quotation_sent' then 'bg-blue-100 text-blue-800'
+            when 'pending_design' then 'bg-purple-100 text-purple-800'
+            when 'design_approved' then 'bg-indigo-100 text-indigo-800'
             when 'confirmed' then 'bg-blue-100 text-blue-800'
-            when 'in_production' then 'bg-purple-100 text-purple-800'
-            when 'ready_for_delivery' then 'bg-indigo-100 text-indigo-800'
-            when 'delivered' then 'bg-green-100 text-green-800'
+            when 'in_production' then 'bg-orange-100 text-orange-800'
+            when 'quality_check' then 'bg-yellow-100 text-yellow-800'
             when 'completed' then 'bg-green-100 text-green-800'
-            when 'cancelled' then 'bg-red-100 text-red-800'
+            when 'shipped' then 'bg-green-100 text-green-800'
             else 'bg-gray-100 text-gray-800'
             end %>">
         <%= @sales_order.order_status&.humanize %>
@@ -79,7 +81,7 @@
       </div>
 
       <!-- Stock Status Alert -->
-      <% if @sales_order.order_status == 'pending' && defined?(@sales_order.can_be_fulfilled?) && !@sales_order.can_be_fulfilled? %>
+      <% if @sales_order.order_status.in?(['inquiry', 'quotation_sent', 'confirmed']) && defined?(@sales_order.can_be_fulfilled?) && !@sales_order.can_be_fulfilled? %>
         <div class="mb-6 bg-red-50 border border-red-200 rounded-md p-4">
           <div class="flex">
             <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
@@ -116,7 +118,7 @@
                 <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase w-20">Price</th>
                 <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase w-16">Stock</th>
                 <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase w-20">Total</th>
-                <% if @sales_order.order_status == 'pending' || @sales_order.order_status == 'draft' %>
+                <% if @sales_order.order_status.in?(['inquiry', 'quotation_sent']) %>
                   <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase w-12">Del</th>
                 <% end %>
               </tr>
@@ -128,7 +130,7 @@
                     <%= item.product.name %>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <% if @sales_order.order_status == 'pending' || @sales_order.order_status == 'draft' %>
+                    <% if @sales_order.order_status.in?(['inquiry', 'quotation_sent']) %>
                       <%= form_with model: [@sales_order, item], local: true, class: "inline" do |form| %>
                         <%= form.number_field :quantity, value: item.quantity, min: 1,
                             class: "w-20 rounded border-gray-300 text-sm",
@@ -139,7 +141,7 @@
                     <% end %>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <% if @sales_order.order_status == 'pending' || @sales_order.order_status == 'draft' %>
+                    <% if @sales_order.order_status.in?(['inquiry', 'quotation_sent']) %>
                       <%= form_with model: [@sales_order, item], local: true, class: "inline" do |form| %>
                         <%= form.number_field :unit_price, value: item.unit_price, step: 0.01, min: 0,
                             class: "w-24 rounded border-gray-300 text-sm",
@@ -155,7 +157,7 @@
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     $<%= number_with_precision(item.quantity * item.unit_price, precision: 2) %>
                   </td>
-                  <% if @sales_order.order_status == 'pending' || @sales_order.order_status == 'draft' %>
+                  <% if @sales_order.order_status.in?(['inquiry', 'quotation_sent']) %>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <%= button_to sales_order_sales_order_item_path(@sales_order, item), 
                           method: :delete,
@@ -175,7 +177,7 @@
       </div>
 
       <!-- Fulfillment Actions -->
-      <% if @sales_order.order_status == 'pending' %>
+      <% if @sales_order.order_status == 'confirmed' %>
         <div class="mt-6 bg-gray-50 rounded-xl p-6">
           <h3 class="text-lg font-medium text-gray-900 mb-4">Order Actions</h3>
           <div class="flex space-x-4">
@@ -183,17 +185,12 @@
                 method: :patch,
                 class: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium cursor-pointer",
                 data: { "turbo-confirm": "Are you sure you want to complete this order?" } %>
-
-            <%= button_to "Cancel Order", cancel_sales_order_path(@sales_order), 
-                method: :patch,
-                class: "bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md font-medium cursor-pointer",
-                data: { "turbo-confirm": "Are you sure you want to cancel this order?" } %>
           </div>
         </div>
       <% end %>
 
-      <!-- Add Item Section (for draft orders) -->
-      <% if @sales_order.order_status == 'pending' || @sales_order.order_status == 'draft' %>
+      <!-- Add Item Section (for early stage orders) -->
+      <% if @sales_order.order_status.in?(['inquiry', 'quotation_sent']) %>
         <div class="mt-6 bg-gray-50 rounded-xl p-6">
           <h3 class="text-lg font-medium text-gray-900 mb-4">Add Order Item</h3>
           
@@ -272,12 +269,14 @@
           <%= link_to "Print Order", "#", class: "w-full bg-gray-600 text-white text-center px-4 py-2 rounded-md hover:bg-gray-700 block" %>
           <%= link_to "Send Email", "#", class: "w-full bg-green-600 text-white text-center px-4 py-2 rounded-md hover:bg-green-700 block" %>
           
-          <% if @sales_order.order_status != 'cancelled' && @sales_order.order_status != 'completed' %>
-            <%= button_to "Cancel Order", cancel_sales_order_path(@sales_order), 
-                method: :patch,
-                data: { "turbo-confirm": "Are you sure you want to cancel this order?" },
-                class: "w-full bg-red-600 text-white text-center px-4 py-2 rounded-md hover:bg-red-700 block cursor-pointer" %>
+          <% if @sales_order.order_status.in?(['inquiry', 'quotation_sent', 'pending_design', 'design_approved', 'confirmed']) %>
+            <% if @sales_order.requires_custom_design? %>
+              <%= link_to "View Design Request", @sales_order.design_request, class: "w-full bg-purple-600 text-white text-center px-4 py-2 rounded-md hover:bg-purple-700 block" %>
+            <% else %>
+              <%= link_to "Create Design Request", new_design_request_path(sales_order_id: @sales_order.id), class: "w-full bg-purple-600 text-white text-center px-4 py-2 rounded-md hover:bg-purple-700 block" %>
+            <% end %>
           <% end %>
+          
           <%= button_to "Delete Order", sales_order_path(@sales_order), 
             method: :delete, 
             data: { "turbo-confirm": "Are you sure you want to permanently delete this order? This action cannot be undone." },

@@ -176,7 +176,7 @@
   </div>
 
   <!-- Recent Activity -->
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
     <!-- Recent Employees -->
     <div class="bg-white rounded-lg shadow p-6">
       <div class="flex justify-between items-center mb-4">
@@ -248,6 +248,34 @@
         </div>
       <% else %>
         <p class="text-gray-500">No products added yet</p>
+      <% end %>
+    </div>
+
+    <!-- Recent Designs -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold text-gray-900">Recent Designs</h2>
+        <%= link_to "View All", design_requests_path, class: "text-blue-600 hover:text-blue-800 text-sm font-medium" %>
+      </div>
+      <% if @recent_design_requests&.any? %>
+        <div class="space-y-3">
+          <% @recent_design_requests.each do |design_request| %>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="font-medium text-gray-900">Request #<%= design_request.id %></p>
+                <p class="text-sm text-gray-500">
+                  <%= design_request.customer.name %> • 
+                  <span class="inline-flex px-1 py-0 text-xs font-medium rounded <%= design_request.status_badge_class %>">
+                    <%= design_request.status&.humanize || 'Unknown' %>
+                  </span>
+                </p>
+              </div>
+              <%= link_to "View", design_request, class: "text-blue-600 hover:text-blue-800 text-sm" %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-500">No design requests yet</p>
       <% end %>
     </div>
   </div>

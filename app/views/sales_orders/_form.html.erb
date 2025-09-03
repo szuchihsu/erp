@@ -63,19 +63,21 @@
   </div>
 
   <div class="my-5">
-    <%= form.label :order_status, "Order Status", class: "block text-sm font-medium text-gray-700" %>
+    <%= form.label :order_status, class: "block text-sm font-medium text-gray-700 mb-2" %>
     <%= form.select :order_status, 
-        [
-          ["Pending", "pending"],
-          ["Confirmed", "confirmed"],
-          ["In Production", "in_production"],
-          ["Ready for Delivery", "ready_for_delivery"],
-          ["Delivered", "delivered"],
-          ["Completed", "completed"],
-          ["Cancelled", "cancelled"]
-        ], 
-        { prompt: "Select Status" }, 
-        { class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": sales_order.errors[:order_status].none?, "border-red-400 focus:outline-red-600": sales_order.errors[:order_status].any?}] } %>
+        options_for_select([
+          ['Inquiry', 'inquiry'],
+          ['Quotation Sent', 'quotation_sent'],
+          ['Pending Design', 'pending_design'],
+          ['Design Approved', 'design_approved'],
+          ['Confirmed', 'confirmed'],
+          ['In Production', 'in_production'],
+          ['Quality Check', 'quality_check'],
+          ['Completed', 'completed'],
+          ['Shipped', 'shipped']
+        ], @sales_order.order_status), 
+        { prompt: 'Select Status' }, 
+        { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
   </div>
 
   <div class="my-5">

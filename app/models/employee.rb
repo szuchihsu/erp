@@ -5,17 +5,34 @@ class Employee < ApplicationRecord
 
   has_one :user
   has_many :sales_orders, dependent: :destroy
+  has_many :assigned_design_requests, class_name: "DesignRequest", foreign_key: "assigned_designer_id"
 
   validates :employee_id, presence: true, uniqueness: true
   validates :name, presence: true
   # validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :department, inclusion: { in: [ "production", "sales", "admin", "quality_control", "management" ] }, allow_blank: true
+  validates :department, inclusion: {
+    in: [ "production", "quality", "sales", "admin", "design" ]
+  }, allow_blank: true
   validates :status, inclusion: { in: [ "active", "inactive", "terminated" ] }, allow_blank: true
 
   scope :active, -> { where(status: "active") }
   scope :by_department, ->(dept) { where(department: dept) }
+  scope :designers, -> { where(department: "design") }
+  scope :available_designers, -> { designers.where(status: "active") }
 
   def display_name
     "#{employee_id} - #{name}"
+  end
+
+  def is_designer?
+    department == "design"
+  end
+
+  def active_design_requests
+    assigned_design_requests.active
+  end
+
+  def design_workload
+    assigned_design_requests.where(status: [ "assigned", "in_progress", "review" ]).count
   end
 end

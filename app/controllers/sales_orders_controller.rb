@@ -40,15 +40,15 @@ class SalesOrdersController < ApplicationController
   def create
     @sales_order = SalesOrder.new(sales_order_params)
     @sales_order.user = current_user
-    @sales_order.order_status = "draft"
+    @sales_order.order_status = "inquiry"
     @sales_order.total_amount = 0
 
     if @sales_order.save
       redirect_to @sales_order, notice: "Sales order was successfully created."
     else
-      @customers = Customer.order(:name)
-      @products = Product.where("stock_quantity > 0").order(:name)
-      render :new, order_status: :unprocessable_entity
+      @customers = Customer.all
+      @employees = Employee.all
+      render :new
     end
   end
 
