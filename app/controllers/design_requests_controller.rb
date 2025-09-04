@@ -53,15 +53,12 @@ class DesignRequestsController < ApplicationController
     @design_request.priority ||= :medium
 
     if @design_request.save
-      # Handle multiple image uploads
-      handle_image_uploads
-
       # Update sales order status if applicable
       if @design_request.sales_order
         @design_request.sales_order.update!(order_status: "pending_design")
       end
 
-      redirect_to @design_request, notice: "Design request created successfully."
+      redirect_to @design_request, notice: "Design request created successfully. You can now upload images."
     else
       @customers = Customer.active.order(:name)
       @sales_orders = SalesOrder.where(order_status: [ "inquiry", "quotation_sent" ]).includes(:customer)
@@ -132,6 +129,7 @@ class DesignRequestsController < ApplicationController
     @design_request = DesignRequest.find(params[:id])
   end
 
+  # This method is now only used by the show view through DesignImagesController
   def handle_image_uploads
     return unless params[:design_images]
 
