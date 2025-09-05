@@ -1,5 +1,5 @@
 <!-- app/views/inventory/restock.html.erb -->
-<% content_for :title, "Restock Product" %>
+<% content_for :title, "Restock Item" %>
 
 <div class="max-w-4xl mx-auto">
   <!-- Header -->
@@ -12,14 +12,19 @@
         </svg>
       <% end %>
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">Restock Product</h1>
-        <p class="text-gray-600">Product: <span class="font-medium"><%= @product.display_name %></span></p>
+        <h1 class="text-3xl font-bold text-gray-900">Restock <%= @item.class.name %></h1>
+        <p class="text-gray-600">
+          <%= @item.class.name %>: 
+          <span class="font-medium">
+            <%= @item.respond_to?(:display_name) ? @item.display_name : @item.name %>
+          </span>
+        </p>
       </div>
     </div>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Product Info -->
+    <!-- Item Info -->
     <div class="lg:col-span-1">
       <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-6">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Current Status</h3>
@@ -27,34 +32,70 @@
         <div class="space-y-4">
           <div>
             <p class="text-sm font-medium text-gray-500">Current Stock</p>
-            <p class="text-3xl font-bold text-gray-900"><%= @product.stock_quantity || 0 %></p>
+            <p class="text-3xl font-bold text-gray-900">
+              <%= @item.respond_to?(:stock_quantity) ? (@item.stock_quantity || 0) : (@item.current_stock || 0) %>
+            </p>
           </div>
 
-          <% if @product.reorder_point %>
-            <div>
-              <p class="text-sm font-medium text-gray-500">Reorder Point</p>
-              <p class="text-lg font-medium text-gray-900"><%= @product.reorder_point %></p>
-            </div>
-          <% end %>
+          <!-- Product specific fields -->
+          <% if @item.is_a?(Product) %>
+            <% if @item.respond_to?(:reorder_point) && @item.reorder_point %>
+              <div>
+                <p class="text-sm font-medium text-gray-500">Reorder Point</p>
+                <p class="text-lg font-medium text-gray-900"><%= @item.reorder_point %></p>
+              </div>
+            <% end %>
 
-          <% if @product.optimal_stock_level %>
-            <div>
-              <p class="text-sm font-medium text-gray-500">Optimal Level</p>
-              <p class="text-lg font-medium text-gray-900"><%= @product.optimal_stock_level %></p>
-              <% if @product.stock_quantity && @product.optimal_stock_level %>
-                <% recommended = @product.optimal_stock_level - @product.stock_quantity %>
-                <% if recommended > 0 %>
-                  <p class="text-xs text-blue-600 font-medium">Recommended: +<%= recommended %> units</p>
+            <% if @item.respond_to?(:optimal_stock_level) && @item.optimal_stock_level %>
+              <div>
+                <p class="text-sm font-medium text-gray-500">Optimal Level</p>
+                <p class="text-lg font-medium text-gray-900"><%= @item.optimal_stock_level %></p>
+                <% if @item.stock_quantity && @item.optimal_stock_level %>
+                  <% recommended = @item.optimal_stock_level - @item.stock_quantity %>
+                  <% if recommended > 0 %>
+                    <p class="text-xs text-blue-600 font-medium">Recommended: +<%= recommended %> units</p>
+                  <% end %>
                 <% end %>
-              <% end %>
-            </div>
+              </div>
+            <% end %>
+
+            <% if @item.respond_to?(:cost_price) && @item.cost_price %>
+              <div>
+                <p class="text-sm font-medium text-gray-500">Unit Cost</p>
+                <p class="text-lg font-medium text-gray-900">$<%= @item.cost_price %></p>
+              </div>
+            <% end %>
           <% end %>
 
-          <% if @product.cost_price %>
-            <div>
-              <p class="text-sm font-medium text-gray-500">Unit Cost</p>
-              <p class="text-lg font-medium text-gray-900">$<%= @product.cost_price %></p>
-            </div>
+          <!-- Material specific fields -->
+          <% if @item.is_a?(Material) %>
+            <% if @item.minimum_stock %>
+              <div>
+                <p class="text-sm font-medium text-gray-500">Minimum Stock</p>
+                <p class="text-lg font-medium text-gray-900"><%= @item.minimum_stock %></p>
+              </div>
+            <% end %>
+
+            <% if @item.current_cost %>
+              <div>
+                <p class="text-sm font-medium text-gray-500">Current Cost</p>
+                <p class="text-lg font-medium text-gray-900">$<%= @item.current_cost %></p>
+              </div>
+            <% end %>
+
+            <% if @item.unit_of_measure %>
+              <div>
+                <p class="text-sm font-medium text-gray-500">Unit of Measure</p>
+                <p class="text-lg font-medium text-gray-900"><%= @item.unit_of_measure %></p>
+              </div>
+            <% end %>
+
+            <% if @item.category %>
+              <div>
+                <p class="text-sm font-medium text-gray-500">Category</p>
+                <p class="text-lg font-medium text-gray-900"><%= @item.category.humanize %></p>
+              </div>
+            <% end %>
           <% end %>
         </div>
       </div>
@@ -65,18 +106,20 @@
       <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 class="text-lg font-medium text-gray-900 mb-6">Add Stock</h3>
 
-        <%= form_with url: create_restock_inventory_path(@product), method: :post, class: "space-y-6" do |form| %>
+        <%= form_with url: (@item.is_a?(Product) ? restock_inventory_path(@item) : restock_material_inventory_path(@item)), 
+            method: :post, class: "space-y-6" do |form| %>
           <div>
             <%= label_tag :quantity, "Quantity to Add", class: "block text-sm font-medium text-gray-700 mb-2" %>
             <%= number_field_tag :quantity, nil, 
                 min: 1,
-                placeholder: "Number of units to add to inventory",
+                step: @item.is_a?(Material) ? 0.01 : 1,
+                placeholder: "Number of #{@item.is_a?(Material) ? @item.unit_of_measure || 'units' : 'units'} to add to inventory",
                 class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
           </div>
 
           <div>
             <%= label_tag :supplier, "Supplier / Source", class: "block text-sm font-medium text-gray-700 mb-2" %>
-            <%= text_field_tag :supplier, nil, 
+            <%= text_field_tag :supplier, (@item.is_a?(Material) ? @item.supplier : nil), 
                 placeholder: "Supplier name, vendor, or source of these items",
                 class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
           </div>

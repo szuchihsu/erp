@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_03_123740) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_05_125510) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,6 +40,38 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_03_123740) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "bill_of_materials", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.string "version", default: "1.0"
+    t.text "description"
+    t.boolean "is_active", default: true
+    t.date "effective_date"
+    t.date "obsolete_date"
+    t.decimal "total_cost", precision: 10, scale: 2
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["is_active"], name: "index_bill_of_materials_on_is_active"
+    t.index ["product_id", "version"], name: "index_bill_of_materials_on_product_id_and_version", unique: true
+    t.index ["product_id"], name: "index_bill_of_materials_on_product_id"
+  end
+
+  create_table "bom_items", force: :cascade do |t|
+    t.bigint "bill_of_material_id", null: false
+    t.bigint "material_id", null: false
+    t.decimal "quantity", precision: 10, scale: 4, null: false
+    t.string "unit_of_measure", default: "gram"
+    t.decimal "unit_cost", precision: 10, scale: 2
+    t.decimal "total_cost", precision: 10, scale: 2
+    t.text "notes"
+    t.integer "sequence_number"
+    t.boolean "is_optional", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bill_of_material_id"], name: "index_bom_items_on_bill_of_material_id"
+    t.index ["material_id"], name: "index_bom_items_on_material_id"
   end
 
   create_table "customers", force: :cascade do |t|
@@ -98,19 +130,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_03_123740) do
   end
 
   create_table "inventory_adjustments", force: :cascade do |t|
-    t.bigint "product_id", null: false
     t.string "adjustment_type"
     t.integer "quantity"
     t.string "reason"
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["product_id"], name: "index_inventory_adjustments_on_product_id"
+    t.string "inventoryable_type"
+    t.bigint "inventoryable_id"
+    t.string "item_type"
+    t.bigint "item_id"
+    t.index ["inventoryable_type", "inventoryable_id"], name: "idx_on_inventoryable_type_inventoryable_id_03f38916c5"
+    t.index ["item_type", "item_id"], name: "index_inventory_adjustments_on_item_type_and_item_id"
     t.index ["user_id"], name: "index_inventory_adjustments_on_user_id"
   end
 
   create_table "inventory_transactions", force: :cascade do |t|
-    t.bigint "product_id", null: false
     t.string "transaction_type"
     t.integer "quantity"
     t.string "reference_type"
@@ -119,8 +154,32 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_03_123740) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["product_id"], name: "index_inventory_transactions_on_product_id"
+    t.string "inventoryable_type"
+    t.bigint "inventoryable_id"
+    t.string "item_type"
+    t.bigint "item_id"
+    t.index ["inventoryable_type", "inventoryable_id"], name: "idx_on_inventoryable_type_inventoryable_id_b03b06a8f2"
+    t.index ["item_type", "item_id"], name: "index_inventory_transactions_on_item_type_and_item_id"
     t.index ["user_id"], name: "index_inventory_transactions_on_user_id"
+  end
+
+  create_table "materials", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "code", null: false
+    t.text "description"
+    t.string "category"
+    t.string "subcategory"
+    t.decimal "current_cost", precision: 10, scale: 2
+    t.string "unit_of_measure", default: "gram"
+    t.decimal "current_stock", precision: 10, scale: 4, default: "0.0"
+    t.decimal "minimum_stock", precision: 10, scale: 4, default: "0.0"
+    t.string "supplier"
+    t.boolean "is_active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category"], name: "index_materials_on_category"
+    t.index ["code"], name: "index_materials_on_code", unique: true
+    t.index ["is_active"], name: "index_materials_on_is_active"
   end
 
   create_table "products", force: :cascade do |t|
@@ -203,14 +262,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_03_123740) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "bill_of_materials", "products"
+  add_foreign_key "bom_items", "bill_of_materials"
+  add_foreign_key "bom_items", "materials"
   add_foreign_key "design_images", "design_requests"
   add_foreign_key "design_requests", "customers"
   add_foreign_key "design_requests", "employees", column: "assigned_designer_id"
   add_foreign_key "design_requests", "sales_orders"
   add_foreign_key "employees", "employees", column: "supervisor_id"
-  add_foreign_key "inventory_adjustments", "products"
   add_foreign_key "inventory_adjustments", "users"
-  add_foreign_key "inventory_transactions", "products"
   add_foreign_key "inventory_transactions", "users"
   add_foreign_key "sales_order_items", "products"
   add_foreign_key "sales_order_items", "sales_orders"

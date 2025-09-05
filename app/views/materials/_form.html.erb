@@ -1,0 +1,147 @@
+<%= form_with model: material, local: true, class: "space-y-6" do |form| %>
+  <% if material.errors.any? %>
+    <div class="bg-red-50 border border-red-200 rounded-md p-4">
+      <div class="flex">
+        <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+        </svg>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">Please fix the following errors:</h3>
+          <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+            <% material.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Basic Information -->
+    <div class="space-y-4">
+      <h3 class="text-lg font-medium text-gray-900">Basic Information</h3>
+      
+      <div>
+        <%= form.label :name, class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.text_field :name, 
+            placeholder: material.persisted? ? nil : "e.g., 18K Gold Wire",
+            class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500" %>
+      </div>
+
+      <div>
+        <%= form.label :code, class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.text_field :code, 
+            placeholder: material.persisted? ? nil : "e.g., AU18-WIRE-001",
+            class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500" %>
+        <p class="mt-1 text-sm text-gray-500">Unique material code for identification</p>
+      </div>
+
+      <div>
+        <%= form.label :description, class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.text_area :description, 
+            rows: 4,
+            placeholder: material.persisted? ? nil : "Detailed description of the material...",
+            class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500" %>
+      </div>
+    </div>
+
+    <!-- Categories and Classification -->
+    <div class="space-y-4">
+      <h3 class="text-lg font-medium text-gray-900">Classification</h3>
+      
+      <div>
+        <%= form.label :category, class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.select :category, 
+            options_for_select([
+              ['Select a category', ''],
+              ['Precious Metal', 'precious_metal'],
+              ['Gemstone', 'gemstone'],
+              ['Finding', 'finding'],
+              ['Tool', 'tool'],
+              ['Consumable', 'consumable'],
+              ['Packaging', 'packaging']
+            ], material.category), 
+            {}, 
+            { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500" } %>
+      </div>
+
+      <div>
+        <%= form.label :subcategory, class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.text_field :subcategory, 
+            placeholder: material.persisted? ? nil : "e.g., Wire, Sheet, Bezel, etc.",
+            class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500" %>
+      </div>
+
+      <div>
+        <%= form.label :unit_of_measure, class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.text_field :unit_of_measure, 
+            placeholder: material.persisted? ? nil : "e.g., grams, pieces, meters, etc.",
+            class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500" %>
+      </div>
+
+      <div>
+        <%= form.label :supplier, class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.text_field :supplier, 
+            placeholder: material.persisted? ? nil : "Primary supplier name",
+            class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500" %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing and Stock -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div>
+      <%= form.label :current_cost, "Unit Cost", class: "block text-sm font-medium text-gray-700 mb-2" %>
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <span class="text-gray-500 sm:text-sm">$</span>
+        </div>
+        <%= form.number_field :current_cost, 
+            step: 0.01,
+            placeholder: "0.00",
+            class: "block w-full pl-7 rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500" %>
+      </div>
+    </div>
+
+    <div>
+      <%= form.label :current_stock, (material.persisted? ? "Current Stock" : "Initial Stock"), class: "block text-sm font-medium text-gray-700 mb-2" %>
+      <%= form.number_field :current_stock, 
+          step: 0.01,
+          placeholder: "0",
+          readonly: material.persisted?,
+          class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 #{'bg-gray-50' if material.persisted?}" %>
+      <% if material.persisted? %>
+        <p class="mt-1 text-sm text-gray-500">Use inventory adjustments to modify stock levels</p>
+      <% end %>
+    </div>
+
+    <div>
+      <%= form.label :minimum_stock, "Minimum Stock Level", class: "block text-sm font-medium text-gray-700 mb-2" %>
+      <%= form.number_field :minimum_stock, 
+          step: 0.01,
+          placeholder: "0",
+          class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500" %>
+      <p class="mt-1 text-sm text-gray-500">Alert when stock falls below this level</p>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div>
+    <div class="flex items-center">
+      <%= form.check_box :is_active, 
+          checked: material.persisted? ? material.is_active? : true,
+          class: "rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50" %>
+      <%= form.label :is_active, "Material is active", class: "ml-2 block text-sm text-gray-900" %>
+    </div>
+    <p class="mt-1 text-sm text-gray-500">Inactive materials won't appear in dropdowns or reports</p>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+    <%= link_to "Cancel", (material.persisted? ? material : materials_path), 
+        class: "px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50" %>
+    <%= form.submit (material.persisted? ? "Update Material" : "Create Material"), 
+        class: "px-4 py-2 bg-purple-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-purple-700" %>
+  </div>
+<% end %>

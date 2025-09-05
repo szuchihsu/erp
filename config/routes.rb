@@ -15,7 +15,16 @@ Rails.application.routes.draw do
 
   resources :employees
   resources :customers
-  resources :products
+  resources :products do
+    resources :inventory_transactions
+    resources :inventory_adjustments
+    resources :bill_of_materials do
+      member do
+        patch :activate
+        post :copy
+      end
+    end
+  end
 
   resources :sales_orders do
     member do
@@ -29,13 +38,17 @@ Rails.application.routes.draw do
   get "inventory", to: "inventory#index"
   get "inventory/transactions", to: "inventory#transactions"
 
-  # Adjustment routes
-  get "inventory/adjust/:product_id", to: "inventory#adjust_stock", as: "adjust_inventory"
-  post "inventory/adjust/:product_id", to: "inventory#create_adjustment", as: "create_adjustment_inventory"
+  # Product inventory management
+  get "inventory/product/:product_id/adjust", to: "inventory#adjust_stock", as: "adjust_inventory"
+  post "inventory/product/:product_id/adjust", to: "inventory#create_adjustment"
+  get "inventory/product/:product_id/restock", to: "inventory#restock", as: "restock_inventory"
+  post "inventory/product/:product_id/restock", to: "inventory#create_restock"
 
-  # Restock routes
-  get "inventory/restock/:product_id", to: "inventory#restock", as: "restock_inventory"
-  post "inventory/restock/:product_id", to: "inventory#create_restock", as: "create_restock_inventory"
+  # Material inventory management
+  get "inventory/material/:material_id/adjust", to: "inventory#adjust_stock", as: "adjust_material_inventory"
+  post "inventory/material/:material_id/adjust", to: "inventory#create_adjustment"
+  get "inventory/material/:material_id/restock", to: "inventory#restock", as: "restock_material_inventory"
+  post "inventory/material/:material_id/restock", to: "inventory#create_restock"
 
   resources :design_requests do
     member do
@@ -50,6 +63,14 @@ Rails.application.routes.draw do
   # Add design requests to sales orders
   resources :sales_orders do
     resources :design_requests, only: [ :new, :create ]
+  end
+
+  resources :materials do
+    resources :inventory_transactions
+    resources :inventory_adjustments
+    member do
+      patch :adjust_stock
+    end
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

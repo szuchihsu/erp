@@ -13,7 +13,12 @@
       <% end %>
       <div>
         <h1 class="text-3xl font-bold text-gray-900">Stock Adjustment</h1>
-        <p class="text-gray-600">Product: <span class="font-medium"><%= @product.display_name %></span></p>
+        <p class="text-gray-600">
+          <%= @item.class.name %>: 
+          <span class="font-medium">
+            <%= @item.respond_to?(:display_name) ? @item.display_name : @item.name %>
+          </span>
+        </p>
       </div>
     </div>
   </div>
@@ -27,28 +32,61 @@
         <div class="space-y-4">
           <div>
             <p class="text-sm font-medium text-gray-500">Current Stock</p>
-            <p class="text-3xl font-bold text-gray-900"><%= @product.stock_quantity || 0 %></p>
+            <p class="text-3xl font-bold text-gray-900">
+              <%= @item.respond_to?(:stock_quantity) ? (@item.stock_quantity || 0) : (@item.current_stock || 0) %>
+            </p>
           </div>
           
           <div>
             <p class="text-sm font-medium text-gray-500">Stock Status</p>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= @product.stock_status_badge_class %>">
-              <%= @product.stock_status.humanize %>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+              <%= if @item.respond_to?(:stock_status_badge_class)
+                    @item.stock_status_badge_class
+                  else
+                    case @item.stock_status
+                    when 'in_stock' then 'bg-green-100 text-green-800'
+                    when 'low_stock' then 'bg-yellow-100 text-yellow-800'  
+                    when 'out_of_stock' then 'bg-red-100 text-red-800'
+                    else 'bg-gray-100 text-gray-800'
+                    end
+                  end %>">
+              <%= @item.respond_to?(:stock_status) ? @item.stock_status.humanize : 'Unknown' %>
             </span>
           </div>
 
-          <% if @product.minimum_stock_level %>
+          <% if @item.respond_to?(:minimum_stock_level) && @item.minimum_stock_level %>
             <div>
               <p class="text-sm font-medium text-gray-500">Minimum Level</p>
-              <p class="text-lg font-medium text-gray-900"><%= @product.minimum_stock_level %></p>
+              <p class="text-lg font-medium text-gray-900"><%= @item.minimum_stock_level %></p>
+            </div>
+          <% elsif @item.respond_to?(:minimum_stock) && @item.minimum_stock %>
+            <div>
+              <p class="text-sm font-medium text-gray-500">Minimum Level</p>
+              <p class="text-lg font-medium text-gray-900"><%= @item.minimum_stock %></p>
             </div>
           <% end %>
 
-          <% if @product.last_restocked_at %>
+          <% if @item.respond_to?(:last_restocked_at) && @item.last_restocked_at %>
             <div>
               <p class="text-sm font-medium text-gray-500">Last Restocked</p>
-              <p class="text-sm text-gray-900"><%= @product.last_restocked_at.strftime("%B %d, %Y") %></p>
+              <p class="text-sm text-gray-900"><%= @item.last_restocked_at.strftime("%B %d, %Y") %></p>
             </div>
+          <% end %>
+
+          <!-- Show item type specific fields -->
+          <% if @item.is_a?(Material) %>
+            <% if @item.category %>
+              <div>
+                <p class="text-sm font-medium text-gray-500">Category</p>
+                <p class="text-sm text-gray-900"><%= @item.category.humanize %></p>
+              </div>
+            <% end %>
+            <% if @item.unit_of_measure %>
+              <div>
+                <p class="text-sm font-medium text-gray-500">Unit</p>
+                <p class="text-sm text-gray-900"><%= @item.unit_of_measure %></p>
+              </div>
+            <% end %>
           <% end %>
         </div>
       </div>
@@ -59,7 +97,8 @@
       <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 class="text-lg font-medium text-gray-900 mb-6">Make Adjustment</h3>
 
-        <%= form_with url: create_adjustment_inventory_path(@product), method: :post, local: true, class: "space-y-6" do |form| %>
+        <%= form_with url: (@item.is_a?(Product) ? adjust_inventory_path(@item) : adjust_material_inventory_path(@item)), 
+            method: :post, local: true, class: "space-y-6" do |form| %>
           <div>
             <%= label_tag :adjustment_type, "Adjustment Type", class: "block text-sm font-medium text-gray-700 mb-2" %>
             <%= select_tag :adjustment_type, 

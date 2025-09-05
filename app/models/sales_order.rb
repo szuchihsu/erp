@@ -48,7 +48,7 @@ class SalesOrder < ApplicationRecord
 
         # Create inventory transaction
         InventoryTransaction.create!(
-          product: item.product,
+          item: item.product,
           transaction_type: "out",
           quantity: item.quantity,
           reference_type: "SalesOrder",

@@ -1,0 +1,24 @@
+<% content_for :title, "Edit #{@material.name}" %>
+
+<div class="max-w-4xl mx-auto">
+  <!-- Header -->
+  <div class="mb-8">
+    <div class="flex items-center space-x-4">
+      <%= link_to @material, 
+          class: "text-gray-400 hover:text-gray-600" do %>
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+      <% end %>
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">Edit Material</h1>
+        <p class="text-gray-600">Update material information</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <%= render 'form', material: @material %>
+  </div>
+</div>

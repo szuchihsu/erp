@@ -1,8 +1,10 @@
 class Product < ApplicationRecord
   has_many :sales_order_items, dependent: :destroy
   has_many :sales_orders, through: :sales_order_items
-  has_many :inventory_transactions, dependent: :destroy
-  has_many :inventory_adjustments, dependent: :destroy
+  has_many :inventory_transactions, as: :item, dependent: :destroy
+  has_many :inventory_adjustments, as: :item, dependent: :destroy
+  has_many :bill_of_materials, dependent: :destroy
+  has_one :current_bom, -> { where(is_active: true) }, class_name: "BillOfMaterial"
 
   validates :product_id, presence: true, uniqueness: true
   validates :name, presence: true
@@ -152,6 +154,22 @@ class Product < ApplicationRecord
     true
   rescue
     false
+  end
+
+  def material_cost
+    current_bom&.total_cost || 0
+  end
+
+  def can_manufacture?(quantity = 1)
+    return false unless current_bom
+
+    current_bom.bom_items.all? do |item|
+      item.material.current_stock >= (item.quantity * quantity)
+    end
+  end
+
+  def manufacturing_cost(quantity = 1)
+    material_cost * quantity
   end
 
   private
