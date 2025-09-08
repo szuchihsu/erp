@@ -24,6 +24,11 @@ class SalesOrder < ApplicationRecord
     shipped: 8           # Delivered to customer
   }
 
+  enum :fulfillment_type, {
+    from_stock: 0,        # Ship finished goods directly from inventory
+    make_to_order: 1      # Manufacture using materials when order is fulfilled
+  }
+
   def subtotal
     sales_order_items.sum { |item| item.quantity * item.unit_price }
   end
@@ -34,20 +39,32 @@ class SalesOrder < ApplicationRecord
   end
 
   def can_be_fulfilled?
-    # Check both product stock and material availability
+    # Always check product stock first
     return false unless sales_order_items.all? { |item| item.stock_sufficient? }
 
-    # Check if materials are available for manufacturing
-    manufacturing_service = ManufacturingService.new(self)
-    manufacturing_service.materials_available_for_order?
+    # For make-to-order, also check material availability
+    if make_to_order?
+      manufacturing_service = ManufacturingService.new(self)
+      manufacturing_service.materials_available_for_order?
+    else
+      true # from_stock only needs product availability
+    end
   end
 
   def fulfill_order!
-    # Use the manufacturing service to handle both product and material inventory
-    ManufacturingService.fulfill_order_with_materials(self)
+    if make_to_order?
+      # Use manufacturing service for make-to-order (consumes materials)
+      ManufacturingService.fulfill_order_with_materials(self)
+    else
+      # Simple stock fulfillment (only reduces product inventory)
+      ManufacturingService.fulfill_order_from_stock(self)
+    end
   end
 
   def material_shortages
+    # Only check material shortages for make-to-order
+    return [] unless make_to_order?
+
     manufacturing_service = ManufacturingService.new(self)
     manufacturing_service.get_material_shortages
   end

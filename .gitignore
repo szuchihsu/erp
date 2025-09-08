@@ -38,3 +38,5 @@
 
 # Ignore todo
 /todo
+
+/test_*

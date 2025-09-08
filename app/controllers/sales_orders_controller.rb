@@ -101,6 +101,7 @@ class SalesOrdersController < ApplicationController
         :deposit_amount,
         :remaining_amount,
         :order_status,
+        :fulfillment_type,
         :notes,
         :tax_amount,
         :shipping_amount

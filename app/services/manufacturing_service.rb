@@ -31,6 +31,10 @@ class ManufacturingService
     new(sales_order).fulfill_order_with_materials
   end
 
+  def self.fulfill_order_from_stock(sales_order)
+    new(sales_order).fulfill_order_from_stock
+  end
+
   def initialize(sales_order)
     @sales_order = sales_order
   end
@@ -95,6 +99,25 @@ class ManufacturingService
       end
     end
     shortages
+  end
+
+  # New method for fulfilling orders from finished stock only
+  def fulfill_order_from_stock
+    return false unless @sales_order.can_be_fulfilled?
+
+    ActiveRecord::Base.transaction do
+      @sales_order.sales_order_items.each do |item|
+        # Only reduce product inventory (no material consumption)
+        reduce_product_inventory(item)
+        create_product_transaction(item)
+      end
+
+      @sales_order.update!(order_status: "completed", completed_at: Time.current)
+    end
+    true
+  rescue => e
+    Rails.logger.error "Stock fulfillment failed: #{e.message}"
+    false
   end
 
   private

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_05_125510) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_08_115821) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -238,9 +238,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_05_125510) do
     t.decimal "tax_amount", precision: 10, scale: 2, default: "0.0"
     t.decimal "shipping_amount", precision: 10, scale: 2, default: "0.0"
     t.bigint "user_id", null: false
+    t.integer "fulfillment_type", default: 0, null: false
     t.index ["completed_at"], name: "index_sales_orders_on_completed_at"
     t.index ["customer_id"], name: "index_sales_orders_on_customer_id"
     t.index ["employee_id"], name: "index_sales_orders_on_employee_id"
+    t.index ["fulfillment_type"], name: "index_sales_orders_on_fulfillment_type"
     t.index ["user_id"], name: "index_sales_orders_on_user_id"
   end
 

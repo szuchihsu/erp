@@ -77,6 +77,20 @@
             <p class="text-sm font-medium text-gray-500">Department</p>
             <p class="mt-1 text-sm text-gray-900"><%= @sales_order.employee&.department&.capitalize %></p>
           </div>
+          <div>
+            <p class="text-sm font-medium text-gray-500">Fulfillment Method</p>
+            <p class="mt-1 text-sm text-gray-900">
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                <%= @sales_order.from_stock? ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800' %>">
+                <%= @sales_order.from_stock? ? '📦 Ship from Stock' : '🔨 Make to Order' %>
+              </span>
+            </p>
+            <p class="mt-1 text-xs text-gray-500">
+              <%= @sales_order.from_stock? ? 
+                  'Products are finished goods ready to ship' : 
+                  'Products will be manufactured when order is fulfilled' %>
+            </p>
+          </div>
         </div>
       </div>
 
@@ -176,8 +190,8 @@
         </div>
       </div>
 
-      <!-- Material Requirements -->
-      <% if @sales_order.order_status == 'confirmed' %>
+      <!-- Material Requirements (only for make-to-order) -->
+      <% if @sales_order.order_status == 'confirmed' && @sales_order.make_to_order? %>
         <div class="bg-white rounded-lg shadow p-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-4">Material Requirements</h2>
           <% material_shortages = @sales_order.material_shortages %>

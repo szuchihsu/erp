@@ -99,21 +99,27 @@
                   <% end %>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                    <%= case sales_order.order_status
-                        when 'inquiry' then 'bg-gray-100 text-gray-800'
-                        when 'quotation_sent' then 'bg-blue-100 text-blue-800'
-                        when 'pending_design' then 'bg-purple-100 text-purple-800'
-                        when 'design_approved' then 'bg-indigo-100 text-indigo-800'
-                        when 'confirmed' then 'bg-blue-100 text-blue-800'
-                        when 'in_production' then 'bg-orange-100 text-orange-800'
-                        when 'quality_check' then 'bg-yellow-100 text-yellow-800'
-                        when 'completed' then 'bg-green-100 text-green-800'
-                        when 'shipped' then 'bg-green-100 text-green-800'
-                        else 'bg-gray-100 text-gray-800'
-                        end %>">
-                    <%= sales_order.order_status&.humanize %>
-                  </span>
+                  <div class="flex flex-col space-y-1">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                      <%= case sales_order.order_status
+                          when 'inquiry' then 'bg-gray-100 text-gray-800'
+                          when 'quotation_sent' then 'bg-blue-100 text-blue-800'
+                          when 'pending_design' then 'bg-purple-100 text-purple-800'
+                          when 'design_approved' then 'bg-indigo-100 text-indigo-800'
+                          when 'confirmed' then 'bg-blue-100 text-blue-800'
+                          when 'in_production' then 'bg-orange-100 text-orange-800'
+                          when 'quality_check' then 'bg-yellow-100 text-yellow-800'
+                          when 'completed' then 'bg-green-100 text-green-800'
+                          when 'shipped' then 'bg-green-100 text-green-800'
+                          else 'bg-gray-100 text-gray-800'
+                          end %>">
+                      <%= sales_order.order_status&.humanize %>
+                    </span>
+                    <span class="px-2 inline-flex text-xs leading-5 font-medium rounded-full
+                      <%= sales_order.from_stock? ? 'bg-blue-50 text-blue-700' : 'bg-purple-50 text-purple-700' %>">
+                      <%= sales_order.from_stock? ? '📦 Stock' : '🔨 Made' %>
+                    </span>
+                  </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <% if sales_order.can_be_fulfilled? %>
