@@ -1,0 +1,213 @@
+<div class="px-4 sm:px-6 lg:px-8">
+  <div class="md:flex md:items-center md:justify-between">
+    <div class="min-w-0 flex-1">
+      <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+        <%= @bill_of_material.display_name %>
+      </h2>
+      <div class="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
+        <div class="mt-2 flex items-center text-sm text-gray-500">
+          <% if @bill_of_material.is_active %>
+            <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Active Version</span>
+          <% else %>
+            <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">Inactive</span>
+          <% end %>
+        </div>
+        <div class="mt-2 flex items-center text-sm text-gray-500">
+          <svg class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+          </svg>
+          Effective: <%= @bill_of_material.effective_date&.strftime("%B %d, %Y") || "Not set" %>
+        </div>
+      </div>
+    </div>
+    <div class="mt-4 flex md:ml-4 md:mt-0">
+      <%= link_to "Back to BOMs", product_bill_of_materials_path(@product), 
+          class: "inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 mr-3" %>
+      <% unless @bill_of_material.is_active %>
+        <%= link_to "Edit", edit_product_bill_of_material_path(@product, @bill_of_material), 
+            class: "inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mr-3" %>
+      <% end %>
+      <%= link_to "Copy", copy_product_bill_of_material_path(@product, @bill_of_material), 
+          method: :post,
+          data: { confirm: "Create a new version based on this BOM?" },
+          class: "inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" %>
+    </div>
+  </div>
+
+  <!-- BOM Summary Cards -->
+  <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+      <dt class="truncate text-sm font-medium text-gray-500">Total Materials</dt>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+        <%= @bill_of_material.bom_items.count %>
+      </dd>
+    </div>
+    <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+      <dt class="truncate text-sm font-medium text-gray-500">Total Cost</dt>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+        $<%= number_with_precision(@bill_of_material.total_cost || 0, precision: 2) %>
+      </dd>
+    </div>
+    <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+      <dt class="truncate text-sm font-medium text-gray-500">Materials Status</dt>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight <%= @bill_of_material.required_materials_available? ? 'text-green-600' : 'text-red-600' %>">
+        <%= @bill_of_material.required_materials_available? ? 'Ready' : 'Missing' %>
+      </dd>
+    </div>
+    <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+      <dt class="truncate text-sm font-medium text-gray-500">Optional Items</dt>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+        <%= @bill_of_material.bom_items.where(is_optional: true).count %>
+      </dd>
+    </div>
+  </div>
+
+  <!-- Description Section -->
+  <% if @bill_of_material.description.present? %>
+    <div class="mt-8">
+      <div class="overflow-hidden rounded-lg bg-white shadow">
+        <div class="px-4 py-5 sm:p-6">
+          <h3 class="text-lg font-medium leading-6 text-gray-900">Description</h3>
+          <div class="mt-2 text-sm text-gray-700">
+            <%= simple_format(@bill_of_material.description) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Missing Materials Alert -->
+  <% unless @bill_of_material.required_materials_available? %>
+    <div class="mt-8 rounded-md bg-red-50 p-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">
+            Insufficient Materials for Production
+          </h3>
+          <div class="mt-2 text-sm text-red-700">
+            <p>The following materials have insufficient stock levels:</p>
+            <ul role="list" class="mt-1 list-disc space-y-1 pl-5">
+              <% @bill_of_material.missing_materials.each do |item| %>
+                <li>
+                  <strong><%= item.material.name %></strong>: 
+                  Need <%= item.quantity %> <%= item.unit_of_measure %>, 
+                  have <%= item.material.current_stock %> <%= item.material.unit_of_measure %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- BOM Items Table -->
+  <div class="mt-8">
+    <div class="sm:flex sm:items-center">
+      <div class="sm:flex-auto">
+        <h3 class="text-lg font-medium leading-6 text-gray-900">Material Requirements</h3>
+        <p class="mt-2 text-sm text-gray-700">Components and materials needed to manufacture this product</p>
+      </div>
+    </div>
+
+    <div class="mt-4 flow-root">
+      <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+          <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+            <table class="min-w-full divide-y divide-gray-300">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Sequence</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Material</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Category</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Required Qty</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Available</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Unit Cost</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Total Cost</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Status</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Notes</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 bg-white">
+                <% @bill_of_material.bom_items.order(:sequence_number).each do |item| %>
+                  <tr class="<%= 'bg-red-50' if item.material.current_stock < item.quantity %>">
+                    <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+                      <%= item.sequence_number || "-" %>
+                      <% if item.is_optional %>
+                        <span class="ml-2 inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">Optional</span>
+                      <% end %>
+                    </td>
+                    <td class="px-6 py-4 text-sm">
+                      <div class="font-medium text-gray-900"><%= item.material.name %></div>
+                      <div class="text-gray-500"><%= item.material.code if item.material.code.present? %></div>
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                      <%= item.material.category %>
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+                      <%= item.quantity %> <%= item.unit_of_measure %>
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4 text-sm <%= item.material.current_stock >= item.quantity ? 'text-green-600' : 'text-red-600' %>">
+                      <%= item.material.current_stock %> <%= item.material.unit_of_measure %>
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                      $<%= number_with_precision(item.cost_per_unit, precision: 2) %>
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+                      $<%= number_with_precision(item.total_cost || 0, precision: 2) %>
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4 text-sm">
+                      <% if item.material.current_stock >= item.quantity %>
+                        <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Available</span>
+                      <% else %>
+                        <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">
+                          Short <%= item.quantity - item.material.current_stock %> <%= item.unit_of_measure %>
+                        </span>
+                      <% end %>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500">
+                      <%= item.notes.present? ? item.notes : "-" %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+            
+            <% if @bill_of_material.bom_items.empty? %>
+              <div class="text-center py-12">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">No materials specified</h3>
+                <p class="mt-1 text-sm text-gray-500">Add materials to define what's needed for manufacturing.</p>
+                <div class="mt-6">
+                  <%= link_to "Edit BOM", edit_product_bill_of_material_path(@product, @bill_of_material), 
+                      class: "inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notes Section -->
+  <% if @bill_of_material.notes.present? %>
+    <div class="mt-8">
+      <div class="overflow-hidden rounded-lg bg-white shadow">
+        <div class="px-4 py-5 sm:p-6">
+          <h3 class="text-lg font-medium leading-6 text-gray-900">Manufacturing Notes</h3>
+          <div class="mt-2 text-sm text-gray-700">
+            <%= simple_format(@bill_of_material.notes) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

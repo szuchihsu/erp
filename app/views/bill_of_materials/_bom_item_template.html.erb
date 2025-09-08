@@ -1,0 +1,94 @@
+<template id="bom-item-template">
+  <div class="bom-item rounded-lg border border-gray-200 p-4">
+    <input type="hidden" name="bill_of_material[bom_items_attributes][NEW_RECORD][id]" value="">
+    
+    <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-12">
+      <!-- Material Selection -->
+      <div class="sm:col-span-4">
+        <label class="block text-sm font-medium text-gray-700">Material</label>
+        <div class="mt-1">
+          <select name="bill_of_material[bom_items_attributes][NEW_RECORD][material_id]" 
+                  class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  required>
+            <option value="">Select a material...</option>
+            <% Material.active.order(:name).each do |material| %>
+              <option value="<%= material.id %>">
+                <%= material.name %> (<%= material.code %>) - <%= material.current_stock || 0 %> <%= material.unit_of_measure %>
+              </option>
+            <% end %>
+          </select>
+        </div>
+      </div>
+
+      <!-- Quantity -->
+      <div class="sm:col-span-2">
+        <label class="block text-sm font-medium text-gray-700">Quantity</label>
+        <div class="mt-1">
+          <input type="number" 
+                 name="bill_of_material[bom_items_attributes][NEW_RECORD][quantity]" 
+                 step="0.01" 
+                 min="0.01"
+                 class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                 placeholder="0.00"
+                 required>
+        </div>
+      </div>
+
+      <!-- Unit of Measure -->
+      <div class="sm:col-span-2">
+        <label class="block text-sm font-medium text-gray-700">Unit</label>
+        <div class="mt-1">
+          <input type="text" 
+                 name="bill_of_material[bom_items_attributes][NEW_RECORD][unit_of_measure]" 
+                 class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                 placeholder="e.g., grams, pieces">
+        </div>
+      </div>
+
+      <!-- Sequence -->
+      <div class="sm:col-span-1">
+        <label class="block text-sm font-medium text-gray-700">Seq</label>
+        <div class="mt-1">
+          <input type="number" 
+                 name="bill_of_material[bom_items_attributes][NEW_RECORD][sequence]" 
+                 class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                 placeholder="1">
+        </div>
+      </div>
+
+      <!-- Remove Button -->
+      <div class="sm:col-span-1 flex items-end">
+        <button type="button" 
+                class="remove-bom-item inline-flex items-center rounded-md bg-red-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-red-500">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Notes -->
+      <div class="sm:col-span-12">
+        <label class="block text-sm font-medium text-gray-700">Notes (optional)</label>
+        <div class="mt-1">
+          <textarea name="bill_of_material[bom_items_attributes][NEW_RECORD][notes]" 
+                    rows="2"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    placeholder="Special instructions, assembly notes..."></textarea>
+        </div>
+      </div>
+
+      <!-- Optional checkbox -->
+      <div class="sm:col-span-12">
+        <div class="flex items-center">
+          <input type="checkbox" 
+                 name="bill_of_material[bom_items_attributes][NEW_RECORD][is_optional]" 
+                 value="1"
+                 class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+          <label class="ml-2 block text-sm text-gray-900">
+            This material is optional
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

@@ -79,6 +79,105 @@
       </div>
     <% end %>
 
+    <!-- Bill of Materials -->
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold text-gray-900">Bill of Materials</h2>
+        <div class="flex space-x-2">
+          <%= link_to "Manage BOMs", product_bill_of_materials_path(@product), class: "bg-indigo-600 text-white px-3 py-1 rounded-md text-sm hover:bg-indigo-700" %>
+          <% if @product.bill_of_materials.any? %>
+            <%= link_to "New Version", new_product_bill_of_material_path(@product), class: "bg-green-600 text-white px-3 py-1 rounded-md text-sm hover:bg-green-700" %>
+          <% else %>
+            <%= link_to "Create BOM", new_product_bill_of_material_path(@product), class: "bg-green-600 text-white px-3 py-1 rounded-md text-sm hover:bg-green-700" %>
+          <% end %>
+        </div>
+      </div>
+
+      <% if @product.bill_of_materials.any? %>
+        <% active_bom = @product.bill_of_materials.active.first %>
+        <% if active_bom %>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4">
+            <div>
+              <p class="text-sm font-medium text-gray-500">Active Version</p>
+              <p class="mt-1 text-lg font-bold text-gray-900"><%= active_bom.version %></p>
+              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                Active
+              </span>
+            </div>
+
+            <div>
+              <p class="text-sm font-medium text-gray-500">Total Materials</p>
+              <p class="mt-1 text-lg font-bold text-gray-900"><%= active_bom.bom_items.count %></p>
+              <p class="text-xs text-gray-500">components</p>
+            </div>
+
+            <div>
+              <p class="text-sm font-medium text-gray-500">Material Cost</p>
+              <p class="mt-1 text-lg font-bold text-gray-900">$<%= number_with_precision(active_bom.total_cost || 0, precision: 2) %></p>
+              <p class="text-xs text-gray-500">per unit</p>
+            </div>
+
+            <div>
+              <p class="text-sm font-medium text-gray-500">Manufacturing Status</p>
+              <% if active_bom.required_materials_available? %>
+                <p class="mt-1 text-lg font-bold text-green-600">Ready</p>
+                <p class="text-xs text-green-600">All materials available</p>
+              <% else %>
+                <p class="mt-1 text-lg font-bold text-red-600">Materials Missing</p>
+                <p class="text-xs text-red-600"><%= pluralize(active_bom.missing_materials.count, 'material') %> short</p>
+              <% end %>
+            </div>
+          </div>
+
+          <% unless active_bom.required_materials_available? %>
+            <div class="rounded-md bg-red-50 p-4 mb-4">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <h3 class="text-sm font-medium text-red-800">
+                    Cannot manufacture: Insufficient materials
+                  </h3>
+                  <div class="mt-2 text-sm text-red-700">
+                    <p>Missing materials: <%= active_bom.missing_materials.map { |item| item.material.name }.join(", ") %></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+
+          <div class="mt-4">
+            <%= link_to "View BOM Details", product_bill_of_material_path(@product, active_bom), class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium" %>
+          </div>
+        <% else %>
+          <div class="text-center py-8">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No active BOM</h3>
+            <p class="mt-1 text-sm text-gray-500">BOMs exist but none are activated. Activate one to enable manufacturing.</p>
+            <div class="mt-6">
+              <%= link_to "Manage BOMs", product_bill_of_materials_path(@product), class: "inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500" %>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="text-center py-8">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">No BOMs defined</h3>
+          <p class="mt-1 text-sm text-gray-500">Create a bill of materials to specify manufacturing requirements.</p>
+          <div class="mt-6">
+            <%= link_to "Create BOM", new_product_bill_of_material_path(@product), class: "inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
     <!-- Inventory Information -->
     <div class="bg-white rounded-lg shadow p-6 mb-6">
       <div class="flex justify-between items-center mb-4">
@@ -144,8 +243,8 @@
                   <%= transaction.created_at.strftime("%m/%d/%Y %I:%M %p") %> by <%= transaction.user&.name %>
                 </p>
               </div>
-              <span class="text-sm font-medium <%= transaction.quantity > 0 ? 'text-green-600' : 'text-red-600' %>">
-                <%= transaction.quantity > 0 ? '+' : '' %><%= transaction.quantity %>
+              <span class="text-sm font-medium <%= transaction.transaction_type == 'out' ? 'text-red-600' : 'text-green-600' %>">
+                <%= transaction.transaction_type == 'out' ? '-' : '+' %><%= transaction.quantity %>
               </span>
             </div>
           <% end %>

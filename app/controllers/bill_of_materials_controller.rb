@@ -3,66 +3,78 @@ class BillOfMaterialsController < ApplicationController
   before_action :set_bill_of_material, only: [ :show, :edit, :update, :destroy, :activate, :copy ]
 
   def index
-    @bill_of_materials = @product.bill_of_materials.includes(:bom_items, :materials)
-                                 .order(created_at: :desc)
+    @bill_of_materials = @product.bill_of_materials.includes(bom_items: :material).order(:version)
+    @active_bom = @bill_of_materials.active.first
   end
 
   def show
-    @bom_items = @bill_of_material.bom_items.includes(:material).order(:sequence_number, :id)
+    @bom_items = @bill_of_material.bom_items.includes(:material).order(:sequence_number)
   end
 
   def new
     @bill_of_material = @product.bill_of_materials.build
-    @materials = Material.active.order(:name)
+    @bill_of_material.version = generate_next_version
+    @bill_of_material.bom_items.build # Start with one empty BOM item
   end
 
   def create
     @bill_of_material = @product.bill_of_materials.build(bill_of_material_params)
+    @bill_of_material.version = generate_next_version
 
-    if @bill_of_material.save
-      redirect_to [ @product, @bill_of_material ], notice: "Bill of materials created successfully."
-    else
-      @materials = Material.active.order(:name)
-      render :new
+    respond_to do |format|
+      if @bill_of_material.save
+        format.html { redirect_to [ @product, @bill_of_material ], notice: "Bill of Material was successfully created." }
+        format.json { render :show, status: :created, location: [ @product, @bill_of_material ] }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @bill_of_material.errors, status: :unprocessable_entity }
+      end
     end
   end
 
   def edit
-    @materials = Material.active.order(:name)
   end
 
   def update
-    if @bill_of_material.update(bill_of_material_params)
-      redirect_to [ @product, @bill_of_material ], notice: "Bill of materials updated successfully."
-    else
-      @materials = Material.active.order(:name)
-      render :edit
+    respond_to do |format|
+      if @bill_of_material.update(bill_of_material_params)
+        format.html { redirect_to [ @product, @bill_of_material ], notice: "Bill of Material was successfully updated." }
+        format.json { render :show, status: :ok, location: [ @product, @bill_of_material ] }
+      else
+        # ✅ Add debugging information
+        Rails.logger.error "BOM Update Error: #{@bill_of_material.errors.full_messages}"
+        @bill_of_material.bom_items.each_with_index do |item, index|
+          Rails.logger.error "BOM Item #{index}: #{item.errors.full_messages}" if item.errors.any?
+        end
+
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @bill_of_material.errors, status: :unprocessable_entity }
+      end
     end
   end
 
   def destroy
-    @bill_of_material.destroy
-    redirect_to [ @product, :bill_of_materials ], notice: "Bill of materials deleted successfully."
+    @bill_of_material.destroy!
+
+    respond_to do |format|
+      format.html { redirect_to product_bill_of_materials_path(@product), notice: "Bill of Material was successfully deleted." }
+      format.json { head :no_content }
+    end
   end
 
   def activate
-    @product.bill_of_materials.update_all(is_active: false)
-    @bill_of_material.update!(is_active: true)
-    redirect_to [ @product, @bill_of_material ], notice: "Bill of materials activated successfully."
+    @bill_of_material.activate!
+    redirect_to product_bill_of_materials_path(@product), notice: "Bill of Material activated successfully."
   end
 
   def copy
-    new_bom = @bill_of_material.dup
-    new_bom.version = next_version
-    new_bom.is_active = false
-
-    if new_bom.save
-      @bill_of_material.bom_items.each do |item|
-        new_bom.bom_items.create!(item.attributes.except("id", "bill_of_material_id", "created_at", "updated_at"))
-      end
-      redirect_to [ @product, new_bom ], notice: "Bill of materials copied successfully."
+    new_bom = @bill_of_material.copy_to_new_version
+    if new_bom.persisted?
+      redirect_to edit_product_bill_of_material_path(@product, new_bom),
+                  notice: "BOM copied to version #{new_bom.version}. You can now modify it."
     else
-      redirect_to [ @product, @bill_of_material ], alert: "Failed to copy bill of materials."
+      redirect_to product_bill_of_materials_path(@product),
+                  alert: "Failed to copy BOM."
     end
   end
 
@@ -77,15 +89,17 @@ class BillOfMaterialsController < ApplicationController
   end
 
   def bill_of_material_params
-    params.require(:bill_of_material).permit(:version, :description, :effective_date, :notes,
-      bom_items_attributes: [ :id, :material_id, :quantity, :unit_of_measure, :notes,
-                             :sequence_number, :is_optional, :_destroy ])
+    params.require(:bill_of_material).permit(
+      :description, :notes, :is_active,
+      bom_items_attributes: [
+        :id, :material_id, :quantity, :unit_of_measure,
+        :sequence_number, :notes, :is_optional, :_destroy
+      ]
+    )
   end
 
-  def next_version
-    last_version = @product.bill_of_materials.maximum(:version) || "1.0"
-    version_parts = last_version.split(".").map(&:to_i)
-    version_parts[1] += 1
-    version_parts.join(".")
+  def generate_next_version
+    existing_count = @product.bill_of_materials.count
+    "#{existing_count + 1}.0"
   end
 end

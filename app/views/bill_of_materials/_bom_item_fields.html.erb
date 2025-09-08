@@ -1,0 +1,74 @@
+<div class="bom-item bg-white border border-gray-200 rounded-lg p-4 mb-4" data-rails-generated="true">
+  <%= form.hidden_field :_destroy %>
+  
+  <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-12">
+    <div class="sm:col-span-1">
+      <%= form.label :sequence_number, "Seq", class: "block text-sm font-medium text-gray-700" %>
+      <div class="mt-1">
+        <%= form.number_field :sequence_number, 
+            class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+            placeholder: "1",
+            min: 1 %>
+      </div>
+    </div>
+
+    <div class="sm:col-span-4">
+      <%= form.label :material_id, "Material", class: "block text-sm font-medium text-gray-700" %>
+      <div class="mt-1">
+        <%= form.collection_select :material_id, 
+            Material.active.order(:name), 
+            :id, 
+            ->(material) { "#{material.name} (#{material.code})#{material.current_cost ? " - $#{material.current_cost}" : ''}" },
+            { prompt: "Select a material..." },
+            { 
+              class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+              required: true
+            } %>
+      </div>
+    </div>
+
+    <div class="sm:col-span-2">
+      <%= form.label :quantity, "Quantity", class: "block text-sm font-medium text-gray-700" %>
+      <div class="mt-1">
+        <%= form.number_field :quantity, 
+            step: 0.01,
+            min: 0.01,
+            class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+            placeholder: "1.0",
+            required: true %>
+      </div>
+    </div>
+
+    <div class="sm:col-span-2">
+      <%= form.label :unit_of_measure, "Unit", class: "block text-sm font-medium text-gray-700" %>
+      <div class="mt-1">
+        <%= form.text_field :unit_of_measure, 
+            class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+            placeholder: "pieces, kg, m" %>
+      </div>
+    </div>
+
+    <div class="sm:col-span-2">
+      <div class="flex items-center space-x-3 mt-6">
+        <div class="flex items-center">
+          <%= form.check_box :is_optional, class: "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" %>
+          <%= form.label :is_optional, "Optional", class: "ml-2 block text-sm text-gray-900" %>
+        </div>
+        <button type="button" 
+                class="remove-bom-item text-red-600 hover:text-red-800 text-sm font-medium">
+          Remove
+        </button>
+      </div>
+    </div>
+
+    <div class="sm:col-span-12">
+      <%= form.label :notes, "Notes", class: "block text-sm font-medium text-gray-700" %>
+      <div class="mt-1">
+        <%= form.text_area :notes, 
+            rows: 2,
+            class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+            placeholder: "Special instructions or notes for this material..." %>
+      </div>
+    </div>
+  </div>
+</div>

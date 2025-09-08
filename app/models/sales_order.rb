@@ -34,42 +34,39 @@ class SalesOrder < ApplicationRecord
   end
 
   def can_be_fulfilled?
-    sales_order_items.all? { |item| item.stock_sufficient? }
+    # Check both product stock and material availability
+    return false unless sales_order_items.all? { |item| item.stock_sufficient? }
+
+    # Check if materials are available for manufacturing
+    manufacturing_service = ManufacturingService.new(self)
+    manufacturing_service.materials_available_for_order?
   end
 
   def fulfill_order!
-    return false unless can_be_fulfilled?
+    # Use the manufacturing service to handle both product and material inventory
+    ManufacturingService.fulfill_order_with_materials(self)
+  end
 
-    ActiveRecord::Base.transaction do
-      sales_order_items.each do |item|
-        # Reduce inventory
-        new_stock = item.product.stock_quantity - item.quantity
-        item.product.update!(stock_quantity: [ new_stock, 0 ].max)
-
-        # Create inventory transaction
-        InventoryTransaction.create!(
-          item: item.product,
-          transaction_type: "out",
-          quantity: item.quantity,
-          reference_type: "SalesOrder",
-          reference_id: self.id,
-          notes: "Sold to #{customer.name} - Order ##{id}",
-          user: user
-        )
-      end
-
-      update!(order_status: "completed", completed_at: Time.current)
-    end
-    true
+  def material_shortages
+    manufacturing_service = ManufacturingService.new(self)
+    manufacturing_service.get_material_shortages
   end
 
   def stock_warnings
     warnings = []
+
+    # Product stock warnings
     sales_order_items.each do |item|
       if item.product.stock_quantity < item.quantity
         warnings << "#{item.product.name}: Need #{item.quantity}, have #{item.product.stock_quantity}"
       end
     end
+
+    # Material shortage warnings
+    material_shortages.each do |shortage|
+      warnings << "#{shortage[:product]} - Material #{shortage[:material]}: Need #{shortage[:needed]}, have #{shortage[:available]} (shortage: #{shortage[:shortage]})"
+    end
+
     warnings
   end
 
