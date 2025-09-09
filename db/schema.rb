@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_08_115821) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_09_082849) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -182,6 +182,29 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_08_115821) do
     t.index ["is_active"], name: "index_materials_on_is_active"
   end
 
+  create_table "production_orders", force: :cascade do |t|
+    t.bigint "sales_order_id"
+    t.bigint "product_id", null: false
+    t.bigint "bill_of_material_id", null: false
+    t.integer "quantity", default: 1, null: false
+    t.integer "priority", default: 0, null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "due_date"
+    t.datetime "scheduled_start"
+    t.datetime "scheduled_completion"
+    t.datetime "started_at"
+    t.datetime "completed_at"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bill_of_material_id"], name: "index_production_orders_on_bill_of_material_id"
+    t.index ["due_date", "priority"], name: "index_production_orders_on_due_date_and_priority"
+    t.index ["priority"], name: "index_production_orders_on_priority"
+    t.index ["product_id"], name: "index_production_orders_on_product_id"
+    t.index ["sales_order_id"], name: "index_production_orders_on_sales_order_id"
+    t.index ["status"], name: "index_production_orders_on_status"
+  end
+
   create_table "products", force: :cascade do |t|
     t.string "product_id"
     t.string "name"
@@ -262,6 +285,28 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_08_115821) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  create_table "work_orders", force: :cascade do |t|
+    t.bigint "production_order_id", null: false
+    t.string "work_station_name", null: false
+    t.string "step_name", null: false
+    t.text "step_description"
+    t.integer "sequence", default: 1, null: false
+    t.integer "status", default: 0, null: false
+    t.integer "estimated_minutes", default: 60
+    t.integer "actual_minutes"
+    t.bigint "assigned_employee_id"
+    t.datetime "started_at"
+    t.datetime "completed_at"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assigned_employee_id"], name: "index_work_orders_on_assigned_employee_id"
+    t.index ["production_order_id", "sequence"], name: "index_work_orders_on_production_order_id_and_sequence", unique: true
+    t.index ["production_order_id"], name: "index_work_orders_on_production_order_id"
+    t.index ["status"], name: "index_work_orders_on_status"
+    t.index ["work_station_name"], name: "index_work_orders_on_work_station_name"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "bill_of_materials", "products"
@@ -274,10 +319,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_08_115821) do
   add_foreign_key "employees", "employees", column: "supervisor_id"
   add_foreign_key "inventory_adjustments", "users"
   add_foreign_key "inventory_transactions", "users"
+  add_foreign_key "production_orders", "bill_of_materials"
+  add_foreign_key "production_orders", "products"
+  add_foreign_key "production_orders", "sales_orders"
   add_foreign_key "sales_order_items", "products"
   add_foreign_key "sales_order_items", "sales_orders"
   add_foreign_key "sales_orders", "customers"
   add_foreign_key "sales_orders", "employees"
   add_foreign_key "sales_orders", "users"
   add_foreign_key "users", "employees"
+  add_foreign_key "work_orders", "employees", column: "assigned_employee_id"
+  add_foreign_key "work_orders", "production_orders"
 end

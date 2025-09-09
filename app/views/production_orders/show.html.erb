@@ -1,0 +1,208 @@
+<% content_for :title, @production_order.display_name %>
+
+<div class="mx-auto md:w-4/5 w-full">
+  <!-- Header -->
+  <div class="flex justify-between items-start mb-6">
+    <div>
+      <h1 class="font-bold text-4xl"><%= @production_order.display_name %></h1>
+      <p class="text-gray-600 mt-2">Created on <%= @production_order.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+    </div>
+    <div class="text-right">
+      <span class="px-3 py-1 text-sm font-medium rounded-full <%= @production_order.status_color %>">
+        <%= @production_order.status.humanize %>
+      </span>
+      <span class="ml-2 px-3 py-1 text-sm font-medium rounded-full <%= @production_order.priority_color %>">
+        <%= @production_order.priority.humanize %> Priority
+      </span>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Main Information -->
+    <div class="lg:col-span-2 space-y-6">
+      <!-- Production Details -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Production Details</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p class="text-sm font-medium text-gray-500">Product</p>
+            <p class="mt-1 text-sm text-gray-900"><%= @production_order.product.name %></p>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-gray-500">Quantity</p>
+            <p class="mt-1 text-sm text-gray-900"><%= @production_order.quantity %> units</p>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-gray-500">Bill of Materials</p>
+            <p class="mt-1 text-sm text-gray-900">Version <%= @production_order.bill_of_material.version %></p>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-gray-500">Due Date</p>
+            <p class="mt-1 text-sm text-gray-900">
+              <%= @production_order.due_date&.strftime("%B %d, %Y") || "Not set" %>
+              <% if @production_order.overdue? %>
+                <span class="text-red-600 font-medium">OVERDUE</span>
+              <% end %>
+            </p>
+          </div>
+          <% if @production_order.sales_order %>
+            <div>
+              <p class="text-sm font-medium text-gray-500">Sales Order</p>
+              <p class="mt-1 text-sm text-gray-900">
+                <%= link_to @production_order.sales_order.order_id, @production_order.sales_order, class: "text-blue-600 hover:text-blue-800" %>
+              </p>
+            </div>
+          <% end %>
+        </div>
+        
+        <% if @production_order.notes.present? %>
+          <div class="mt-4">
+            <p class="text-sm font-medium text-gray-500">Notes</p>
+            <p class="mt-1 text-sm text-gray-900"><%= @production_order.notes %></p>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Work Orders -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Work Orders</h2>
+        <% if @work_orders.any? %>
+          <div class="space-y-4">
+            <% @work_orders.each do |work_order| %>
+              <div class="border border-gray-200 rounded-lg p-4">
+                <div class="flex justify-between items-start">
+                  <div class="flex-1">
+                    <div class="flex items-center space-x-3">
+                      <span class="text-lg font-medium text-gray-900"><%= work_order.sequence %>.</span>
+                      <h3 class="text-lg font-medium text-gray-900"><%= work_order.step_name %></h3>
+                      <span class="px-2 py-1 text-xs font-medium rounded-full <%= work_order.status_color %>">
+                        <%= work_order.status.humanize %>
+                      </span>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-1"><%= work_order.work_station_name %></p>
+                    <% if work_order.step_description.present? %>
+                      <p class="text-sm text-gray-500 mt-2"><%= work_order.step_description %></p>
+                    <% end %>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-sm text-gray-500 mb-3">
+                      <% if work_order.estimated_minutes %>
+                        <p>Est: <%= work_order.estimated_minutes %> min</p>
+                      <% end %>
+                      <% if work_order.actual_minutes %>
+                        <p>Actual: <%= work_order.actual_minutes %> min</p>
+                      <% end %>
+                      <% if work_order.assigned_employee %>
+                        <p>Assigned: <%= work_order.assigned_employee.name %></p>
+                      <% end %>
+                    </div>
+                    
+                    <!-- Work Order Actions -->
+                    <div class="flex flex-col space-y-2">
+                      <% if work_order.status == 'queued' && !work_order.assigned_employee %>
+                        <%= form_with model: [@production_order, work_order], 
+                            url: production_order_work_order_path(@production_order, work_order),
+                            method: :patch, local: true, class: "mb-2" do |f| %>
+                          <%= f.collection_select :assigned_employee_id, Employee.active, :id, :name, 
+                              { prompt: "Assign Employee" }, 
+                              { class: "text-xs px-2 py-1 border rounded", onchange: "this.form.submit();" } %>
+                        <% end %>
+                      <% end %>
+                      
+                      <% if work_order.status == 'queued' && work_order.assigned_employee %>
+                        <%= button_to "Start Work", start_work_production_order_work_order_path(@production_order, work_order),
+                            method: :patch,
+                            class: "text-xs bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700",
+                            data: { "turbo-confirm": "Start work on this step?" } %>
+                      <% end %>
+                      
+                      <% if work_order.status == 'in_progress' %>
+                        <%= form_with model: [@production_order, work_order], 
+                            url: complete_work_production_order_work_order_path(@production_order, work_order),
+                            method: :patch, local: true, class: "flex items-center space-x-1" do |f| %>
+                          <%= f.number_field :actual_minutes, placeholder: "Minutes", 
+                              class: "text-xs px-2 py-1 border rounded w-20", required: true %>
+                          <%= f.submit "Complete", class: "text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700" %>
+                        <% end %>
+                      <% end %>
+                      
+                      <% if work_order.status == 'completed' %>
+                        <span class="text-xs text-green-600 font-medium">✓ Completed</span>
+                        <% if work_order.efficiency_percentage > 0 %>
+                          <span class="text-xs text-gray-500">Efficiency: <%= work_order.efficiency_percentage %>%</span>
+                        <% end %>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-gray-500">No work orders created yet.</p>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="space-y-6">
+      <!-- Progress -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Progress</h2>
+        <div class="mb-4">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-medium text-gray-700">Completion</span>
+            <span class="text-sm font-medium text-gray-700"><%= @production_order.completion_percentage %>%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div class="bg-purple-600 h-2 rounded-full" style="width: <%= @production_order.completion_percentage %>%"></div>
+          </div>
+        </div>
+        
+        <% if @production_order.current_work_order %>
+          <div class="text-sm">
+            <p class="font-medium text-gray-700">Current Step:</p>
+            <p class="text-gray-600"><%= @production_order.current_work_order.step_name %></p>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Actions -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Actions</h2>
+        <div class="space-y-3">
+          <% if @production_order.pending? || @production_order.material_allocated? %>
+            <%= button_to "Start Production", start_production_order_path(@production_order), 
+                method: :patch,
+                class: "w-full bg-green-600 text-white text-center px-4 py-2 rounded-md hover:bg-green-700 block",
+                data: { "turbo-confirm": "Start production for this order?" },
+                form_class: "w-full" %>
+          <% end %>
+          
+          <% if @production_order.in_production? || @production_order.quality_check? %>
+            <%= button_to "Complete Production", complete_production_order_path(@production_order), 
+                method: :patch,
+                class: "w-full bg-blue-600 text-white text-center px-4 py-2 rounded-md hover:bg-blue-700 block",
+                data: { "turbo-confirm": "Mark production as complete?" },
+                form_class: "w-full" %>
+          <% end %>
+          
+          <%= link_to "Edit", edit_production_order_path(@production_order), 
+              class: "w-full bg-yellow-600 text-white text-center px-4 py-2 rounded-md hover:bg-yellow-700 block" %>
+          
+          <% if @production_order.pending? || @production_order.material_allocated? %>
+            <%= link_to "Delete", production_order_path(@production_order), 
+                method: :delete,
+                class: "w-full bg-red-600 text-white text-center px-4 py-2 rounded-md hover:bg-red-700 block",
+                data: { "turbo-confirm": "Are you sure you want to delete this production order?" } %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back Button -->
+  <div class="mt-8">
+    <%= link_to "← Back to Production Orders", production_orders_path, class: "text-purple-600 hover:text-purple-800 font-medium" %>
+  </div>
+</div>

@@ -1,0 +1,81 @@
+<% content_for :title, "New Production Order" %>
+
+<div class="max-w-2xl mx-auto">
+  <%= form_with model: @production_order, local: true, class: "space-y-6" do |f| %>
+    <% if @production_order.errors.any? %>
+      <div id="error_explanation" class="bg-red-50 border border-red-200 rounded-md p-4">
+        <h2 class="text-red-800 font-medium">
+          <%= pluralize(@production_order.errors.count, "error") %> prohibited this production order from being saved:
+        </h2>
+        <ul class="mt-2 text-red-700 text-sm">
+          <% @production_order.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="bg-white shadow sm:rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Production Order Details</h3>
+        
+        <div class="space-y-4">
+          <div>
+            <%= f.label :product_id, "Product", class: "block text-sm font-medium text-gray-700" %>
+            <%= f.collection_select :product_id, Product.all, :id, :name, 
+                { prompt: "Select a product" }, 
+                { class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" } %>
+          </div>
+
+          <div>
+            <%= f.label :bill_of_material_id, "Bill of Materials", class: "block text-sm font-medium text-gray-700" %>
+            <%= f.collection_select :bill_of_material_id, 
+                BillOfMaterial.active.includes(:product), 
+                :id, 
+                ->(bom) { "#{bom.product.name} - Version #{bom.version}" },
+                { prompt: "Select a BOM" }, 
+                { class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" } %>
+          </div>
+
+          <div>
+            <%= f.label :quantity, class: "block text-sm font-medium text-gray-700" %>
+            <%= f.number_field :quantity, class: "mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md", min: 1 %>
+          </div>
+
+          <div>
+            <%= f.label :priority, class: "block text-sm font-medium text-gray-700" %>
+            <%= f.select :priority, 
+                ProductionOrder.priorities.map { |key, value| [key.humanize, key] },
+                { prompt: "Select priority" },
+                { class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" } %>
+          </div>
+
+          <div>
+            <%= f.label :due_date, class: "block text-sm font-medium text-gray-700" %>
+            <%= f.date_field :due_date, class: "mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" %>
+          </div>
+
+          <div>
+            <%= f.label :sales_order_id, "Sales Order (Optional)", class: "block text-sm font-medium text-gray-700" %>
+            <%= f.collection_select :sales_order_id, 
+                SalesOrder.where(fulfillment_type: 'make_to_order'), 
+                :id, 
+                ->(so) { "SO##{so.id} - #{so.customer.name}" },
+                { prompt: "Select a sales order (optional)" }, 
+                { class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" } %>
+          </div>
+
+          <div>
+            <%= f.label :notes, class: "block text-sm font-medium text-gray-700" %>
+            <%= f.text_area :notes, rows: 3, class: "shadow-sm focus:ring-blue-500 focus:border-blue-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md" %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end space-x-3">
+      <%= link_to "Cancel", production_orders_path, class: "bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+      <%= f.submit "Create Production Order", class: "ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+    </div>
+  <% end %>
+</div>

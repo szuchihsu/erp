@@ -1,17 +1,22 @@
 Rails.application.routes.draw do
-  get "design_requests/index"
-  get "design_requests/show"
-  get "design_requests/new"
-  get "design_requests/create"
-  get "design_requests/edit"
-  get "design_requests/update"
-  get "design_requests/approve"
-  get "design_requests/reject"
-  get "design_requests/assign"
   devise_for :users
   root "dashboard#index"
 
   get "dashboard", to: "dashboard#index"
+
+  # Production system
+  resources :production_orders do
+    member do
+      patch :start
+      patch :complete
+    end
+    resources :work_orders, only: [ :show, :edit, :update ] do
+      member do
+        patch :start_work
+        patch :complete_work
+      end
+    end
+  end
 
   resources :employees
   resources :customers

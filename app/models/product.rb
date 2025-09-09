@@ -1,9 +1,10 @@
 class Product < ApplicationRecord
-  has_many :sales_order_items, dependent: :destroy
+  has_many :sales_order_items, dependent: :restrict_with_error
   has_many :sales_orders, through: :sales_order_items
-  has_many :inventory_transactions, as: :item, dependent: :destroy
-  has_many :inventory_adjustments, as: :item, dependent: :destroy
+  has_many :inventory_transactions, as: :item, dependent: :restrict_with_error
+  has_many :inventory_adjustments, as: :item, dependent: :restrict_with_error
   has_many :bill_of_materials, dependent: :destroy
+  has_many :production_orders, dependent: :restrict_with_error
   has_one :current_bom, -> { where(is_active: true) }, class_name: "BillOfMaterial"
 
   validates :product_id, presence: true, uniqueness: true

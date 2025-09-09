@@ -1,0 +1,172 @@
+<% content_for :title, "Production Orders" %>
+
+<div class="w-full">
+  <!-- Header Section -->
+  <div class="mb-8">
+    <div class="flex justify-between items-center">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">Production Orders</h1>
+        <p class="mt-2 text-gray-600">Manage manufacturing and production workflow</p>
+      </div>
+      <div class="flex space-x-3">
+        <%= link_to new_production_order_path, 
+            class: "bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md font-medium inline-flex items-center" do %>
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+          New Production Order
+        <% end %>
+        <%= link_to dashboard_path, 
+            class: "bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md font-medium inline-flex items-center" do %>
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+          </svg>
+          Back to Dashboard
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+    <h3 class="text-lg font-medium text-gray-900 mb-4">Filter Production Orders</h3>
+    <%= form_with url: production_orders_path, method: :get, local: true, class: "grid grid-cols-1 md:grid-cols-4 gap-4" do |form| %>
+      <div>
+        <%= form.label :status, "Status", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.select :status, 
+            options_for_select([
+              ['All Statuses', ''],
+              ['Pending', 'pending'],
+              ['Material Allocated', 'material_allocated'],
+              ['In Production', 'in_production'],
+              ['Quality Check', 'quality_check'],
+              ['Completed', 'completed'],
+              ['On Hold', 'on_hold'],
+              ['Cancelled', 'cancelled']
+            ], params[:status]), 
+            {}, 
+            { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500" } %>
+      </div>
+
+      <div>
+        <%= form.label :priority, "Priority", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.select :priority, 
+            options_for_select([
+              ['All Priorities', ''],
+              ['Normal', 'normal'],
+              ['High', 'high'],
+              ['Urgent', 'urgent']
+            ], params[:priority]), 
+            {}, 
+            { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500" } %>
+      </div>
+
+      <div class="flex items-end">
+        <%= form.submit "Filter", class: "bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700" %>
+        <%= link_to "Clear", production_orders_path, class: "ml-2 bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Production Orders Table -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <% if @production_orders.any? %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @production_orders.each do |production_order| %>
+              <tr class="hover:bg-gray-50 <%= 'bg-red-50' if production_order.overdue? %>">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">
+                      <%= link_to production_order.display_name, production_order, class: "text-purple-600 hover:text-purple-900" %>
+                    </div>
+                    <% if production_order.sales_order %>
+                      <div class="text-sm text-gray-500">
+                        Sales Order: <%= link_to production_order.sales_order.order_id, production_order.sales_order, class: "text-blue-600" %>
+                      </div>
+                    <% end %>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-900"><%= production_order.product.name %></div>
+                  <div class="text-sm text-gray-500">ID: <%= production_order.product.product_id %></div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <%= production_order.quantity %> units
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= production_order.status_color %>">
+                    <%= production_order.status.humanize %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= production_order.priority_color %>">
+                    <%= production_order.priority.humanize %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                      <div class="bg-purple-600 h-2 rounded-full" style="width: <%= production_order.completion_percentage %>%"></div>
+                    </div>
+                    <span class="text-sm text-gray-500"><%= production_order.completion_percentage %>%</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= production_order.due_date&.strftime("%m/%d/%Y") || "Not set" %>
+                  <% if production_order.overdue? %>
+                    <span class="text-red-600 font-medium">OVERDUE</span>
+                  <% end %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                  <%= link_to "View", production_order, class: "text-purple-600 hover:text-purple-900" %>
+                  <% if production_order.pending? || production_order.material_allocated? %>
+                    <%= button_to "Start", start_production_order_path(production_order), method: :patch, 
+                        class: "text-green-600 hover:text-green-900 bg-transparent border-0 p-0 inline",
+                        data: { "turbo-confirm": "Start production for this order?" },
+                        form_class: "inline" %>
+                  <% end %>
+                  <% if production_order.in_production? || production_order.quality_check? %>
+                    <%= button_to "Complete", complete_production_order_path(production_order), method: :patch,
+                        class: "text-blue-600 hover:text-blue-900 bg-transparent border-0 p-0 inline",
+                        data: { "turbo-confirm": "Mark production as complete?" },
+                        form_class: "inline" %>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="px-6 py-12 text-center">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No production orders</h3>
+        <p class="mt-1 text-sm text-gray-500">Get started by creating a new production order.</p>
+        <div class="mt-6">
+          <%= link_to new_production_order_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700" do %>
+            <svg class="-ml-1 mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+            </svg>
+            New Production Order
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

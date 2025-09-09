@@ -6,6 +6,7 @@ class Employee < ApplicationRecord
   has_one :user
   has_many :sales_orders, dependent: :destroy
   has_many :assigned_design_requests, class_name: "DesignRequest", foreign_key: "assigned_designer_id"
+  has_many :work_orders, foreign_key: "assigned_employee_id", dependent: :nullify
 
   validates :employee_id, presence: true, uniqueness: true
   validates :name, presence: true

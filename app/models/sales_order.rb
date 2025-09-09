@@ -5,6 +5,7 @@ class SalesOrder < ApplicationRecord
   has_many :sales_order_items, dependent: :destroy
   has_many :products, through: :sales_order_items
   has_one :design_request, dependent: :destroy
+  has_many :production_orders, dependent: :destroy
 
   # Update validation to match new enum values
   validates :order_status, presence: true, inclusion: {
