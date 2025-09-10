@@ -1,4 +1,6 @@
 class MaterialsController < ApplicationController
+  before_action :authorize_material_management!, except: [ :index, :show ]
+  before_action :authorize_supervisor!, only: [ :index, :show ]
   before_action :set_material, only: [ :show, :edit, :update, :destroy ]
 
   def index

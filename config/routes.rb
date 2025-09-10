@@ -4,6 +4,9 @@ Rails.application.routes.draw do
 
   get "dashboard", to: "dashboard#index"
 
+  # User management (admin only)
+  resources :users
+
   # Production system
   resources :production_orders do
     member do

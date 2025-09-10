@@ -1,4 +1,6 @@
 class CustomersController < ApplicationController
+  before_action :authorize_customer_management!, except: [ :index, :show ]
+  before_action :authorize_supervisor!, only: [ :index, :show ]
   before_action :set_customer, only: %i[ show edit update destroy ]
 
   # GET /customers or /customers.json

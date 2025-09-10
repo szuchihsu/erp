@@ -1,0 +1,81 @@
+<div class="bg-white shadow rounded-lg">
+  <div class="px-4 py-5 sm:p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold text-gray-900">User Management</h1>
+      <%= link_to "Add New User", new_user_path, class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md" %>
+    </div>
+
+    <!-- Role Filter -->
+    <div class="mb-4">
+      <%= form_with url: users_path, method: :get, local: true, class: "flex gap-2" do |form| %>
+        <%= form.select :role, 
+            options_for_select([["All Roles", ""]] + User::ROLES.map { |role| [role.humanize, role] }, params[:role]), 
+            {}, 
+            { class: "border-gray-300 rounded-md" } %>
+        <%= form.submit "Filter", class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md" %>
+      <% end %>
+    </div>
+
+    <!-- Users Table -->
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% @users.each do |user| %>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900"><%= user.username %></div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900"><%= user.name %></div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                  <%= case user.role
+                      when 'admin' then 'bg-red-100 text-red-800'
+                      when 'manager' then 'bg-purple-100 text-purple-800'
+                      when 'supervisor' then 'bg-blue-100 text-blue-800'
+                      else 'bg-gray-100 text-gray-800'
+                      end %>">
+                  <%= user.role&.humanize %>
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <%= user.employee&.name || "Not Assigned" %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <%= user.created_at.strftime("%m/%d/%Y") %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <div class="flex space-x-2">
+                  <%= link_to "View", user, class: "text-blue-600 hover:text-blue-900" %>
+                  <%= link_to "Edit", edit_user_path(user), class: "text-indigo-600 hover:text-indigo-900" %>
+                  <% unless user == current_user %>
+                    <%= link_to "Delete", user, method: :delete, 
+                        data: { confirm: "Are you sure?" }, 
+                        class: "text-red-600 hover:text-red-900" %>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <% if @users.empty? %>
+      <div class="text-center py-8">
+        <p class="text-gray-500">No users found.</p>
+      </div>
+    <% end %>
+  </div>
+</div>

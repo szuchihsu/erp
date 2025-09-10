@@ -1,4 +1,6 @@
 class DesignRequestsController < ApplicationController
+  before_action :authorize_design_management!, except: [ :index, :show ]
+  before_action :authorize_supervisor!, only: [ :index, :show ]
   before_action :set_design_request, only: [ :show, :edit, :update, :approve, :reject, :assign, :destroy ]
 
   def index

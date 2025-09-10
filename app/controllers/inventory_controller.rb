@@ -1,6 +1,6 @@
 # app/controllers/inventory_controller.rb
 class InventoryController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authorize_inventory_management!
 
   def index
     @low_stock_products = Product.low_stock.includes(:inventory_transactions)

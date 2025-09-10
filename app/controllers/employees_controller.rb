@@ -1,4 +1,6 @@
 class EmployeesController < ApplicationController
+  before_action :authorize_employee_management!, except: [ :show, :index ]
+  before_action :authorize_supervisor!, only: [ :show, :index ]
   before_action :set_employee, only: %i[ show edit update destroy ]
 
   # GET /employees or /employees.json

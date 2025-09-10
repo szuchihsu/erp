@@ -1,5 +1,5 @@
 class WorkOrdersController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authorize_work_order_access!
   before_action :set_production_order
   before_action :set_work_order, only: [ :show, :edit, :update, :start_work, :complete_work ]
 

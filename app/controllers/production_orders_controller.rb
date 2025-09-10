@@ -1,4 +1,6 @@
 class ProductionOrdersController < ApplicationController
+  before_action :authorize_production_management!, except: [ :index, :show ]
+  before_action :authorize_supervisor!, only: [ :index, :show ]
   before_action :set_production_order, only: [ :show, :edit, :update, :destroy, :start, :complete ]
 
   def index

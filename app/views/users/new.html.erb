@@ -1,0 +1,65 @@
+<div class="bg-white shadow rounded-lg">
+  <div class="px-4 py-5 sm:p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold text-gray-900">Create New User</h1>
+      <%= link_to "← Back to Users", users_path, class: "text-blue-600 hover:text-blue-800" %>
+    </div>
+
+    <%= form_with model: @user, local: true, class: "space-y-6" do |form| %>
+      <% if @user.errors.any? %>
+        <div class="bg-red-50 border border-red-200 rounded-md p-4">
+          <h3 class="text-sm font-medium text-red-800">Please fix the following errors:</h3>
+          <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+            <% @user.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <%= form.label :username, class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.text_field :username, class: "w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+        </div>
+
+        <div>
+          <%= form.label :name, class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.text_field :name, class: "w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+        </div>
+
+        <div>
+          <%= form.label :role, class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.select :role, 
+              options_for_select(User::ROLES.map { |role| [role.humanize, role] }), 
+              { prompt: "Select a role" },
+              { class: "w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+        </div>
+
+        <div>
+          <%= form.label :employee_id, "Employee", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.select :employee_id,
+              options_for_select([["None", ""]] + @employees.map { |emp| [emp.name, emp.id] }),
+              {},
+              { class: "w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+        </div>
+
+        <div>
+          <%= form.label :password, class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.password_field :password, class: "w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+          <p class="mt-1 text-sm text-gray-500">Leave blank for auto-generated password</p>
+        </div>
+
+        <div>
+          <%= form.label :password_confirmation, class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.password_field :password_confirmation, class: "w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-3">
+        <%= link_to "Cancel", users_path, class: "bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-md" %>
+        <%= form.submit "Create User", class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md" %>
+      </div>
+    <% end %>
+  </div>
+</div>

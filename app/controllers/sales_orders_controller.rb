@@ -1,5 +1,6 @@
 class SalesOrdersController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authorize_sales_order_creation!, except: [ :index, :show ]
+  before_action :authorize_supervisor!, only: [ :index, :show ]
   before_action :set_sales_order, only: %i[ show edit update destroy fulfill cancel ]
 
   # GET /sales_orders or /sales_orders.json
