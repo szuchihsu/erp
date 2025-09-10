@@ -5,6 +5,10 @@ class UsersController < ApplicationController
   def index
     @users = User.includes(:employee).order(:username)
     @users = @users.where(role: params[:role]) if params[:role].present?
+    @users = @users.where("username ILIKE ? OR name ILIKE ?", "%#{params[:search]}%", "%#{params[:search]}%") if params[:search].present?
+
+    @total_users = User.count
+    @role_counts = User.group(:role).count
   end
 
   def show
@@ -20,7 +24,7 @@ class UsersController < ApplicationController
     @user.password = params[:user][:password] || SecureRandom.hex(8)
 
     if @user.save
-      redirect_to users_path, notice: "User was successfully created."
+      redirect_to @user, notice: "User '#{@user.name}' was successfully created."
     else
       @employees = Employee.where.not(id: User.where.not(employee_id: nil).pluck(:employee_id))
       render :new, status: :unprocessable_entity
@@ -37,7 +41,7 @@ class UsersController < ApplicationController
     user_update_params.delete(:password) if user_update_params[:password].blank?
 
     if @user.update(user_update_params)
-      redirect_to users_path, notice: "User was successfully updated."
+      redirect_to @user, notice: "User '#{@user.name}' was successfully updated."
     else
       @employees = Employee.where.not(id: User.where.not(employee_id: nil).pluck(:employee_id))
       @employees = Employee.where(id: [ @user.employee_id ] + @employees.pluck(:id)).compact if @user.employee_id
@@ -49,8 +53,9 @@ class UsersController < ApplicationController
     if @user == current_user
       redirect_to users_path, alert: "You cannot delete your own account."
     else
+      user_name = @user.name
       @user.destroy
-      redirect_to users_path, notice: "User was successfully deleted."
+      redirect_to users_path, notice: "User '#{user_name}' was successfully deleted."
     end
   end
 

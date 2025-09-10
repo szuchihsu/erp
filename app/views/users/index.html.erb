@@ -5,15 +5,46 @@
       <%= link_to "Add New User", new_user_path, class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md" %>
     </div>
 
-    <!-- Role Filter -->
-    <div class="mb-4">
-      <%= form_with url: users_path, method: :get, local: true, class: "flex gap-2" do |form| %>
-        <%= form.select :role, 
-            options_for_select([["All Roles", ""]] + User::ROLES.map { |role| [role.humanize, role] }, params[:role]), 
-            {}, 
-            { class: "border-gray-300 rounded-md" } %>
-        <%= form.submit "Filter", class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md" %>
+    <!-- Role Filter and Search -->
+    <div class="mb-6 bg-gray-50 p-4 rounded-lg">
+      <%= form_with url: users_path, method: :get, local: true, class: "flex flex-col sm:flex-row gap-4" do |form| %>
+        <div class="flex-1">
+          <%= form.text_field :search, 
+              placeholder: "Search by username or name...", 
+              value: params[:search],
+              class: "w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+        </div>
+        <div>
+          <%= form.select :role, 
+              options_for_select([["All Roles", ""]] + User::ROLES.map { |role| [role.humanize, role] }, params[:role]), 
+              {}, 
+              { class: "border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+        </div>
+        <div class="flex space-x-2">
+          <%= form.submit "Filter", class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md" %>
+          <%= link_to "Clear", users_path, class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md" %>
+        </div>
       <% end %>
+    </div>
+
+    <!-- Stats Summary -->
+    <div class="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-blue-50 p-4 rounded-lg">
+        <div class="text-2xl font-bold text-blue-600"><%= @total_users %></div>
+        <div class="text-sm text-blue-600">Total Users</div>
+      </div>
+      <div class="bg-green-50 p-4 rounded-lg">
+        <div class="text-2xl font-bold text-green-600"><%= @role_counts['admin'].to_i + @role_counts['manager'].to_i %></div>
+        <div class="text-sm text-green-600">Admins & Managers</div>
+      </div>
+      <div class="bg-yellow-50 p-4 rounded-lg">
+        <div class="text-2xl font-bold text-yellow-600"><%= @role_counts['supervisor'].to_i %></div>
+        <div class="text-sm text-yellow-600">Supervisors</div>
+      </div>
+      <div class="bg-purple-50 p-4 rounded-lg">
+        <div class="text-2xl font-bold text-purple-600"><%= @users.where.not(employee_id: nil).count %></div>
+        <div class="text-sm text-purple-600">Linked to Employees</div>
+      </div>
     </div>
 
     <!-- Users Table -->
@@ -21,48 +52,86 @@
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee Link</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Active</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           <% @users.each do |user| %>
-            <tr>
+            <tr class="hover:bg-gray-50">
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900"><%= user.username %></div>
+                <div class="flex items-center">
+                  <div class="h-10 w-10 flex-shrink-0">
+                    <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                      <span class="text-sm font-medium text-gray-700">
+                        <%= user.name&.first&.upcase %>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="ml-4">
+                    <div class="text-sm font-medium text-gray-900"><%= user.name %></div>
+                    <div class="text-sm text-gray-500">@<%= user.username %></div>
+                  </div>
+                </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900"><%= user.name %></div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
                   <%= case user.role
                       when 'admin' then 'bg-red-100 text-red-800'
                       when 'manager' then 'bg-purple-100 text-purple-800'
                       when 'supervisor' then 'bg-blue-100 text-blue-800'
+                      when 'sales_rep' then 'bg-green-100 text-green-800'
+                      when 'designer' then 'bg-yellow-100 text-yellow-800'
+                      when 'production_worker' then 'bg-orange-100 text-orange-800'
+                      when 'inventory_clerk' then 'bg-indigo-100 text-indigo-800'
+                      when 'quality_control' then 'bg-pink-100 text-pink-800'
                       else 'bg-gray-100 text-gray-800'
                       end %>">
                   <%= user.role&.humanize %>
                 </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                <%= user.employee&.name || "Not Assigned" %>
+                <% if user.employee %>
+                  <div class="flex items-center">
+                    <svg class="h-4 w-4 text-green-500 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <%= user.employee.name %>
+                  </div>
+                  <div class="text-xs text-gray-500"><%= user.employee.department %></div>
+                <% else %>
+                  <span class="text-gray-400">Not linked</span>
+                <% end %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  Active
+                </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                <%= user.created_at.strftime("%m/%d/%Y") %>
+                <% if user.remember_created_at %>
+                  <%= time_ago_in_words(user.remember_created_at) %> ago
+                <% else %>
+                  <span class="text-gray-400">Never</span>
+                <% end %>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <div class="flex space-x-2">
-                  <%= link_to "View", user, class: "text-blue-600 hover:text-blue-900" %>
-                  <%= link_to "Edit", edit_user_path(user), class: "text-indigo-600 hover:text-indigo-900" %>
+                  <%= link_to "View", user, class: "text-blue-600 hover:text-blue-900 font-medium" %>
+                  <%= link_to "Edit", edit_user_path(user), class: "text-indigo-600 hover:text-indigo-900 font-medium" %>
                   <% unless user == current_user %>
-                    <%= link_to "Delete", user, method: :delete, 
-                        data: { confirm: "Are you sure?" }, 
-                        class: "text-red-600 hover:text-red-900" %>
+                    <%= link_to "Delete", user, 
+                        data: { 
+                          turbo_method: :delete,
+                          turbo_confirm: "Are you sure you want to delete #{user.name}? This action cannot be undone." 
+                        }, 
+                        class: "text-red-600 hover:text-red-900 font-medium" %>
+                  <% else %>
+                    <span class="text-gray-400 text-sm">(Current User)</span>
                   <% end %>
                 </div>
               </td>
