@@ -12,7 +12,7 @@ class Employee < ApplicationRecord
   validates :name, presence: true
   # validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :department, inclusion: {
-    in: [ "production", "quality", "sales", "admin", "design" ]
+    in: [ "admin", "management", "production", "quality", "sales", "design", "inventory" ]
   }, allow_blank: true
   validates :status, inclusion: { in: [ "active", "inactive", "terminated" ] }, allow_blank: true
 
