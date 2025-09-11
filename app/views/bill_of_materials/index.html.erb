@@ -1,19 +1,32 @@
-<div class="px-4 sm:px-6 lg:px-8">
-  <div class="sm:flex sm:items-center">
-    <div class="sm:flex-auto">
-      <h1 class="text-base font-semibold leading-6 text-gray-900">Bill of Materials</h1>
-      <p class="mt-2 text-sm text-gray-700">Manufacturing specifications for <%= @product.name %></p>
-    </div>
-    <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-      <%= link_to "New BOM Version", new_product_bill_of_material_path(@product), 
-          class: "block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+<div class="w-full">
+  <!-- Header Section -->
+  <div class="mb-8">
+    <div class="flex justify-between items-center">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">Bill of Materials</h1>
+        <p class="mt-2 text-gray-600">Manufacturing specifications for <%= @product.name %></p>
+      </div>
+      <div class="flex space-x-3">
+        <%= link_to new_product_bill_of_material_path(@product), 
+            class: "bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md font-medium inline-flex items-center" do %>
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+          New BOM Version
+        <% end %>
+        <%= link_to @product, 
+            class: "bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md font-medium inline-flex items-center" do %>
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          Back to Product
+        <% end %>
+      </div>
     </div>
   </div>
 
-  <div class="mt-8 flow-root">
-    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-      <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-        <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+  <!-- BOM Table -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <table class="min-w-full divide-y divide-gray-300">
             <thead class="bg-gray-50">
               <tr>
@@ -54,25 +67,27 @@
                   <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                     <%= bom.effective_date&.strftime("%m/%d/%Y") || "Not set" %>
                   </td>
-                  <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                    <%= link_to "View", [@product, bom], class: "text-indigo-600 hover:text-indigo-900 mr-4" %>
-                    <% unless bom.is_active %>
-                      <%= link_to "Edit", edit_product_bill_of_material_path(@product, bom), class: "text-indigo-600 hover:text-indigo-900 mr-4" %>
-                      <%= link_to "Activate", activate_product_bill_of_material_path(@product, bom), 
-                          method: :patch, 
-                          data: { confirm: "This will deactivate the current active BOM. Continue?" },
-                          class: "text-green-600 hover:text-green-900 mr-4" %>
-                    <% end %>
-                    <%= link_to "Copy", copy_product_bill_of_material_path(@product, bom), 
-                        method: :post,
-                        data: { confirm: "Create a new version based on this BOM?" },
-                        class: "text-blue-600 hover:text-blue-900 mr-4" %>
-                    <% unless bom.is_active %>
-                      <%= link_to "Delete", [@product, bom], 
-                          method: :delete,
-                          data: { confirm: "Are you sure? This action cannot be undone." },
-                          class: "text-red-600 hover:text-red-900" %>
-                    <% end %>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div class="flex space-x-2">
+                      <%= link_to "View", [@product, bom], class: "text-purple-600 hover:text-purple-900" %>
+                      <% unless bom.is_active %>
+                        <%= link_to "Edit", edit_product_bill_of_material_path(@product, bom), class: "text-gray-600 hover:text-gray-900" %>
+                        <%= link_to "Activate", activate_product_bill_of_material_path(@product, bom), 
+                            method: :patch, 
+                            data: { confirm: "This will deactivate the current active BOM. Continue?" },
+                            class: "text-green-600 hover:text-green-900" %>
+                      <% end %>
+                      <%= link_to "Copy", copy_product_bill_of_material_path(@product, bom), 
+                          method: :post,
+                          data: { confirm: "Create a new version based on this BOM?" },
+                          class: "text-blue-600 hover:text-blue-900" %>
+                      <% unless bom.is_active %>
+                        <%= link_to "Delete", [@product, bom], 
+                            method: :delete,
+                            data: { confirm: "Are you sure? This action cannot be undone." },
+                            class: "text-red-600 hover:text-red-900" %>
+                      <% end %>
+                    </div>
                   </td>
                 </tr>
               <% end %>
@@ -80,20 +95,24 @@
           </table>
           
           <% if @bill_of_materials.empty? %>
+            <!-- Empty State -->
             <div class="text-center py-12">
               <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              <h3 class="mt-2 text-sm font-medium text-gray-900">No BOMs found</h3>
+              <h3 class="mt-2 text-lg font-medium text-gray-900">No BOMs found</h3>
               <p class="mt-1 text-sm text-gray-500">Get started by creating your first bill of materials.</p>
               <div class="mt-6">
-                <%= link_to "New BOM Version", new_product_bill_of_material_path(@product), 
-                    class: "inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+                <%= link_to new_product_bill_of_material_path(@product), 
+                    class: "bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md font-medium inline-flex items-center" do %>
+                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                  </svg>
+                  New BOM Version
+                <% end %>
               </div>
             </div>
           <% end %>
-        </div>
-      </div>
-    </div>
   </div>
+</div>
 </div>
