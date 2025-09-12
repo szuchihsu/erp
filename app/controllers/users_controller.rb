@@ -66,6 +66,14 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:username, :name, :role, :employee_id, :password, :password_confirmation)
+    # Standard user parameters (safe for mass assignment)
+    base_params = params.require(:user).permit(:username, :name, :employee_id, :password, :password_confirmation)
+
+    # Only admins can modify roles (already enforced by authorize_admin!)
+    if current_user&.admin? && params[:user][:role].present?
+      base_params[:role] = params[:user][:role]
+    end
+
+    base_params
   end
 end
