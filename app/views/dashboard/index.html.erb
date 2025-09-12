@@ -70,12 +70,12 @@
       </div>
     </div>
 
-    <!-- Orders (Future) -->
+    <!-- Sales Orders -->
     <div class="bg-white rounded-lg shadow p-6">
       <div class="flex items-center">
         <div class="flex-1">
-          <h3 class="text-sm font-medium text-gray-500">Orders</h3>
-          <p class="text-3xl font-bold text-gray-900">-</p>
+          <h3 class="text-sm font-medium text-gray-500">Sales Orders</h3>
+          <p class="text-3xl font-bold text-gray-900"><%= @total_sales_orders %></p>
         </div>
         <div class="flex-shrink-0">
           <div class="w-12 h-12 bg-yellow-100 rounded-md flex items-center justify-center">
@@ -86,7 +86,99 @@
         </div>
       </div>
       <div class="mt-2">
-        <span class="text-gray-500 text-sm">Coming soon</span>
+        <span class="<%= @pending_sales_orders > 0 ? 'text-orange-600' : 'text-green-600' %> text-sm">
+          <%= @pending_sales_orders %> pending
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional Stats Row -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Production Orders -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <div class="flex items-center">
+        <div class="flex-1">
+          <h3 class="text-sm font-medium text-gray-500">Production Orders</h3>
+          <p class="text-3xl font-bold text-gray-900"><%= @total_production_orders %></p>
+        </div>
+        <div class="flex-shrink-0">
+          <div class="w-12 h-12 bg-indigo-100 rounded-md flex items-center justify-center">
+            <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="mt-2">
+        <span class="<%= @active_production_orders > 0 ? 'text-blue-600' : 'text-gray-600' %> text-sm">
+          <%= @active_production_orders %> active
+        </span>
+      </div>
+    </div>
+
+    <!-- Design Requests -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <div class="flex items-center">
+        <div class="flex-1">
+          <h3 class="text-sm font-medium text-gray-500">Design Requests</h3>
+          <p class="text-3xl font-bold text-gray-900"><%= @total_design_requests %></p>
+        </div>
+        <div class="flex-shrink-0">
+          <div class="w-12 h-12 bg-pink-100 rounded-md flex items-center justify-center">
+            <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="mt-2">
+        <span class="<%= @pending_design_requests > 0 ? 'text-orange-600' : 'text-green-600' %> text-sm">
+          <%= @pending_design_requests %> pending
+        </span>
+      </div>
+    </div>
+
+    <!-- Materials -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <div class="flex items-center">
+        <div class="flex-1">
+          <h3 class="text-sm font-medium text-gray-500">Materials</h3>
+          <p class="text-3xl font-bold text-gray-900"><%= @total_materials %></p>
+        </div>
+        <div class="flex-shrink-0">
+          <div class="w-12 h-12 bg-teal-100 rounded-md flex items-center justify-center">
+            <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="mt-2">
+        <span class="<%= @low_stock_materials > 0 ? 'text-red-600' : 'text-green-600' %> text-sm">
+          <%= @low_stock_materials %> low stock
+        </span>
+      </div>
+    </div>
+
+    <!-- Inventory Overview -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <div class="flex items-center">
+        <div class="flex-1">
+          <h3 class="text-sm font-medium text-gray-500">Inventory</h3>
+          <p class="text-3xl font-bold text-gray-900"><%= link_to "View", inventory_path, class: "text-gray-900 hover:text-blue-600" %></p>
+        </div>
+        <div class="flex-shrink-0">
+          <div class="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center">
+            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="mt-2">
+        <span class="text-gray-600 text-sm">Stock levels</span>
       </div>
     </div>
   </div>
@@ -118,18 +210,47 @@
           <span class="text-purple-800 font-medium">Add New Product</span>
         <% end %>
 
-        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-          <svg class="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <%= link_to new_sales_order_path, class: "flex items-center p-3 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors" do %>
+          <svg class="w-5 h-5 text-yellow-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
           </svg>
-          <span class="text-gray-500 font-medium">Add New Order (Coming Soon)</span>
-        </div>
+          <span class="text-yellow-800 font-medium">Create Sales Order</span>
+        <% end %>
+
+        <%= link_to new_production_order_path, class: "flex items-center p-3 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors" do %>
+          <svg class="w-5 h-5 text-indigo-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+          <span class="text-indigo-800 font-medium">Create Production Order</span>
+        <% end %>
+
+        <%= link_to new_design_request_path, class: "flex items-center p-3 bg-pink-50 rounded-lg hover:bg-pink-100 transition-colors" do %>
+          <svg class="w-5 h-5 text-pink-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+          <span class="text-pink-800 font-medium">Create Design Request</span>
+        <% end %>
+
+        <%= link_to new_material_path, class: "flex items-center p-3 bg-teal-50 rounded-lg hover:bg-teal-100 transition-colors" do %>
+          <svg class="w-5 h-5 text-teal-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+          <span class="text-teal-800 font-medium">Add New Material</span>
+        <% end %>
+
+        <%= link_to inventory_path, class: "flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors" do %>
+          <svg class="w-5 h-5 text-gray-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+          </svg>
+          <span class="text-gray-800 font-medium">View Inventory</span>
+        <% end %>
       </div>
     </div>
 
     <!-- Department/Type/Category Breakdown -->
     <div class="bg-white rounded-lg shadow p-6">
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">Breakdown</h2>
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">System Overview</h2>
       
       <div class="mb-4">
         <h3 class="font-medium text-gray-700 mb-2">Employees by Department</h3>
@@ -146,16 +267,30 @@
       </div>
 
       <div class="mb-4">
-        <h3 class="font-medium text-gray-700 mb-2">Customers by Type</h3>
-        <% if @customers_by_type&.any? %>
-          <% @customers_by_type.each do |type, count| %>
+        <h3 class="font-medium text-gray-700 mb-2">Sales Orders by Status</h3>
+        <% if @sales_orders_by_status&.any? %>
+          <% @sales_orders_by_status.each do |status, count| %>
             <div class="flex justify-between py-1">
-              <span class="text-gray-600 capitalize"><%= type || 'Unassigned' %></span>
+              <span class="text-gray-600 capitalize"><%= status || 'Unknown' %></span>
               <span class="font-medium"><%= count %></span>
             </div>
           <% end %>
         <% else %>
-          <p class="text-gray-500 text-sm">No customers yet</p>
+          <p class="text-gray-500 text-sm">No sales orders yet</p>
+        <% end %>
+      </div>
+
+      <div class="mb-4">
+        <h3 class="font-medium text-gray-700 mb-2">Production Orders by Status</h3>
+        <% if @production_orders_by_status&.any? %>
+          <% @production_orders_by_status.each do |status, count| %>
+            <div class="flex justify-between py-1">
+              <span class="text-gray-600 capitalize"><%= status || 'Unknown' %></span>
+              <span class="font-medium"><%= count %></span>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="text-gray-500 text-sm">No production orders yet</p>
         <% end %>
       </div>
 
@@ -177,49 +312,59 @@
 
   <!-- Recent Activity -->
   <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-    <!-- Recent Employees -->
+    <!-- Recent Sales Orders -->
     <div class="bg-white rounded-lg shadow p-6">
       <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-semibold text-gray-900">Recent Employees</h2>
-        <%= link_to "View All", employees_path, class: "text-blue-600 hover:text-blue-800 text-sm font-medium" %>
+        <h2 class="text-lg font-semibold text-gray-900">Recent Sales Orders</h2>
+        <%= link_to "View All", sales_orders_path, class: "text-blue-600 hover:text-blue-800 text-sm font-medium" %>
       </div>
-      <% if @recent_employees&.any? %>
+      <% if @recent_sales_orders&.any? %>
         <div class="space-y-3">
-          <% @recent_employees.each do |employee| %>
+          <% @recent_sales_orders.each do |sales_order| %>
             <div class="flex items-center justify-between">
               <div>
-                <p class="font-medium text-gray-900"><%= employee.name %></p>
-                <p class="text-sm text-gray-500"><%= employee.department || 'No department' %> • <%= employee.position || 'No position' %></p>
+                <p class="font-medium text-gray-900">Order #<%= sales_order.id %></p>
+                <p class="text-sm text-gray-500">
+                  <%= sales_order.customer.name %> • 
+                  <span class="inline-flex px-1 py-0 text-xs font-medium rounded <%= sales_order.order_status == 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' %>">
+                    <%= sales_order.order_status&.humanize || 'Unknown' %>
+                  </span>
+                </p>
               </div>
-              <%= link_to "View", employee, class: "text-blue-600 hover:text-blue-800 text-sm" %>
+              <%= link_to "View", sales_order, class: "text-blue-600 hover:text-blue-800 text-sm" %>
             </div>
           <% end %>
         </div>
       <% else %>
-        <p class="text-gray-500">No employees added yet</p>
+        <p class="text-gray-500">No sales orders yet</p>
       <% end %>
     </div>
 
-    <!-- Recent Customers -->
+    <!-- Recent Production Orders -->
     <div class="bg-white rounded-lg shadow p-6">
       <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-semibold text-gray-900">Recent Customers</h2>
-        <%= link_to "View All", customers_path, class: "text-blue-600 hover:text-blue-800 text-sm font-medium" %>
+        <h2 class="text-lg font-semibold text-gray-900">Recent Production Orders</h2>
+        <%= link_to "View All", production_orders_path, class: "text-blue-600 hover:text-blue-800 text-sm font-medium" %>
       </div>
-      <% if @recent_customers&.any? %>
+      <% if @recent_production_orders&.any? %>
         <div class="space-y-3">
-          <% @recent_customers.each do |customer| %>
+          <% @recent_production_orders.each do |production_order| %>
             <div class="flex items-center justify-between">
               <div>
-                <p class="font-medium text-gray-900"><%= customer.name %></p>
-                <p class="text-sm text-gray-500"><%= customer.customer_type&.capitalize || 'No type' %> • <%= customer.email %></p>
+                <p class="font-medium text-gray-900">PO #<%= production_order.id %></p>
+                <p class="text-sm text-gray-500">
+                  <%= production_order.product.name %> • 
+                  <span class="inline-flex px-1 py-0 text-xs font-medium rounded <%= production_order.status == 'completed' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800' %>">
+                    <%= production_order.status&.humanize || 'Unknown' %>
+                  </span>
+                </p>
               </div>
-              <%= link_to "View", customer, class: "text-blue-600 hover:text-blue-800 text-sm" %>
+              <%= link_to "View", production_order, class: "text-blue-600 hover:text-blue-800 text-sm" %>
             </div>
           <% end %>
         </div>
       <% else %>
-        <p class="text-gray-500">No customers added yet</p>
+        <p class="text-gray-500">No production orders yet</p>
       <% end %>
     </div>
 
