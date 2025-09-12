@@ -116,7 +116,7 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= production_order.priority_color %>">
-                    <%= production_order.priority.humanize %>
+                    <%= production_order.priority&.humanize || 'Unknown' %>
                   </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
