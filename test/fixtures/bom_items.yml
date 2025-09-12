@@ -1,11 +1,133 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-# This model initially had no columns defined. If you add columns to the
-# model remove the "{}" from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
-#
-one: {}
-# column: value
-#
-two: {}
-# column: value
+diamond_ring_gold:
+  bill_of_material: diamond_ring_bom
+  material: gold_14k
+  quantity: 5.5000
+  unit_of_measure: "gram"
+  unit_cost: 60.00
+  total_cost: 330.00
+  sequence_number: 1
+  is_optional: false
+  notes: "14K gold for ring band"
+
+diamond_ring_diamond:
+  bill_of_material: diamond_ring_bom
+  material: diamond_1ct
+  quantity: 1.5000
+  unit_of_measure: "carat"
+  unit_cost: 300.00
+  total_cost: 450.00
+  sequence_number: 2
+  is_optional: false
+  notes: "Main center stone"
+
+diamond_ring_prongs:
+  bill_of_material: diamond_ring_bom
+  material: gold_wire
+  quantity: 0.5000
+  unit_of_measure: "gram"
+  unit_cost: 65.00
+  total_cost: 32.50
+  sequence_number: 3
+  is_optional: false
+  notes: "Prong setting material"
+
+silver_necklace_chain:
+  bill_of_material: silver_necklace_bom
+  material: silver_925
+  quantity: 15.0000
+  unit_of_measure: "gram"
+  unit_cost: 8.00
+  total_cost: 120.00
+  sequence_number: 1
+  is_optional: false
+  notes: "18 inch chain"
+
+silver_necklace_clasp:
+  bill_of_material: silver_necklace_bom
+  material: clasp_lobster
+  quantity: 1.0000
+  unit_of_measure: "piece"
+  unit_cost: 15.00
+  total_cost: 15.00
+  sequence_number: 2
+  is_optional: false
+  notes: "Lobster clasp closure"
+
+gold_bracelet_gold:
+  bill_of_material: gold_bracelet_bom
+  material: gold_14k
+  quantity: 8.0000
+  unit_of_measure: "gram"
+  unit_cost: 60.00
+  total_cost: 480.00
+  sequence_number: 1
+  is_optional: false
+  notes: "14K gold for tennis bracelet"
+
+gold_bracelet_stones:
+  bill_of_material: gold_bracelet_bom
+  material: cz_stones
+  quantity: 20.0000
+  unit_of_measure: "piece"
+  unit_cost: 2.50
+  total_cost: 50.00
+  sequence_number: 2
+  is_optional: false
+  notes: "Cubic zirconia stones"
+
+earrings_gold:
+  bill_of_material: diamond_earrings_bom
+  material: gold_14k
+  quantity: 3.2000
+  unit_of_measure: "gram"
+  unit_cost: 60.00
+  total_cost: 192.00
+  sequence_number: 1
+  is_optional: false
+  notes: "Gold for posts and settings"
+
+earrings_diamonds:
+  bill_of_material: diamond_earrings_bom
+  material: diamond_1ct
+  quantity: 1.0000
+  unit_of_measure: "carat"
+  unit_cost: 300.00
+  total_cost: 300.00
+  sequence_number: 2
+  is_optional: false
+  notes: "0.5 carat each earring"
+
+pearl_necklace_pearls:
+  bill_of_material: pearl_necklace_bom
+  material: pearls_freshwater
+  quantity: 40.0000
+  unit_of_measure: "piece"
+  unit_cost: 2.00
+  total_cost: 80.00
+  sequence_number: 1
+  is_optional: false
+  notes: "Freshwater pearls 6-7mm"
+
+pearl_necklace_thread:
+  bill_of_material: pearl_necklace_bom
+  material: silk_thread
+  quantity: 1.0000
+  unit_of_measure: "meter"
+  unit_cost: 5.00
+  total_cost: 5.00
+  sequence_number: 2
+  is_optional: false
+  notes: "Silk stringing thread"
+
+optional_gift_box:
+  bill_of_material: diamond_ring_bom
+  material: gift_box
+  quantity: 1.0000
+  unit_of_measure: "piece"
+  unit_cost: 15.00
+  total_cost: 15.00
+  sequence_number: 4
+  is_optional: true
+  notes: "Premium gift presentation box"

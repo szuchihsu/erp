@@ -1,0 +1,29 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  production_order: engagement_ring_production
+  work_station_name: "Assembly Station"
+  step_name: "Ring Assembly"
+  step_description: "Assemble the engagement ring with diamond setting"
+  sequence: 1
+  status: "completed"
+  estimated_minutes: 120
+  actual_minutes: 105
+  assigned_employee: production_worker
+  started_at: 2025-09-09 16:28:49
+  completed_at: 2025-09-09 18:13:49
+  notes: "Completed ring assembly ahead of schedule"
+
+two:
+  production_order: anniversary_necklace_production
+  work_station_name: "Polish Station"
+  step_name: "Final Polish"
+  step_description: "Apply final polish and quality check"
+  sequence: 2
+  status: "in_progress"
+  estimated_minutes: 60
+  actual_minutes: 
+  assigned_employee: quality_inspector
+  started_at: 2025-09-10 09:00:00
+  completed_at: 
+  notes: "Quality inspection in progress"

@@ -1,11 +1,155 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-# This model initially had no columns defined. If you add columns to the
-# model remove the "{}" from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
-#
-one: {}
-# column: value
-#
-two: {}
-# column: value
+gold_14k:
+  name: "14K Gold Wire"
+  code: "GOLD14K-WIRE"
+  description: "14 Karat gold wire for jewelry making"
+  category: "precious_metal"
+  unit_of_measure: "gram"
+  current_cost: 65.50
+  current_stock: 500.0
+  minimum_stock: 100.0
+  is_active: true
+
+silver_925:
+  name: "Sterling Silver Sheet"
+  code: "SILVER925-SHEET"
+  description: "925 Sterling silver sheet"
+  category: "precious_metal"
+  unit_of_measure: "gram"
+  current_cost: 1.20
+  current_stock: 1000.0
+  minimum_stock: 200.0
+  is_active: true
+
+diamond_1ct:
+  name: "Round Diamond 1ct"
+  code: "DIAMOND-1CT-RND"
+  description: "1 carat round brilliant cut diamond"
+  category: "gemstone"
+  unit_of_measure: "piece"
+  current_cost: 5000.00
+  current_stock: 10.0
+  minimum_stock: 3.0
+  is_active: true
+
+clasp_lobster:
+  name: "Lobster Clasp 14mm"
+  code: "CLASP-LOB-14"
+  description: "14mm gold-plated lobster clasp"
+  category: "finding"
+  unit_of_measure: "piece"
+  current_cost: 2.50
+  current_stock: 200.0
+  minimum_stock: 50.0
+  is_active: true
+
+jump_ring:
+  name: "Jump Ring 6mm"
+  code: "RING-JUMP-6"
+  description: "6mm gold-filled jump rings"
+  category: "finding"
+  unit_of_measure: "piece"
+  current_cost: 0.15
+  current_stock: 1000.0
+  minimum_stock: 500.0
+  is_active: true
+
+polishing_compound:
+  name: "Metal Polishing Compound"
+  code: "POLISH-COMP"
+  description: "Professional metal polishing compound"
+  category: "consumable"
+  unit_of_measure: "tube"
+  current_cost: 12.00
+  current_stock: 25.0
+  minimum_stock: 10.0
+  is_active: true
+
+gift_box:
+  name: "Jewelry Gift Box Small"
+  code: "BOX-GIFT-SM"
+  description: "Small jewelry gift box with velvet lining"
+  category: "packaging"
+  unit_of_measure: "piece"
+  current_cost: 3.00
+  current_stock: 100.0
+  minimum_stock: 50.0
+  is_active: true
+
+emerald_stone:
+  name: "Emerald 0.5ct"
+  code: "EMERALD-05CT"
+  description: "0.5 carat emerald gemstone"
+  category: "gemstone"
+  unit_of_measure: "piece"
+  current_cost: 800.00
+  current_stock: 5.0
+  minimum_stock: 2.0
+  is_active: true
+
+low_stock_material:
+  name: "Low Stock Item"
+  code: "LOW-STOCK"
+  description: "Material with low stock for testing"
+  category: "consumable"
+  unit_of_measure: "piece"
+  current_cost: 10.00
+  current_stock: 5.0
+  minimum_stock: 20.0
+  is_active: true
+
+inactive_material:
+  name: "Inactive Material"
+  code: "INACTIVE-MAT"
+  description: "Inactive material for testing"
+  category: "tool"
+  unit_of_measure: "piece"
+  current_cost: 15.00
+  current_stock: 0.0
+  minimum_stock: 5.0
+  is_active: false
+
+gold_wire:
+  name: "14K Gold Wire"
+  code: "GOLD14K-WIRE-2"
+  description: "14 Karat gold wire for intricate work"
+  category: "precious_metal"
+  unit_of_measure: "gram"
+  current_cost: 62.50
+  current_stock: 150.0
+  minimum_stock: 50.0
+  is_active: true
+
+cz_stones:
+  name: "Cubic Zirconia Stones"
+  code: "CZ-STONES"
+  description: "High quality cubic zirconia stones"
+  category: "stone"
+  unit_of_measure: "piece"
+  current_cost: 2.50
+  current_stock: 200.0
+  minimum_stock: 50.0
+  is_active: true
+
+pearls_freshwater:
+  name: "Freshwater Pearls"
+  code: "PEARLS-FW"
+  description: "High quality freshwater pearls"
+  category: "pearl"
+  unit_of_measure: "piece"
+  current_cost: 8.50
+  current_stock: 100.0
+  minimum_stock: 20.0
+  is_active: true
+
+silk_thread:
+  name: "Silk Thread"
+  code: "SILK-THREAD"
+  description: "High quality silk stringing thread"
+  category: "thread"
+  unit_of_measure: "meter"
+  current_cost: 5.00
+  current_stock: 50.0
+  minimum_stock: 10.0
+  is_active: true

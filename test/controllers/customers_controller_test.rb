@@ -4,8 +4,8 @@ class CustomersControllerTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
   setup do
-    @customer = customers(:one)
-    @user = users(:one)
+    @customer = customers(:retail_customer)
+    @user = users(:admin_user)
     sign_in @user
   end
 
@@ -63,8 +63,10 @@ class CustomersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should destroy customer" do
+    # Use a customer without associations to allow deletion
+    deletable_customer = customers(:inactive_customer)
     assert_difference("Customer.count", -1) do
-      delete customer_url(@customer)
+      delete customer_url(deletable_customer)
     end
 
     assert_redirected_to customers_url

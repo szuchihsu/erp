@@ -4,7 +4,7 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
   setup do
-    @product = products(:one)
+    @product = products(:diamond_ring)
     @user = User.create!(
       username: "testuser",
       name: "Test User",
@@ -70,8 +70,17 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should destroy product" do
+    # Create a product without dependencies for deletion test
+    test_product = Product.create!(
+      product_id: "TEST-DELETE-001",
+      name: "Test Product for Deletion",
+      description: "Temporary product for testing deletion",
+      selling_price: 100.00,
+      status: "active"
+    )
+
     assert_difference("Product.count", -1) do
-      delete product_url(@product)
+      delete product_url(test_product)
     end
 
     assert_redirected_to products_url

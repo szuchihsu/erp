@@ -1,0 +1,141 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+engagement_ring_production:
+  sales_order: engagement_order
+  product: diamond_ring
+  bill_of_material: diamond_ring_bom
+  quantity: 1
+  priority: high
+  status: in_production
+  due_date: 2025-02-10 16:00:00
+  scheduled_start: 2025-01-20 08:00:00
+  scheduled_completion: 2025-02-08 17:00:00
+  started_at: 2025-01-20 08:30:00
+  completed_at: 
+  notes: "Valentine's Day delivery - high priority engagement ring"
+
+anniversary_necklace_production:
+  sales_order: anniversary_order
+  product: high_value_necklace
+  bill_of_material: high_value_necklace_bom
+  quantity: 1
+  priority: urgent
+  status: material_allocated
+  due_date: 2025-02-08 12:00:00
+  scheduled_start: 2025-01-25 08:00:00
+  scheduled_completion: 2025-02-06 17:00:00
+  started_at: 
+  completed_at: 
+  notes: "Custom tennis necklace for 10th anniversary"
+
+corporate_bulk_production:
+  sales_order: corporate_order
+  product: gold_bracelet
+  bill_of_material: gold_bracelet_bom
+  quantity: 10
+  priority: normal
+  status: pending
+  due_date: 2025-02-25 10:00:00
+  scheduled_start: 2025-02-01 08:00:00
+  scheduled_completion: 2025-02-22 17:00:00
+  started_at: 
+  completed_at: 
+  notes: "Bulk production for boutique client - 10 pieces"
+
+rush_earrings_production:
+  sales_order: rush_order
+  product: diamond_earrings
+  bill_of_material: diamond_earrings_bom
+  quantity: 1
+  priority: normal
+  status: quality_check
+  due_date: 2025-02-02 15:00:00
+  scheduled_start: 2025-01-29 08:00:00
+  scheduled_completion: 2025-02-01 17:00:00
+  started_at: 2025-01-29 08:00:00
+  completed_at: 2025-02-01 16:30:00
+  notes: "Rush order completed on time with overnight shipping"
+
+custom_ring_production:
+  sales_order: custom_design_order
+  product: emerald_ring
+  bill_of_material: emerald_ring_bom
+  quantity: 1
+  priority: urgent
+  status: completed
+  due_date: 2025-03-10 16:00:00
+  scheduled_start: 2025-02-01 08:00:00
+  scheduled_completion: 2025-03-08 17:00:00
+  started_at: 
+  completed_at: 
+  notes: "Awaiting customer approval on design before production"
+
+repair_production:
+  sales_order: repair_order
+  product: gold_bracelet
+  bill_of_material: gold_bracelet_bom
+  quantity: 1
+  priority: normal
+  status: quality_check
+  due_date: 2025-01-28 14:00:00
+  scheduled_start: 2025-01-15 08:00:00
+  scheduled_completion: 2025-01-26 17:00:00
+  started_at: 2025-01-15 09:00:00
+  completed_at: 2025-01-26 15:30:00
+  notes: "Repair and resizing work completed successfully"
+
+cancelled_production:
+  sales_order: cancelled_order
+  product: silver_necklace
+  bill_of_material: silver_necklace_bom
+  quantity: 1
+  priority: normal
+  status: cancelled
+  due_date: 2025-02-18 12:00:00
+  scheduled_start: 2025-01-20 08:00:00
+  scheduled_completion: 2025-02-15 17:00:00
+  started_at: 
+  completed_at: 
+  notes: "Production cancelled due to customer order cancellation"
+
+high_value_production:
+  sales_order: high_value_order
+  product: high_value_necklace
+  bill_of_material: high_value_necklace_bom
+  quantity: 5
+  priority: high
+  status: material_allocated
+  due_date: 2025-03-25 10:00:00
+  scheduled_start: 2025-02-10 08:00:00
+  scheduled_completion: 2025-03-20 17:00:00
+  started_at: 
+  completed_at: 
+  notes: "High-value custom collection for VIP client"
+
+gift_bracelet_production:
+  sales_order: gift_order
+  product: silver_bracelet
+  bill_of_material: silver_bracelet_bom
+  quantity: 1
+  priority: urgent
+  status: in_production
+  due_date: 2025-02-10 14:00:00
+  scheduled_start: 2025-01-25 08:00:00
+  scheduled_completion: 2025-02-08 17:00:00
+  started_at: 2025-01-25 08:15:00
+  completed_at: 
+  notes: "Birthday gift set with matching earrings"
+
+completed_production:
+  sales_order: quick_sale
+  product: pearl_necklace
+  bill_of_material: pearl_necklace_bom
+  quantity: 1
+  priority: normal
+  status: quality_check
+  due_date: 2025-01-29 14:00:00
+  scheduled_start: 2025-01-28 08:00:00
+  scheduled_completion: 2025-01-29 12:00:00
+  started_at: 2025-01-28 08:00:00
+  completed_at: 2025-01-29 11:30:00
+  notes: "Same-day completion for immediate pickup"

@@ -1,27 +1,141 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  order_id: MyString
-  customer: one
-  employee: one
-  order_date: 2025-07-29 23:40:26
-  delivery_date: 2025-07-29 23:40:26
-  quotation_amount: 9.99
-  total_amount: 9.99
-  deposit_amount: 9.99
-  remaining_amount: 9.99
-  order_status: MyString
-  notes: MyText
+engagement_order:
+  order_id: "SO001"
+  customer: retail_customer
+  employee: manager_employee
+  user: manager_user
+  order_date: 2025-01-15 10:30:00
+  delivery_date: 2025-02-14 16:00:00
+  quotation_amount: 1500.00
+  total_amount: 1500.00
+  deposit_amount: 750.00
+  remaining_amount: 750.00
+  order_status: "confirmed"
+  notes: "Valentine's Day delivery - engagement ring"
 
-two:
-  order_id: MyString
-  customer: two
-  employee: two
-  order_date: 2025-07-29 23:40:26
-  delivery_date: 2025-07-29 23:40:26
-  quotation_amount: 9.99
-  total_amount: 9.99
-  deposit_amount: 9.99
-  remaining_amount: 9.99
-  order_status: MyString
-  notes: MyText
+anniversary_order:
+  order_id: "SO002"
+  customer: wholesale_customer
+  employee: sales_rep
+  user: manager_user
+  order_date: 2025-01-20 14:15:00
+  delivery_date: 2025-02-10 12:00:00
+  quotation_amount: 2200.00
+  total_amount: 2200.00
+  deposit_amount: 1100.00
+  remaining_amount: 1100.00
+  order_status: "in_production"
+  notes: "10th wedding anniversary gift - custom necklace and earrings set"
+
+corporate_order:
+  order_id: "SO003"
+  customer: vip_customer
+  employee: manager_employee
+  user: manager_user
+  order_date: 2025-01-25 09:00:00
+  delivery_date: 2025-03-01 10:00:00
+  quotation_amount: 15000.00
+  total_amount: 15000.00
+  deposit_amount: 7500.00
+  remaining_amount: 7500.00
+  order_status: "pending"
+  notes: "Bulk order for spring collection - 20 pieces"
+
+rush_order:
+  order_id: "SO004"
+  customer: retail_customer
+  employee: sales_rep
+  user: manager_user
+  order_date: 2025-01-28 16:45:00
+  delivery_date: 2025-02-03 15:00:00
+  quotation_amount: 800.00
+  total_amount: 880.00
+  deposit_amount: 880.00
+  remaining_amount: 0.00
+  order_status: "paid"
+  notes: "Rush order - birthday gift, paid in full with rush fee"
+
+repair_order:
+  order_id: "SO005"
+  customer: wholesale_customer
+  employee: sales_rep
+  user: manager_user
+  order_date: 2025-01-10 11:20:00
+  delivery_date: 2025-01-30 14:00:00
+  quotation_amount: 200.00
+  total_amount: 200.00
+  deposit_amount: 0.00
+  remaining_amount: 200.00
+  order_status: "completed"
+  notes: "Ring resizing and cleaning service"
+
+custom_design_order:
+  order_id: "SO006"
+  customer: vip_customer
+  employee: manager_employee
+  user: manager_user
+  order_date: 2025-01-05 13:30:00
+  delivery_date: 2025-03-15 16:00:00
+  quotation_amount: 3500.00
+  total_amount: 3500.00
+  deposit_amount: 1750.00
+  remaining_amount: 1750.00
+  order_status: "design_approval"
+  notes: "Custom engagement ring design with family heirloom diamond"
+
+cancelled_order:
+  order_id: "SO007"
+  customer: retail_customer
+  employee: sales_rep
+  user: manager_user
+  order_date: 2025-01-12 15:00:00
+  delivery_date: 2025-02-20 12:00:00
+  quotation_amount: 600.00
+  total_amount: 600.00
+  deposit_amount: 300.00
+  remaining_amount: 300.00
+  order_status: "cancelled"
+  notes: "Customer cancelled - deposit refunded"
+
+gift_order:
+  order_id: "SO008"
+  customer: wholesale_customer
+  employee: sales_rep
+  user: manager_user
+  order_date: 2025-01-18 10:15:00
+  delivery_date: 2025-02-12 14:00:00
+  quotation_amount: 450.00
+  total_amount: 450.00
+  deposit_amount: 225.00
+  remaining_amount: 225.00
+  order_status: "confirmed"
+  notes: "Birthday gift for wife - silver bracelet set"
+
+high_value_order:
+  order_id: "SO009"
+  customer: vip_customer
+  employee: manager_employee
+  user: manager_user
+  order_date: 2025-01-22 11:45:00
+  delivery_date: 2025-04-01 10:00:00
+  quotation_amount: 25000.00
+  total_amount: 25000.00
+  deposit_amount: 12500.00
+  remaining_amount: 12500.00
+  order_status: "in_production"
+  notes: "High-value custom jewelry collection for VIP client"
+
+quick_sale:
+  order_id: "SO010"
+  customer: retail_customer
+  employee: sales_rep
+  user: manager_user
+  order_date: 2025-01-29 12:30:00
+  delivery_date: 2025-01-29 16:00:00
+  quotation_amount: 300.00
+  total_amount: 300.00
+  deposit_amount: 300.00
+  remaining_amount: 0.00
+  order_status: "delivered"
+  notes: "Same-day pickup - ready-made pearl earrings"

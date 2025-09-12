@@ -2,8 +2,8 @@ require "test_helper"
 
 class EmployeesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @employee = employees(:one)
-    @user = users(:one)
+    @employee = employees(:admin_employee)
+    @user = users(:admin_user)
     sign_in @user # Sign in before each test
   end
 

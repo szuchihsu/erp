@@ -1,15 +1,15 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  design_request: one
-  image_path: MyString
-  image_type: MyString
-  description: MyText
+engagement_sketch:
+  design_request: engagement_design
+  image_path: "/uploads/design_images/engagement_sketch.jpg"
+  image_type: "sketch"
+  description: "Initial sketch of the engagement ring design"
   is_final: false
 
-two:
-  design_request: two
-  image_path: MyString
-  image_type: MyString
-  description: MyText
-  is_final: false
+anniversary_concept:
+  design_request: anniversary_design
+  image_path: "/uploads/design_images/anniversary_concept.jpg"
+  image_type: "concept"
+  description: "Concept art for anniversary necklace"
+  is_final: true

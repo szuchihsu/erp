@@ -1,17 +1,19 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  product: one
-  adjustment_type: MyString
-  quantity: 1
-  reason: MyString
-  user: one
+  item_type: Product
+  item_id: 1
+  adjustment_type: stock_in
+  quantity: 10
+  reason: Initial stock
+  user: admin_user
   created_at: 2025-08-06 05:44:44
 
 two:
-  product: two
-  adjustment_type: MyString
-  quantity: 1
-  reason: MyString
-  user: two
+  item_type: Material
+  item_id: 1
+  adjustment_type: stock_out
+  quantity: 5
+  reason: Used in production
+  user: manager_user
   created_at: 2025-08-06 05:44:44

@@ -1,43 +1,121 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
+diamond_ring:
   product_id: "PROD001"
-  name: "Diamond Ring"
-  description: "Beautiful diamond engagement ring"
+  name: "Diamond Engagement Ring"
+  description: "1.5 carat solitaire diamond engagement ring"
   category: "rings"
-  material: "gold"
-  weight: 5.5
   cost_price: 1000.00
   selling_price: 1500.00
   stock_quantity: 10
-  minimum_stock: 3
+  minimum_stock_level: 3
   supplier: "Diamond Co."
   status: "active"
 
-two:
+silver_necklace:
   product_id: "PROD002"
-  name: "Silver Necklace"
-  description: "Elegant silver chain necklace"
+  name: "Sterling Silver Chain Necklace"
+  description: "925 Sterling silver chain necklace 18 inches"
   category: "necklaces"
-  material: "silver"
-  weight: 15.0
   cost_price: 200.00
   selling_price: 350.00
   stock_quantity: 2
-  minimum_stock: 5
+  minimum_stock_level: 5
   supplier: "Silver Works"
   status: "active"
 
-low_stock:
+gold_bracelet:
   product_id: "PROD003"
-  name: "Gold Bracelet"
-  description: "Classic gold bracelet"
+  name: "Classic Gold Bracelet"
+  description: "14K gold tennis bracelet"
   category: "bracelets"
-  material: "gold"
-  weight: 8.0
   cost_price: 500.00
   selling_price: 750.00
   stock_quantity: 1
-  minimum_stock: 3
+  minimum_stock_level: 3
   supplier: "Gold Masters"
+  status: "active"
+
+diamond_earrings:
+  product_id: "PROD004"
+  name: "Diamond Stud Earrings"
+  description: "0.5 carat each diamond stud earrings"
+  category: "earrings"
+  cost_price: 800.00
+  selling_price: 1200.00
+  stock_quantity: 15
+  minimum_stock_level: 5
+  supplier: "Diamond Co."
+  status: "active"
+
+pearl_necklace:
+  product_id: "PROD005"
+  name: "Freshwater Pearl Necklace"
+  description: "16 inch freshwater pearl strand"
+  category: "necklaces"
+  cost_price: 150.00
+  selling_price: 300.00
+  stock_quantity: 8
+  minimum_stock_level: 2
+  supplier: "Pearl Imports"
+  status: "active"
+
+emerald_ring:
+  product_id: "PROD006"
+  name: "Emerald Cocktail Ring"
+  description: "Natural emerald in 18K gold setting"
+  category: "rings"
+  cost_price: 600.00
+  selling_price: 1000.00
+  stock_quantity: 4
+  minimum_stock_level: 2
+  supplier: "Gemstone Gallery"
+  status: "active"
+
+silver_bracelet:
+  product_id: "PROD007"
+  name: "Silver Charm Bracelet"
+  description: "Sterling silver charm bracelet with heart charm"
+  category: "bracelets"
+  cost_price: 120.00
+  selling_price: 220.00
+  stock_quantity: 12
+  minimum_stock_level: 4
+  supplier: "Silver Works"
+  status: "active"
+
+out_of_stock_watch:
+  product_id: "PROD008"
+  name: "Luxury Swiss Watch"
+  description: "Swiss automatic watch with sapphire crystal"
+  category: "watches"
+  cost_price: 800.00
+  selling_price: 1400.00
+  stock_quantity: 0
+  minimum_stock_level: 2
+  supplier: "Swiss Timepieces"
+  status: "out_of_stock"
+
+discontinued_pendant:
+  product_id: "PROD009"
+  name: "Vintage Pendant"
+  description: "Art deco style pendant - discontinued"
+  category: "pendants"
+  cost_price: 300.00
+  selling_price: 500.00
+  stock_quantity: 3
+  minimum_stock_level: 1
+  supplier: "Vintage Designs"
+  status: "discontinued"
+
+high_value_necklace:
+  product_id: "PROD010"
+  name: "Diamond Tennis Necklace"
+  description: "5 carat total weight diamond tennis necklace"
+  category: "necklaces"
+  cost_price: 5000.00
+  selling_price: 8500.00
+  stock_quantity: 2
+  minimum_stock_level: 1
+  supplier: "Diamond Co."
   status: "active"

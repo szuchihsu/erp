@@ -1,19 +1,64 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-# This model initially had no columns defined. If you add columns to the
-# model remove the "{}" from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
-#
-one:
-  username: "testuser1"
-  name: "Test User One"
+admin_user:
+  username: "admin"
+  name: "Admin User"
   role: "admin"
   employee_id: 
   encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
 
-two:
-  username: "testuser2"
-  name: "Test User Two"
-  role: "worker"
-  employee_id:
+manager_user:
+  username: "manager"
+  name: "Sarah Manager"
+  role: "manager"
+  employee_id: 
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
+
+supervisor_user:
+  username: "supervisor"
+  name: "Mike Production"
+  role: "supervisor"
+  employee_id: 
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
+
+designer_user:
+  username: "designer"
+  name: "Alice Designer"
+  role: "designer"
+  employee_id: 
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
+
+production_user:
+  username: "worker"
+  name: "Bob Worker"
+  role: "production_worker"
+  employee_id: 
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
+
+sales_user:
+  username: "sales"
+  name: "Carol Sales"
+  role: "sales_rep"
+  employee_id: 
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
+
+quality_user:
+  username: "quality"
+  name: "Dave Quality"
+  role: "quality_control"
+  employee_id: 
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
+
+inventory_user:
+  username: "inventory"
+  name: "Eve Inventory"
+  role: "inventory_clerk"
+  employee_id: 
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
+
+unlinked_user:
+  username: "unlinked"
+  name: "Unlinked User"
+  role: "inventory_clerk"
+  employee_id: 
   encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>

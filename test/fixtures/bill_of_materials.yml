@@ -1,11 +1,101 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-# This model initially had no columns defined. If you add columns to the
-# model remove the "{}" from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
-#
-one: {}
-# column: value
-#
-two: {}
-# column: value
+diamond_ring_bom:
+  product: diamond_ring
+  version: "1.0"
+  description: "Bill of materials for diamond engagement ring"
+  is_active: true
+  effective_date: 2025-01-01
+  obsolete_date: 
+  total_cost: 850.00
+  notes: "Standard engagement ring BOM with 1.5ct diamond"
+
+silver_necklace_bom:
+  product: silver_necklace
+  version: "1.0"
+  description: "Bill of materials for sterling silver chain necklace"
+  is_active: true
+  effective_date: 2025-01-01
+  obsolete_date: 
+  total_cost: 175.00
+  notes: "18 inch chain with standard clasp"
+
+gold_bracelet_bom:
+  product: gold_bracelet
+  version: "1.1"
+  description: "Bill of materials for 14K gold tennis bracelet"
+  is_active: true
+  effective_date: 2025-01-15
+  obsolete_date: 
+  total_cost: 420.00
+  notes: "Updated BOM with new supplier pricing"
+
+diamond_earrings_bom:
+  product: diamond_earrings
+  version: "1.0"
+  description: "Bill of materials for diamond stud earrings"
+  is_active: true
+  effective_date: 2025-01-01
+  obsolete_date: 
+  total_cost: 680.00
+  notes: "0.5 carat each with 14K gold posts"
+
+pearl_necklace_bom:
+  product: pearl_necklace
+  version: "1.0"
+  description: "Bill of materials for freshwater pearl necklace"
+  is_active: true
+  effective_date: 2025-01-01
+  obsolete_date: 
+  total_cost: 125.00
+  notes: "16 inch strand with silver clasp"
+
+emerald_ring_bom:
+  product: emerald_ring
+  version: "1.0"
+  description: "Bill of materials for emerald cocktail ring"
+  is_active: true
+  effective_date: 2025-01-01
+  obsolete_date: 
+  total_cost: 520.00
+  notes: "Natural emerald in 18K gold setting"
+
+silver_bracelet_bom:
+  product: silver_bracelet
+  version: "1.0"
+  description: "Bill of materials for silver charm bracelet"
+  is_active: true
+  effective_date: 2025-01-01
+  obsolete_date: 
+  total_cost: 95.00
+  notes: "Sterling silver with heart charm"
+
+discontinued_bom:
+  product: discontinued_pendant
+  version: "1.0"
+  description: "Bill of materials for vintage pendant"
+  is_active: false
+  effective_date: 2024-01-01
+  obsolete_date: 2024-12-31
+  total_cost: 250.00
+  notes: "Discontinued due to material unavailability"
+
+high_value_necklace_bom:
+  product: high_value_necklace
+  version: "1.0"
+  description: "Bill of materials for diamond tennis necklace"
+  is_active: true
+  effective_date: 2025-01-01
+  obsolete_date: 
+  total_cost: 4200.00
+  notes: "5 carat total weight with premium diamonds"
+
+old_version_bom:
+  product: gold_bracelet
+  version: "1.0"
+  description: "Original bill of materials for gold bracelet"
+  is_active: false
+  effective_date: 2024-01-01
+  obsolete_date: 2025-01-14
+  total_cost: 450.00
+  notes: "Superseded by version 1.1"

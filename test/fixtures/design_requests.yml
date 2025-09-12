@@ -1,21 +1,21 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  customer: one
-  sales_order: one
-  design_details: MyText
-  status: MyString
-  priority: MyString
+engagement_design:
+  customer: retail_customer
+  sales_order: engagement_order
+  design_details: "Custom engagement ring design with princess cut diamond and vintage setting"
+  status: "in_progress"
+  priority: "high"
   requested_date: 2025-09-03 15:27:50
-  completed_date: 2025-09-03 15:27:50
-  assigned_designer: one
+  completed_date: 
+  assigned_designer: designer_employee
 
-two:
-  customer: two
-  sales_order: two
-  design_details: MyText
-  status: MyString
-  priority: MyString
-  requested_date: 2025-09-03 15:27:50
-  completed_date: 2025-09-03 15:27:50
-  assigned_designer: two
+anniversary_design:
+  customer: wholesale_customer
+  sales_order: anniversary_order
+  design_details: "Anniversary necklace with custom engraving and gemstone accent"
+  status: "completed"
+  priority: "medium"
+  requested_date: 2025-08-15 10:30:00
+  completed_date: 2025-09-01 16:45:00
+  assigned_designer: designer_employee

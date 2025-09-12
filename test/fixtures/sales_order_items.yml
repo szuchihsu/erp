@@ -1,17 +1,89 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  sales_order: one
-  product: one
+engagement_ring_item:
+  sales_order: engagement_order
+  product: diamond_ring
   quantity: 1
-  unit_price: 9.99
-  total_price: 9.99
-  specifications: MyText
+  unit_price: 1500.00
+  total_price: 1500.00
+  specifications: "Size 6, platinum setting upgrade"
 
-two:
-  sales_order: two
-  product: two
+anniversary_necklace_item:
+  sales_order: anniversary_order
+  product: high_value_necklace
   quantity: 1
-  unit_price: 9.99
-  total_price: 9.99
-  specifications: MyText
+  unit_price: 1800.00
+  total_price: 1800.00
+  specifications: "18 inch length, gift wrapping included"
+
+anniversary_earrings_item:
+  sales_order: anniversary_order
+  product: diamond_earrings
+  quantity: 1
+  unit_price: 400.00
+  total_price: 400.00
+  specifications: "Matching set with necklace"
+
+corporate_bracelet_item:
+  sales_order: corporate_order
+  product: gold_bracelet
+  quantity: 10
+  unit_price: 750.00
+  total_price: 7500.00
+  specifications: "Bulk order discount applied"
+
+corporate_necklace_item:
+  sales_order: corporate_order
+  product: silver_necklace
+  quantity: 10
+  unit_price: 350.00
+  total_price: 3500.00
+  specifications: "Boutique collection, custom packaging"
+
+rush_earrings_item:
+  sales_order: rush_order
+  product: diamond_earrings
+  quantity: 1
+  unit_price: 800.00
+  total_price: 800.00
+  specifications: "Rush delivery fee included"
+
+repair_service_item:
+  sales_order: repair_order
+  product: gold_bracelet
+  quantity: 1
+  unit_price: 200.00
+  total_price: 200.00
+  specifications: "Resize from 7 to 6.5, polish and clean"
+
+custom_ring_item:
+  sales_order: custom_design_order
+  product: emerald_ring
+  quantity: 1
+  unit_price: 3500.00
+  total_price: 3500.00
+  specifications: "Custom design with client's emerald stone"
+
+gift_bracelet_item:
+  sales_order: gift_order
+  product: silver_bracelet
+  quantity: 1
+  unit_price: 220.00
+  total_price: 220.00
+  specifications: "Gift box and card included"
+
+gift_earrings_item:
+  sales_order: gift_order
+  product: pearl_necklace
+  quantity: 1
+  unit_price: 230.00
+  total_price: 230.00
+  specifications: "Birthday gift wrapping"
+
+quick_sale_item:
+  sales_order: quick_sale
+  product: pearl_necklace
+  quantity: 1
+  unit_price: 300.00
+  total_price: 300.00
+  specifications: "Ready-made item, same-day pickup"

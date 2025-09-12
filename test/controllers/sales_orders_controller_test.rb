@@ -1,8 +1,12 @@
 require "test_helper"
 
 class SalesOrdersControllerTest < ActionDispatch::IntegrationTest
+  include Devise::Test::IntegrationHelpers
+
   setup do
-    @sales_order = sales_orders(:one)
+    @sales_order = sales_orders(:engagement_order)
+    @user = users(:admin_user)
+    sign_in @user
   end
 
   test "should get index" do
@@ -17,7 +21,22 @@ class SalesOrdersControllerTest < ActionDispatch::IntegrationTest
 
   test "should create sales_order" do
     assert_difference("SalesOrder.count") do
-      post sales_orders_url, params: { sales_order: { customer_id: @sales_order.customer_id, delivery_date: @sales_order.delivery_date, deposit_amount: @sales_order.deposit_amount, employee_id: @sales_order.employee_id, notes: @sales_order.notes, order_date: @sales_order.order_date, order_id: @sales_order.order_id, order_status: @sales_order.order_status, quotation_amount: @sales_order.quotation_amount, remaining_amount: @sales_order.remaining_amount, total_amount: @sales_order.total_amount } }
+      post sales_orders_url, params: {
+        sales_order: {
+          customer_id: @sales_order.customer_id,
+          user_id: @user.id,
+          employee_id: @sales_order.employee_id,
+          order_date: @sales_order.order_date,
+          delivery_date: @sales_order.delivery_date,
+          quotation_amount: @sales_order.quotation_amount,
+          total_amount: @sales_order.total_amount,
+          deposit_amount: @sales_order.deposit_amount,
+          remaining_amount: @sales_order.remaining_amount,
+          order_status: @sales_order.order_status,
+          notes: @sales_order.notes,
+          order_id: "SO999"
+        }
+      }
     end
 
     assert_redirected_to sales_order_url(SalesOrder.last)

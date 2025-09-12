@@ -1,25 +1,109 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
+admin_employee:
   employee_id: "EMP001"
-  name: "John Doe"
-  email: "john@example.com"
-  phone: "123-456-7890"
+  name: "Admin User"
+  email: "admin@company.com"
+  phone: "555-1001"
+  department: "admin"
+  position: "System Administrator"
+  hire_date: 2022-01-01
+  salary: 80000.00
+  status: "active"
+  supervisor_id: 
+
+manager_employee:
+  employee_id: "EMP002"
+  name: "Sarah Manager"
+  email: "sarah.manager@company.com"
+  phone: "555-1002"
+  department: "management"
+  position: "Operations Manager"
+  hire_date: 2022-02-01
+  salary: 75000.00
+  status: "active"
+  supervisor_id: 
+
+production_supervisor:
+  employee_id: "EMP003"
+  name: "Mike Production"
+  email: "mike.production@company.com"
+  phone: "555-1003"
   department: "production"
-  position: "manager"
+  position: "Production Supervisor"
+  hire_date: 2022-03-01
+  salary: 65000.00
+  status: "active"
+  supervisor_id: 
+
+designer_employee:
+  employee_id: "EMP004"
+  name: "Alice Designer"
+  email: "alice.designer@company.com"
+  phone: "555-1004"
+  department: "design"
+  position: "Senior Designer"
+  hire_date: 2022-04-01
+  salary: 60000.00
+  status: "active"
+  supervisor_id: 
+
+production_worker:
+  employee_id: "EMP005"
+  name: "Bob Worker"
+  email: "bob.worker@company.com"
+  phone: "555-1005"
+  department: "production"
+  position: "Production Worker"
   hire_date: 2023-01-01
+  salary: 45000.00
+  status: "active"
+  supervisor_id: 
+
+sales_rep:
+  employee_id: "EMP006"
+  name: "Carol Sales"
+  email: "carol.sales@company.com"
+  phone: "555-1006"
+  department: "sales"
+  position: "Sales Representative"
+  hire_date: 2023-02-01
   salary: 50000.00
   status: "active"
   supervisor_id: 
 
-two:
-  employee_id: "EMP002"
-  name: "Jane Smith"
-  email: "jane@example.com"
-  phone: "098-765-4321"
+quality_inspector:
+  employee_id: "EMP007"
+  name: "Dave Quality"
+  email: "dave.quality@company.com"
+  phone: "555-1007"
   department: "quality"
-  position: "inspector"
-  hire_date: 2023-02-01
-  salary: 45000.00
+  position: "Quality Inspector"
+  hire_date: 2023-03-01
+  salary: 48000.00
   status: "active"
+  supervisor_id: 
+
+inventory_clerk:
+  employee_id: "EMP008"
+  name: "Eve Inventory"
+  email: "eve.inventory@company.com"
+  phone: "555-1008"
+  department: "inventory"
+  position: "Inventory Clerk"
+  hire_date: 2023-04-01
+  salary: 42000.00
+  status: "active"
+  supervisor_id: 
+
+inactive_employee:
+  employee_id: "EMP009"
+  name: "Former Employee"
+  email: "former@company.com"
+  phone: "555-1009"
+  department: "production"
+  position: "Former Worker"
+  hire_date: 2022-05-01
+  salary: 40000.00
+  status: "inactive"
   supervisor_id:

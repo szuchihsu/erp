@@ -1,19 +1,46 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
+retail_customer:
   customer_id: "CUST001"
   name: "John Smith"
-  email: "john@example.com"
+  email: "john.smith@example.com"
   phone: "555-0001"
-  address: "123 Main St"
+  address: "123 Main St, City, State 12345"
   customer_type: "retail"
   status: "active"
 
-two:
+wholesale_customer:
   customer_id: "CUST002"
-  name: "Jane Doe"
-  email: "jane@example.com"
+  name: "Jane Doe Jewelry Store"
+  email: "jane@jewelrystore.com"
   phone: "555-0002"
-  address: "456 Oak Ave"
+  address: "456 Oak Ave, Business District, State 67890"
   customer_type: "wholesale"
   status: "active"
+
+vip_customer:
+  customer_id: "CUST003"
+  name: "Robert Johnson"
+  email: "robert.johnson@email.com"
+  phone: "555-0003"
+  address: "789 Pine Street, Luxury District, State 11111"
+  customer_type: "vip"
+  status: "active"
+
+inactive_customer:
+  customer_id: "CUST004"
+  name: "Inactive Customer"
+  email: "inactive@example.com"
+  phone: "555-0004"
+  address: "999 Old Road"
+  customer_type: "retail"
+  status: "inactive"
+
+blocked_customer:
+  customer_id: "CUST005"
+  name: "Blocked Customer"
+  email: "blocked@example.com"
+  phone: "555-0005"
+  address: "000 Blocked Street"
+  customer_type: "retail"
+  status: "blocked"
