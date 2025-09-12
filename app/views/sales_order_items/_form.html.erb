@@ -101,7 +101,6 @@ document.addEventListener('turbo:load', function() {
       <%= product.id %>: {
         selling_price: <%= product.selling_price || 0 %>,
         category: '<%= j(product.category.to_s) %>',
-        material: '<%= j(product.material.to_s) %>',
         stock: <%= product.stock_quantity || 0 %>
       },
     <% end %>
