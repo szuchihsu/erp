@@ -20,13 +20,12 @@
           </p>
 
           <p class="my-3">
-            <strong class="block font-medium mb-1">Material:</strong>
-            <span class="capitalize"><%= @product.material %></span>
-          </p>
-
-          <p class="my-3">
-            <strong class="block font-medium mb-1">Weight:</strong>
-            <%= @product.weight %> grams
+            <strong class="block font-medium mb-1">Stock Status:</strong>
+            <span class="px-2 py-1 rounded-full text-xs font-medium
+              <%= @product.low_stock? ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' %>">
+              <%= @product.stock_quantity %> in stock
+              <%= "(Low Stock)" if @product.low_stock? %>
+            </span>
           </p>
         </div>
 
@@ -39,15 +38,6 @@
           <p class="my-3">
             <strong class="block font-medium mb-1">Selling Price:</strong>
             $<%= @product.selling_price %>
-          </p>
-
-          <p class="my-3">
-            <strong class="block font-medium mb-1">Stock Status:</strong>
-            <span class="px-2 py-1 rounded-full text-xs font-medium
-              <%= @product.low_stock? ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' %>">
-              <%= @product.stock_quantity %> in stock
-              <%= "(Low Stock)" if @product.low_stock? %>
-            </span>
           </p>
 
           <p class="my-3">
