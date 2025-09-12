@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   devise_for :users, skip: [ :registrations ]
   root "dashboard#index"
 
+  # Health check endpoint for ELB
+  get "/health", to: "health#index"
+
   get "dashboard", to: "dashboard#index"
 
   # User management (admin only)
