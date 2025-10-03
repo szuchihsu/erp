@@ -4,6 +4,21 @@
 
 puts "Creating comprehensive sample data for ERP system..."
 
+# CREATE ADMIN USER FIRST
+puts "\nCreating admin user..."
+unless User.find_by(username: 'admin')
+  User.create!(
+    username: 'admin',
+    name: 'System Administrator',
+    role: 'admin',
+    password: 'admin123',
+    password_confirmation: 'admin123'
+  )
+  puts "Created admin user: admin/admin123"
+else
+  puts "Admin user already exists"
+end
+
 # 0. USERS FOR RBAC TESTING
 puts "\nCreating sample users for RBAC testing..."
 
